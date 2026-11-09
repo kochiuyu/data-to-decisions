@@ -2,6 +2,7 @@
 from pathlib import Path
 import html, json, subprocess, sys
 from business_cases import case
+from guided_paths import selected
 ROOT=Path(__file__).resolve().parents[1]
 DIST=ROOT/'dist'
 def esc(value): return html.escape(str(value))
@@ -51,16 +52,32 @@ def render_lesson(number,title,intro,sections,*,outcomes=None):
     previous=f'<a href="lesson-{number-1}.html">← Lesson {number-1}</a>' if number>1 else '<a href="index.html">← Learning map</a>'
     nxt=f'<a href="lesson-{number+1}.html">Lesson {number+1} →</a>' if number<10 else '<a href="synthesis.html">Course synthesis →</a>'
     appendix=f'lesson-{number}-appendix.html'
+    guide=f'lesson-{number}-guide.html'
+    guided=selected(number,sections)
+    guide_toc=''.join(f'<li><a href="#{esc(s["id"])}">{i+1:02d}. {esc(s["title"])}</a></li>' for i,s in enumerate(guided))
+    guide_blocks=[]
+    for i,s in enumerate(guided):
+        check=''
+        if s.get('check'):check='<aside class="check"><h3>Pause and explain</h3><p>'+s['check']+'</p><details><summary>Compare your reasoning</summary><div>'+s.get('answer','')+'</div></details></aside>'
+        guide_blocks.append(f'<section class="lesson-step" id="{esc(s["id"])}"><p class="eyebrow">Guided step {i+1:02d} / {len(guided)}</p><h2>{esc(s["title"])}</h2>{s["body"]}{check}</section>')
     short=(f'<main id="main"><div class="hero wrap"><p class="eyebrow">Lesson {number} · Business route</p><h1>{esc(title)}</h1>'
            f'<p class="lead">{esc(brief["question"])}</p><div class="notice"><strong>Fictional case.</strong> The observations are generated for teaching, not evidence about a real business. The full data-generating process is in the <a href="{appendix}#generation">technical appendix</a>.</div></div>'
            f'<div class="content wrap"><section id="evidence"><h2>What the data show</h2><p>{esc(brief["evidence"])}</p></section>'
            f'<section id="decision"><h2>What would you decide?</h2><p>{esc(brief["decision"])}</p><aside class="check"><h3>Pause and explain</h3><p>{esc(brief["prompt"])}</p><details><summary>Compare your reasoning</summary><div><p>{esc(brief["answer"])}</p></div></details></aside></section>'
            f'<section id="reveal"><h2>What the generator knows</h2><details><summary>Reveal the known truth after making your judgment</summary><div><p>{esc(brief["truth"])}</p></div></details><p>The truth belongs to this invented model. A real organization would still need to test the assumptions and collect its own evidence.</p></section>'
-           f'<section id="deeper"><h2>Go further if useful</h2><p>The <a href="{appendix}">technical appendix</a> has the generation rules, worked derivations, charts and all {len(sections)} original teaching stops. The notebook and script reproduce the case.</p></section>'
+           f'<section id="deeper"><h2>Continue at your own depth</h2><p><a class="button" href="{guide}">Read the guided lesson</a></p><p>The guided lesson works through {len(guided)} selected steps, charts and decision checks. The <a href="{appendix}">technical appendix</a> has the generation rules, derivations and all {len(sections)} original teaching stops.</p></section>'
            f'<nav class="lesson-end" aria-label="Lessons">{previous}{nxt}</nav></div></main>')
     (DIST/f'lesson-{number}.html').write_text(shell(f'Lesson {number}: {title}',short),encoding='utf-8',newline='\n')
+    guided_body=(f'<main id="main"><div class="hero wrap"><p class="eyebrow">Lesson {number} · Guided route</p><h1>{esc(title)}: guided case</h1>'
+                 f'<p class="lead">{esc(brief["question"])}</p><p>Work through {len(guided)} selected steps. The <a href="lesson-{number}.html">short case</a> gives the decision first; the <a href="{appendix}#generation">technical appendix</a> holds the complete model and derivations.</p>'
+                 f'<div class="downloads"><a class="button" href="lesson-{number}.html">Short case</a><a class="text-link" href="{appendix}">Technical appendix</a></div></div>'
+                 f'<div class="lesson-layout wrap"><aside class="roadmap"><details open><summary>Guided steps</summary><ol>{guide_toc}</ol></details></aside><article>'
+                 +''.join(guide_blocks)
+                 +f'<section class="appendix-intro" id="guided-reveal"><h2>Compare with the known truth</h2><details><summary>Reveal the generator truth</summary><div><p>{esc(brief["truth"])}</p></div></details><p>This comparison is possible because the case is synthetic. The full generating process is in the <a href="{appendix}#generation">appendix</a>.</p></section>'
+                 +f'<nav class="lesson-end" aria-label="Lessons"><a href="lesson-{number}.html">← Short case</a><a href="{appendix}">Technical appendix →</a></nav></article></div></main>')
+    (DIST/guide).write_text(shell(f'Lesson {number} guided case: {title}',guided_body),encoding='utf-8',newline='\n')
     detailed=(f'<main id="main"><div class="hero wrap"><p class="eyebrow">Lesson {number} · Optional technical appendix</p><h1>{esc(title)}: methods and data</h1>'
-              f'<p class="lead">Keep the business question in view while inspecting how this fictional case was made and analyzed.</p><div class="downloads"><a class="button" href="lesson-{number}.html">Return to short lesson</a>{links}</div></div>'
+              f'<p class="lead">Keep the business question in view while inspecting how this fictional case was made and analyzed.</p><div class="downloads"><a class="button" href="{guide}">Guided lesson</a><a class="text-link" href="lesson-{number}.html">Short case</a>{links}</div></div>'
               f'<div class="lesson-layout wrap"><aside class="roadmap"><details open><summary>Appendix roadmap</summary><ol><li><a href="#generation">Data generation</a></li>{toc}</ol></details></aside><article>'
               f'<section class="appendix-intro" id="generation"><p class="eyebrow">Reproducibility</p><h2>How the fictional data were generated</h2><p>{esc(brief["generator"])}</p><p><strong>Fixed seed:</strong> {esc(result["seed"])}. <a href="assets/lesson{number}-lab.py" download>Read the complete generator and analysis code</a>; <a href="assets/lesson{number}-results.json">inspect the saved results</a>.</p><p><strong>Known truth:</strong> {esc(brief["truth"])}</p><p>These are model assumptions and generated outcomes, not claims about a real population.</p></section>'
               +''.join(blocks)+f'<nav class="lesson-end" aria-label="Lessons"><a href="lesson-{number}.html">← Short lesson</a>{nxt}</nav></article></div></main>')

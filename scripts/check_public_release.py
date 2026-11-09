@@ -2,6 +2,7 @@
 from pathlib import Path
 from html.parser import HTMLParser
 import ast,json,re,sys,subprocess,urllib.parse,math
+from guided_paths import GUIDED
 ROOT=Path(__file__).resolve().parents[1]; SITE=ROOT/'dist'
 class Page(HTMLParser):
  def __init__(self,text):
@@ -26,7 +27,7 @@ def finite(value):
   for x in value:finite(x)
 
 def validate(execute=False):
- pages={p:Page(p.read_text(encoding='utf-8')) for p in SITE.glob('*.html')}; assert len(pages)==25,('Page count',len(pages))
+ pages={p:Page(p.read_text(encoding='utf-8')) for p in SITE.glob('*.html')}; assert len(pages)==35,('Page count',len(pages))
  expected={1:18,2:24,3:24,4:24,5:24,6:24,7:24,8:28,9:28,10:28};report={'pages':{},'labs':{},'executed':execute}
  for path,page in pages.items():
   assert page.h1==1,(path,'H1 count');assert len(page.ids)==len(set(page.ids)),(path,'Duplicate IDs')
@@ -39,11 +40,16 @@ def validate(execute=False):
    assert target.is_file(),(path,'Missing local target',link)
    if u.fragment and target.suffix=='.html':assert urllib.parse.unquote(u.fragment) in Page(target.read_text(encoding='utf-8')).ids,(path,'Missing anchor',link)
   match=re.fullmatch(r'lesson-(\d+)\.html',path.name)
+  guide=re.fullmatch(r'lesson-(\d+)-guide\.html',path.name)
   appendix=re.fullmatch(r'lesson-(\d+)-appendix\.html',path.name)
   if match:
    n=int(match[1]);assert page.stops==0,(path,'Main lesson should be concise',page.stops)
    text=path.read_text(encoding='utf-8')
-   assert 'Fictional case.' in text and 'Reveal the known truth' in text,(path,'Missing case or truth reveal')
+   assert 'Fictional case.' in text and 'Reveal the known truth' in text and f'lesson-{n}-guide.html' in text,(path,'Missing case, truth reveal or guide link')
+  if guide:
+   n=int(guide[1]);assert page.stops==len(GUIDED[n]),(path,'Guided step count',page.stops)
+   text=path.read_text(encoding='utf-8')
+   assert 'Guided route' in text and 'Reveal the generator truth' in text,(path,'Missing guided framing or truth reveal')
   if appendix:
    n=int(appendix[1]);assert page.stops==expected[n],(path,'Appendix stop count',page.stops)
    assert 'How the fictional data were generated' in path.read_text(encoding='utf-8'),(path,'Missing generation appendix')
