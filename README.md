@@ -12,7 +12,9 @@ The current build uses `scripts/retail_case.py` for the data and analyses, `reta
 
 ## One website for reading and teaching
 
-Choose **Present lesson** on a main lesson or technical continuation. The browser constructs presentation frames from that page's existing teaching blocks; there is no separately maintained slide manuscript. The audience content appears on the slide, while **Notes** displays the same explanation that follows it in the reading view. Notes are visible on the same screen, not a private presenter window.
+Choose **Present lesson** on a main lesson or technical continuation. Slides use short teaching points, charts, tables, equations, and worked code. **Notes** supplies full paragraph explanations drawn from the reading content. Notes are visible on the same screen, not a private presenter window.
+
+Each teaching block pairs its audience cues with its explanation. `presentation_content.py` supplies concise cues for the narrative sections; the build embeds them beside the original prose in HTML templates. The browser reads both from the same lesson page, so there is no separate deck to maintain. Reading paragraphs remain available in full, including the detailed reasoning behind answer reveals. New narrative sections should have an explicit outline; prose is not automatically chopped into slide bullets.
 
 Arrow keys, Page Up/Down, Home/End, the slide menu, and Previous/Next navigate the presentation. Escape exits. **Read this section** returns to the matching reading location. **Full screen** requests the browser's full-screen mode. **Print slides** opens a landscape print layout. A URL such as `lesson-1.html?present=1&slide=6` opens a specific slide. Presentation behavior and styling live in `static/presentation.js` and `static/presentation.css`; the build copies them into the public assets.
 

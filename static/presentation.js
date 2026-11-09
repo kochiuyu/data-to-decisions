@@ -12,12 +12,17 @@
   const notes = dialog.querySelector('.slide-notes');
   const notesButton = dialog.querySelector('[data-slide-notes]');
   const frames = [];
-  const wordCount = node => node.textContent.trim().split(/\s+/).filter(Boolean).length;
   const clean = node => {
     const copy = node.cloneNode(true);
     copy.removeAttribute('id');
     copy.querySelectorAll('[id]').forEach(x => x.removeAttribute('id'));
-    copy.querySelectorAll('details').forEach(x => x.open = false);
+    const disclosures=[...(copy.matches('details')?[copy]:[]),...copy.querySelectorAll('details')];
+    disclosures.forEach(detail=>{
+      detail.open=false;
+      const answer=detail.querySelector(':scope > template[data-slide-answer]');
+      if(answer)detail.replaceChildren(detail.querySelector('summary'),...answer.content.cloneNode(true).children);
+    });
+    copy.querySelectorAll('template').forEach(x=>x.remove());
     return copy;
   };
   function chunks(node) {
@@ -36,36 +41,52 @@
       for(let i=0;i<lines.length;i+=10) {const p=document.createElement('pre');const code=document.createElement('code');code.textContent=lines.slice(i,i+10).join('\n');p.append(code);result.push(p);}
       return result;
     }
-    if (node.matches('p') && wordCount(node)>95 && !node.querySelector('a,code,strong')) {
-      const sentences=node.textContent.split(/(?<=[.!?])\s+(?=[A-Z“‘])/u);
-      const parts=[];let text='';
-      for(const sentence of sentences){if(text && (text+' '+sentence).trim().split(/\s+/).length>90){const p=document.createElement('p');p.textContent=text.trim();parts.push(p);text='';}text+=' '+sentence;}
-      if(text.trim()){const p=document.createElement('p');p.textContent=text.trim();parts.push(p);}return parts;
-    }
     return [clean(node)];
   }
+  const linkOnly=node=>node.matches('p')&&node.children.length===1&&node.firstElementChild.matches('a');
+  function prose(container){
+    return [...container.children].flatMap(node=>{
+      if(node.matches('p:not(.calculation)')&&!linkOnly(node))return [node.outerHTML];
+      if(node.matches('.memo'))return [prose(node)];
+      return [];
+    }).join('');
+  }
+  function answerNotes(detail){
+    const copy=detail.cloneNode(true);copy.querySelectorAll('template,summary').forEach(node=>node.remove());
+    return copy.querySelector('p')?copy.innerHTML:'';
+  }
   function addBlocks(nodes,heading,source,explanation='') {
-    let group=[],words=0;
-    const flush=()=>{if(group.length){frames.push({title:heading,source,nodes:group,notes:explanation});group=[];words=0;}};
-    for(const node of nodes){
-      if(node.matches('h2,h3,.downloads,.text-link,nav') || (node.matches('p') && node.children.length===1 && node.firstElementChild.matches('a'))) continue;
-      if(node.matches('.teaching-block')){flush();addBlocks([...node.querySelector('.teaching-visual').children],node.dataset.presentationTitle,source,node.querySelector('.teaching-explanation')?.innerHTML || '');continue;}
+    for(let i=0;i<nodes.length;i++){
+      const node=nodes[i];
+      if(node.matches('h2,h3,template,.memo,.downloads,.text-link,nav,p:not(.calculation)')||linkOnly(node))continue;
+      if(node.matches('.teaching-block')){addBlocks([...node.querySelector('.teaching-visual').children],node.dataset.presentationTitle,source,node.querySelector('.teaching-explanation')?.innerHTML || explanation);continue;}
+      if(node.matches('.check')){addContainer(node,node.querySelector('h3')?.textContent||heading,source);continue;}
+      if(node.matches('ul,ol')&&nodes[i+1]?.matches('details')){
+        const detail=nodes[++i];frames.push({title:heading,source,nodes:[clean(node),clean(detail)],notes:explanation+answerNotes(detail)});continue;
+      }
       for(const part of chunks(node)){
-        const visual=part.matches('figure,.table-scroll,pre,details,aside,ul,ol,.calculation');
-        const count=wordCount(part);
-        if(visual){flush();frames.push({title:heading,source,nodes:[part],notes:explanation});}
-        else{if(words+count>90)flush();group.push(part);words+=count;}
+        frames.push({title:heading,source,nodes:[part],notes:explanation+(node.matches('details')?answerNotes(node):'')});
       }
     }
-    flush();
+  }
+  function addContainer(container,heading,source){
+    const template=container.querySelector(':scope > template[data-slide-outline]');
+    const explanation=prose(container);
+    const detail=container.matches('.check')?container.querySelector(':scope > details'):null;
+    if(template){
+      const nodes=[...template.content.children].map(clean);
+      if(detail)nodes.push(clean(detail));
+      frames.push({title:heading,source,nodes,notes:explanation+(detail?answerNotes(detail):'')});
+    }
+    addBlocks([...container.children].filter(node=>node!==detail),heading,source,explanation);
   }
   const hero=document.querySelector('main .hero');
   const h1=hero.querySelector('h1');
-  const intro=[...hero.querySelectorAll(':scope > .lead,:scope > .stage-note')];
-  frames.push({title:h1.textContent,source:'main',nodes:intro.map(clean),notes:''});
+  const intro=hero.querySelector(':scope > template[data-slide-outline]');
+  frames.push({title:h1.textContent,source:'main',nodes:[...intro.content.children].map(clean),notes:prose(hero)});
   const brief=document.querySelector('.brief');
-  if(brief)addBlocks([...brief.children],'The decision brief','decision-brief');
-  document.querySelectorAll('[data-present-source]').forEach(section=>addBlocks([...section.children],section.querySelector('h2').textContent,section.id));
+  if(brief)addContainer(brief,'The decision brief','decision-brief');
+  document.querySelectorAll('[data-present-source]').forEach(section=>addContainer(section,section.querySelector('h2').textContent,section.id));
   frames.forEach((frame,i)=>{const option=document.createElement('option');option.value=String(i);option.textContent=`${i+1}. ${frame.title}`;chooser.append(option);});
   let index=0;let showNotes=false;let closing=false;let ownsFullscreen=false;
   function fit(){
@@ -86,11 +107,11 @@
   function address(){const u=new URL(location.href);u.searchParams.set('present','1');u.searchParams.set('slide',String(index+1));history.replaceState(null,'',u);}
   function render(next){
     index=Math.max(0,Math.min(frames.length-1,next));const frame=frames[index];title.textContent=frame.title;body.replaceChildren(...frame.nodes.map(clean));
-    body.scrollTop=0;notes.innerHTML=frame.notes || '<p>The explanation is on the slide. Use “Read this section” to return to its place in the lesson.</p>';
+    body.scrollTop=0;notes.innerHTML='<h3>Teaching notes</h3>'+frame.notes;notes.scrollTop=0;
     notes.hidden=!showNotes;notesButton.setAttribute('aria-pressed',String(showNotes));chooser.value=String(index);
     counter.textContent=`${index+1} / ${frames.length}`;stage.dataset.slide=String(index+1);stage.dataset.source=frame.source;
     dialog.querySelector('[data-slide-prev]').disabled=index===0;dialog.querySelector('[data-slide-next]').disabled=index===frames.length-1;
-    address();requestAnimationFrame(fit);
+    address();fit();
   }
   function open(){if(!dialog.open)dialog.showModal();document.documentElement.classList.add('presenting');render(index);stage.focus();}
   function close(){
@@ -106,7 +127,7 @@
   chooser.addEventListener('change',()=>render(Number(chooser.value)));
   dialog.querySelector('[data-slide-close]').addEventListener('click',close);
   dialog.querySelector('[data-slide-read]').addEventListener('click',close);
-  notesButton.addEventListener('click',()=>{showNotes=!showNotes;notes.hidden=!showNotes;notesButton.setAttribute('aria-pressed',String(showNotes));requestAnimationFrame(fit);});
+  notesButton.addEventListener('click',()=>{showNotes=!showNotes;notes.hidden=!showNotes;notesButton.setAttribute('aria-pressed',String(showNotes));fit();});
   dialog.querySelector('[data-slide-fullscreen]').addEventListener('click',async()=>{
     try{
       if(ownsFullscreen && document.fullscreenElement===document.documentElement)await document.exitFullscreen();

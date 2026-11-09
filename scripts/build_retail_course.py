@@ -6,6 +6,7 @@ from retail_case import SPEC,world,all_results
 from retail_content import MAP,lesson
 from retail_ui import esc,p,table,formula,shell,EXTRA_CSS,presentation_launch,presentation_dialog
 from curriculum_content import enrich
+from presentation_content import outline,annotate_sections,lesson_points,EXTRA_POINTS,GENERATION_REVEAL
 
 ROOT=Path(__file__).resolve().parents[1];DIST=ROOT/'dist';ASSETS=DIST/'assets'
 def write(name,text):
@@ -18,6 +19,7 @@ def navigation(n):
     return '<nav class="lesson-end" aria-label="Lessons">'+before+after+'</nav>'
 def publish_lesson(n,result):
     c=enrich(n,lesson(n,result),result); sections=c['sections']
+    main_points,appendix_points=lesson_points(n,result)
     roadmap=''.join(f'<li><a href="#{s["id"]}">{esc(s["title"])}</a></li>' for s in sections)
     body=f'<main id="main"><div class="hero wrap"><p class="eyebrow">Lesson {n} · {esc(MAP[n-1][2])}</p><h1>{esc(c["title"])}</h1><p class="lead">{esc(c["inherited"])}</p><p class="stage-note">{esc(c["stage"])}</p><p><strong>Method in this decision:</strong> {esc(c["method"])}</p><div class="brief" id="decision-brief"><h2>The decision brief</h2>{p(c["brief"])}</div></div>'
     body=body.replace('<div class="brief"',presentation_launch()+'<div class="brief"',1)
@@ -27,6 +29,12 @@ def publish_lesson(n,result):
     body+=f'<section class="lesson-step" id="memo"><h2>Update the decision memo</h2><div class="memo">{p(c["memo"])}</div><aside class="check"><h3>Make the call</h3>{p(c["question"])}<details><summary>Compare your reasoning</summary><div>{p(c["answer"])}</div></details></aside></section>'
     body+=f'<section class="lesson-step" id="big-picture"><h2>The bigger picture</h2>{p(c["bigger"])}<details><summary>After your decision: open the known answer</summary><div>{p(c["truth"])}</div></details><p><a href="lesson-{n}-appendix.html">Continue the same analysis in the technical appendix →</a></p>{downloads(n)}</section>{navigation(n)}</article></div></main>'
     body=body.replace('class="lesson-step" id="memo"','class="lesson-step" data-present-source id="memo"').replace('class="lesson-step" id="big-picture"','class="lesson-step" data-present-source id="big-picture"')
+    body=annotate_sections(body,main_points)
+    body=body.replace('<p class="lead">',outline([c['stage'],'Method: '+c['method']])+'<p class="lead">',1)
+    body=body.replace('<h2>The decision brief</h2>','<h2>The decision brief</h2>'+outline(main_points['brief']))
+    body=body.replace('<h3>Make the call</h3>','<h3>Make the call</h3>'+outline(main_points['question']))
+    body=body.replace('<summary>Compare your reasoning</summary>','<summary>Compare your reasoning</summary>'+outline(main_points['answer'],'answer'))
+    body=body.replace('<summary>After your decision: open the known answer</summary>','<summary>After your decision: open the known answer</summary>'+outline(main_points['truth'],'answer'))
     page=shell(c['title'],body+presentation_dialog(),f'lesson-{n}.html');write(f'lesson-{n}.html',page);write(f'lesson-{n}-guide.html',page)
     technical=c['technical']
     app=f'<main id="main"><div class="hero wrap"><p class="eyebrow">Lesson {n} · Technical continuation</p><h1>{esc(c["title"])}</h1><p class="lead">The same stores, calculation, and decision—with the specification and reproducible steps visible.</p><p class="stage-note">{esc(c["stage"])}</p><p><a href="lesson-{n}.html#calculate">← Return to the worked analysis</a></p></div><div class="content wrap">'
@@ -40,6 +48,9 @@ def publish_lesson(n,result):
     app=app.replace('<section data-present-source id="generation">',c.get('appendix_extra','')+'<section data-present-source id="generation">')
     app=app.replace('<section id=','<section data-present-source id=')
     app=app.replace('</div></main>',c.get('coverage','')+'</div></main>')
+    app=annotate_sections(app,{**appendix_points,**EXTRA_POINTS})
+    app=app.replace('<p class="lead">',outline([c['stage'],'Reproduce the model, calculation, and decision'])+'<p class="lead">',1)
+    app=app.replace('<summary>Inspect the numerical mechanism</summary>','<summary>Inspect the numerical mechanism</summary>'+outline(GENERATION_REVEAL,'answer'))
     write(f'lesson-{n}-appendix.html',shell(c['title']+' — technical continuation',app+presentation_dialog()))
     source=(ROOT/'scripts/retail_case.py').read_text(encoding='utf-8')
     tail=c['code']+f'\nprint(json.dumps(lesson_result({n}), indent=2, allow_nan=False))\n'
