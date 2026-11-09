@@ -2,7 +2,7 @@
 from pathlib import Path
 import html, json, subprocess, sys
 from business_cases import case
-from business_route_expansion import EXPANSION
+from business_route_expansion import EXPANSION, BIGGER_PICTURE
 from guided_paths import story
 ROOT=Path(__file__).resolve().parents[1]
 DIST=ROOT/'dist'
@@ -75,6 +75,7 @@ def render_lesson(number,title,intro,sections,*,outcomes=None):
            f'<section id="decision"><h2>What would you decide?</h2><p>{esc(brief["decision"])}</p><p>{esc(business["action"])}</p><aside class="check"><h3>Pause and explain</h3><p>{esc(brief["prompt"])}</p><details><summary>Compare your reasoning</summary><div><p>{esc(brief["answer"])}</p></div></details></aside></section>'
            f'<section id="reveal"><h2>Check your judgment</h2><details><summary>Reveal the case’s known answer</summary><div><p>{esc(brief["truth"])}</p></div></details></section>'
            f'<section id="deeper"><h2>Continue at your own depth</h2><p><a class="button" href="{guide}">Read the guided lesson</a></p><p>Follow the full story of this decision in the guided lesson. The <a href="{appendix}">technical appendix</a> has the generation rules, derivations and all {len(sections)} original teaching stops.</p></section>'
+           f'<section id="big-picture"><h2>The bigger picture</h2><p>{esc(BIGGER_PICTURE[number])}</p></section>'
            f'<nav class="lesson-end" aria-label="Lessons">{previous}{nxt}</nav></div></main>')
     (DIST/f'lesson-{number}.html').write_text(shell(f'Lesson {number}: {title}',short),encoding='utf-8',newline='\n')
     guided_body=(f'<main id="main"><div class="hero wrap"><p class="eyebrow">Lesson {number} · Guided route</p><h1>{esc(title)}: guided case</h1>'
@@ -83,6 +84,7 @@ def render_lesson(number,title,intro,sections,*,outcomes=None):
                  f'<div class="lesson-layout wrap"><aside class="roadmap"><details open><summary>Story chapters</summary><ol>{guide_toc}</ol></details></aside><article>'
                  +''.join(guide_blocks)
                  +f'<section class="appendix-intro" id="guided-reveal"><h2>Check your judgment</h2><details><summary>Reveal the case’s known answer</summary><div><p>{esc(brief["truth"])}</p></div></details></section>'
+                 +f'<section class="appendix-intro" id="big-picture"><h2>The bigger picture</h2><p>{esc(BIGGER_PICTURE[number])}</p></section>'
                  +f'<nav class="lesson-end" aria-label="Lessons"><a href="lesson-{number}.html">← Business case</a><a href="{appendix}">Technical appendix →</a></nav></article></div></main>')
     (DIST/guide).write_text(shell(f'Lesson {number} guided case: {title}',guided_body),encoding='utf-8',newline='\n')
     detailed=(f'<main id="main"><div class="hero wrap"><p class="eyebrow">Lesson {number} · Optional technical appendix</p><h1>{esc(title)}: methods and data</h1>'

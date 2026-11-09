@@ -47,6 +47,7 @@ def validate(execute=False):
    text=path.read_text(encoding='utf-8')
    assert 'Reveal the case’s known answer' in text and f'lesson-{n}-guide.html' in text,(path,'Missing case answer or guide link')
    assert all(f'<section id="{section}">' in text for section in ('situation','evidence','decision')),(path,'Missing business narrative section')
+   assert text.index('id="big-picture"')>text.index('id="decision"'),(path,'Bigger picture should close the business story')
    main=text.split('<main id="main">',1)[1].split('</main>',1)[0]
    assert len(re.findall(r"[A-Za-z0-9]+",re.sub(r'<[^>]+>',' ',main)))>=350,(path,'Business case is too brief')
   if guide:
@@ -54,6 +55,7 @@ def validate(execute=False):
    assert page.stops==len(story(n,data)['chapters'])==3,(path,'Guided chapter count',page.stops)
    text=path.read_text(encoding='utf-8')
    assert 'Guided route' in text and 'Decision check' in text and 'Reveal the case’s known answer' in text,(path,'Missing guided framing, decision or case answer')
+   assert text.index('id="big-picture"')>text.index('id="guided-reveal"'),(path,'Bigger picture should close the guided story')
   if appendix:
    n=int(appendix[1]);assert page.stops==expected[n],(path,'Appendix stop count',page.stops)
    assert 'How the fictional data were generated' in path.read_text(encoding='utf-8'),(path,'Missing generation appendix')
