@@ -1,0 +1,13 @@
+store_id,week,exposure,stockout_days,reason
+S098,4,140,16,Missing count
+S074,8,140,28,Missing count
+S061,6,140,15,Missing count
+S106,3,140,10,Missing count
+S002,6,140,12,Missing count
+S009,1,140,22,Missing count
+S050,2,140,13,Missing count
+S103,2,140,18,Missing count
+S065,6,140,19,Negative count
+S049,3,140,11,Negative count
+S034,5,140,11,Negative count
+S071,8,140,12,Negative count

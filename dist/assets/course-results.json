@@ -1,0 +1,1034 @@
+{
+  "1": {
+    "raw": 1212,
+    "deduplicated": 1200,
+    "duplicates": 12,
+    "flagged": 12,
+    "clean": 1200,
+    "sample": [
+      {
+        "store_id": "S001",
+        "week": 1,
+        "exposure": 140,
+        "stockout_days": 18.0
+      },
+      {
+        "store_id": "S001",
+        "week": 2,
+        "exposure": 140,
+        "stockout_days": 9.0
+      },
+      {
+        "store_id": "S001",
+        "week": 3,
+        "exposure": 140,
+        "stockout_days": 16.0
+      },
+      {
+        "store_id": "S001",
+        "week": 4,
+        "exposure": 140,
+        "stockout_days": 15.0
+      },
+      {
+        "store_id": "S001",
+        "week": 5,
+        "exposure": 140,
+        "stockout_days": 12.0
+      }
+    ],
+    "repairs": [
+      {
+        "store_id": "S098",
+        "week": 4,
+        "exposure": 140,
+        "stockout_days": 16,
+        "reason": "Missing count"
+      },
+      {
+        "store_id": "S074",
+        "week": 8,
+        "exposure": 140,
+        "stockout_days": 28,
+        "reason": "Missing count"
+      },
+      {
+        "store_id": "S061",
+        "week": 6,
+        "exposure": 140,
+        "stockout_days": 15,
+        "reason": "Missing count"
+      },
+      {
+        "store_id": "S106",
+        "week": 3,
+        "exposure": 140,
+        "stockout_days": 10,
+        "reason": "Missing count"
+      },
+      {
+        "store_id": "S002",
+        "week": 6,
+        "exposure": 140,
+        "stockout_days": 12,
+        "reason": "Missing count"
+      }
+    ],
+    "total_stockouts": 21407,
+    "total_exposure": 168000,
+    "rate": 12.742261904761905,
+    "worked": {
+      "store": "S001",
+      "week": 1,
+      "count": 18,
+      "exposure": 140,
+      "rate": 12.857142857142858
+    },
+    "lesson": 1,
+    "seed": 20261109,
+    "case": "Retail stockouts and replenishment alerts",
+    "data_fingerprint": "1f5a8196ed6c33123ff12d11f66dd760672947aa1dae56d2990e5c8b54941d69"
+  },
+  "2": {
+    "n": 150,
+    "mean": 12.742261904761905,
+    "median": 12.633928571428571,
+    "q1": 11.071428571428571,
+    "q3": 14.553571428571429,
+    "groups": [
+      {
+        "group": "Long lead (4–5 days)",
+        "n": 79,
+        "mean": 14.165913200723327,
+        "median": 14.196428571428571,
+        "above": 78,
+        "share": 0.9873417721518988
+      },
+      {
+        "group": "Short lead (2–3 days)",
+        "n": 71,
+        "mean": 11.158199195171028,
+        "median": 11.160714285714286,
+        "above": 52,
+        "share": 0.7323943661971831
+      }
+    ],
+    "top": [
+      {
+        "store_id": "S023",
+        "lead_days": 5,
+        "urban": 0,
+        "baseline_rate": 18.303571428571
+      },
+      {
+        "store_id": "S118",
+        "lead_days": 5,
+        "urban": 1,
+        "baseline_rate": 17.767857142857
+      },
+      {
+        "store_id": "S053",
+        "lead_days": 5,
+        "urban": 1,
+        "baseline_rate": 17.5
+      },
+      {
+        "store_id": "S084",
+        "lead_days": 5,
+        "urban": 1,
+        "baseline_rate": 17.410714285714
+      },
+      {
+        "store_id": "S120",
+        "lead_days": 5,
+        "urban": 1,
+        "baseline_rate": 17.321428571429
+      }
+    ],
+    "weekly": [
+      {
+        "week": 1,
+        "stockout_rate": 12.37619047619
+      },
+      {
+        "week": 2,
+        "stockout_rate": 12.447619047619
+      },
+      {
+        "week": 3,
+        "stockout_rate": 12.980952380952
+      },
+      {
+        "week": 4,
+        "stockout_rate": 12.942857142857
+      },
+      {
+        "week": 5,
+        "stockout_rate": 12.92380952381
+      },
+      {
+        "week": 6,
+        "stockout_rate": 12.77619047619
+      },
+      {
+        "week": 7,
+        "stockout_rate": 12.733333333333
+      },
+      {
+        "week": 8,
+        "stockout_rate": 12.757142857143
+      }
+    ],
+    "lesson": 2,
+    "seed": 20261109,
+    "case": "Retail stockouts and replenishment alerts",
+    "data_fingerprint": "1f5a8196ed6c33123ff12d11f66dd760672947aa1dae56d2990e5c8b54941d69"
+  },
+  "3": {
+    "n": 30,
+    "mean": 11.500000000000002,
+    "sd": 3.4401999025431835,
+    "se": 0.6280916963166585,
+    "critical": 2.045229642132704,
+    "low": 10.215408244715759,
+    "high": 12.784591755284245,
+    "target": 10,
+    "exposure": 140,
+    "sample": [
+      {
+        "store_id": "S030",
+        "stockout_days": 21,
+        "exposure": 140,
+        "stockout_rate": 15.0
+      },
+      {
+        "store_id": "S149",
+        "stockout_days": 14,
+        "exposure": 140,
+        "stockout_rate": 10.0
+      },
+      {
+        "store_id": "S079",
+        "stockout_days": 26,
+        "exposure": 140,
+        "stockout_rate": 18.571428571429
+      },
+      {
+        "store_id": "S004",
+        "stockout_days": 9,
+        "exposure": 140,
+        "stockout_rate": 6.428571428571
+      },
+      {
+        "store_id": "S122",
+        "stockout_days": 17,
+        "exposure": 140,
+        "stockout_rate": 12.142857142857
+      },
+      {
+        "store_id": "S108",
+        "stockout_days": 17,
+        "exposure": 140,
+        "stockout_rate": 12.142857142857
+      }
+    ],
+    "truth": 11.432504497346388,
+    "lesson": 3,
+    "seed": 20261109,
+    "case": "Retail stockouts and replenishment alerts",
+    "data_fingerprint": "1f5a8196ed6c33123ff12d11f66dd760672947aa1dae56d2990e5c8b54941d69"
+  },
+  "4": {
+    "n": 150,
+    "intercept": 6.958029984863676,
+    "slope": 1.618721619374505,
+    "rmse": 1.604971882997934,
+    "sample": [
+      {
+        "store_id": "S001",
+        "lead_days": 4,
+        "baseline_rate": 9.196428571429,
+        "prediction": 13.432916462362,
+        "residual": -4.236487890933
+      },
+      {
+        "store_id": "S002",
+        "lead_days": 3,
+        "baseline_rate": 9.017857142857,
+        "prediction": 11.814194842987,
+        "residual": -2.79633770013
+      },
+      {
+        "store_id": "S003",
+        "lead_days": 3,
+        "baseline_rate": 14.196428571429,
+        "prediction": 11.814194842987,
+        "residual": 2.382233728441
+      },
+      {
+        "store_id": "S004",
+        "lead_days": 5,
+        "baseline_rate": 14.642857142857,
+        "prediction": 15.051638081736,
+        "residual": -0.408780938879
+      },
+      {
+        "store_id": "S005",
+        "lead_days": 4,
+        "baseline_rate": 14.017857142857,
+        "prediction": 13.432916462362,
+        "residual": 0.584940680495
+      }
+    ],
+    "group_means": [
+      {
+        "lead_days": 2,
+        "baseline_rate": 10.231584821429
+      },
+      {
+        "lead_days": 3,
+        "baseline_rate": 11.918498168498
+      },
+      {
+        "lead_days": 4,
+        "baseline_rate": 13.142857142857
+      },
+      {
+        "lead_days": 5,
+        "baseline_rate": 15.215201465201
+      }
+    ],
+    "predictions": [
+      {
+        "lead": 2,
+        "rate": 10.195473223612685
+      },
+      {
+        "lead": 3,
+        "rate": 11.814194842987192
+      },
+      {
+        "lead": 4,
+        "rate": 13.432916462361696
+      },
+      {
+        "lead": 5,
+        "rate": 15.0516380817362
+      }
+    ],
+    "lesson": 4,
+    "seed": 20261109,
+    "case": "Retail stockouts and replenishment alerts",
+    "data_fingerprint": "1f5a8196ed6c33123ff12d11f66dd760672947aa1dae56d2990e5c8b54941d69"
+  },
+  "5": {
+    "n": 150,
+    "coefficients": {
+      "Intercept": 5.336510025463303,
+      "Lead days": 1.53089239224744,
+      "Urban": 0.9969536529269493,
+      "Demand above 100": 0.05877418145350277,
+      "Promotion share": 2.9437621024450253,
+      "Lead × urban": 0.22833509751825537
+    },
+    "profiles": [
+      {
+        "urban": 0,
+        "lead": 2,
+        "demand": 100,
+        "promotion_share": 0.25,
+        "predicted": 9.134235335569441
+      },
+      {
+        "urban": 0,
+        "lead": 4,
+        "demand": 100,
+        "promotion_share": 0.25,
+        "predicted": 12.19602012006432
+      },
+      {
+        "urban": 0,
+        "lead": 5,
+        "demand": 100,
+        "promotion_share": 0.25,
+        "predicted": 13.72691251231176
+      },
+      {
+        "urban": 1,
+        "lead": 2,
+        "demand": 100,
+        "promotion_share": 0.25,
+        "predicted": 10.5878591835329
+      },
+      {
+        "urban": 1,
+        "lead": 4,
+        "demand": 100,
+        "promotion_share": 0.25,
+        "predicted": 14.10631416306429
+      },
+      {
+        "urban": 1,
+        "lead": 5,
+        "demand": 100,
+        "promotion_share": 0.25,
+        "predicted": 15.865541652829986
+      }
+    ],
+    "short_slope": 1.618721619374505,
+    "rural_slope": 1.53089239224744,
+    "urban_slope": 1.7592274897656954,
+    "rmse": 1.002350248204431,
+    "lesson": 5,
+    "seed": 20261109,
+    "case": "Retail stockouts and replenishment alerts",
+    "data_fingerprint": "1f5a8196ed6c33123ff12d11f66dd760672947aa1dae56d2990e5c8b54941d69"
+  },
+  "6": {
+    "features": [
+      "lag_rate",
+      "lead_days",
+      "urban",
+      "demand_forecast",
+      "promotion_plan"
+    ],
+    "train_n": 1200,
+    "validation_n": 450,
+    "test_n": 450,
+    "scores": [
+      {
+        "model": "Linear regression",
+        "rmse": 2.782359868156325
+      },
+      {
+        "model": "Small tree",
+        "rmse": 3.046326521668562
+      }
+    ],
+    "selected": "Linear regression",
+    "baseline": 12.57012987012987,
+    "baseline_rmse": 3.8795949656994444,
+    "rmse": 2.962798506063306,
+    "mae": 2.3646829333905326,
+    "sample": [
+      {
+        "store_id": "S001",
+        "week": 14,
+        "stockout_rate": 12.857142857143,
+        "prediction": 13.031711726306,
+        "error": -0.174568869164,
+        "squared_error": 0.030474290081
+      },
+      {
+        "store_id": "S001",
+        "week": 15,
+        "stockout_rate": 12.142857142857,
+        "prediction": 10.64997770569,
+        "error": 1.492879437167,
+        "squared_error": 2.228689013917
+      },
+      {
+        "store_id": "S001",
+        "week": 16,
+        "stockout_rate": 12.142857142857,
+        "prediction": 10.64830430337,
+        "error": 1.494552839487,
+        "squared_error": 2.23368819002
+      },
+      {
+        "store_id": "S002",
+        "week": 14,
+        "stockout_rate": 6.428571428571,
+        "prediction": 11.702785868732,
+        "error": -5.274214440161,
+        "squared_error": 27.817337960799
+      },
+      {
+        "store_id": "S002",
+        "week": 15,
+        "stockout_rate": 5.714285714286,
+        "prediction": 8.936733401551,
+        "error": -3.222447687265,
+        "squared_error": 10.384169097159
+      }
+    ],
+    "watchlist": [
+      {
+        "store_id": "S118",
+        "week": 16,
+        "stockout_rate": 14.285714285714,
+        "prediction": 17.993141063258,
+        "error": -3.707426777544,
+        "squared_error": 13.74501331085
+      },
+      {
+        "store_id": "S131",
+        "week": 16,
+        "stockout_rate": 16.428571428571,
+        "prediction": 17.829306689319,
+        "error": -1.400735260747,
+        "squared_error": 1.962059270701
+      },
+      {
+        "store_id": "S038",
+        "week": 16,
+        "stockout_rate": 18.571428571429,
+        "prediction": 17.575285155935,
+        "error": 0.996143415494,
+        "squared_error": 0.992301704232
+      },
+      {
+        "store_id": "S010",
+        "week": 16,
+        "stockout_rate": 15.0,
+        "prediction": 17.53271532152,
+        "error": -2.53271532152,
+        "squared_error": 6.414646899863
+      },
+      {
+        "store_id": "S039",
+        "week": 16,
+        "stockout_rate": 26.428571428571,
+        "prediction": 17.3893916606,
+        "error": 9.039179767971,
+        "squared_error": 81.706770877702
+      }
+    ],
+    "windows": {
+      "training": [
+        3,
+        10
+      ],
+      "validation": [
+        11,
+        13
+      ],
+      "test": [
+        14,
+        16
+      ]
+    },
+    "lesson": 6,
+    "seed": 20261109,
+    "case": "Retail stockouts and replenishment alerts",
+    "data_fingerprint": "1f5a8196ed6c33123ff12d11f66dd760672947aa1dae56d2990e5c8b54941d69"
+  },
+  "7": {
+    "n": 50,
+    "offered": 25,
+    "control": 25,
+    "offered_mean": 8.45,
+    "control_mean": 11.935714285714287,
+    "effect": {
+      "value": 3.4857142857142875,
+      "se": 0.5622070287690104,
+      "df": 47.79298088319241,
+      "low": 2.355194785230677,
+      "high": 4.616233786197898,
+      "n_a": 25,
+      "n_b": 25
+    },
+    "savings": {
+      "value": 9.280000000000001,
+      "se": 4.7225390416596875,
+      "df": 47.79298088319241,
+      "low": -0.21636380406232725,
+      "high": 18.776363804062328,
+      "n_a": 25,
+      "n_b": 25
+    },
+    "cost_threshold": 2.380952380952381,
+    "truth": 3.8079999999999994,
+    "sample": [
+      {
+        "store_id": "S001",
+        "offer": 0,
+        "baseline_rate": 9.196428571429,
+        "rate": 10.803571428571,
+        "cost": 90.75
+      },
+      {
+        "store_id": "S002",
+        "offer": 0,
+        "baseline_rate": 9.017857142857,
+        "rate": 8.035714285714,
+        "cost": 67.5
+      },
+      {
+        "store_id": "S003",
+        "offer": 0,
+        "baseline_rate": 14.196428571429,
+        "rate": 10.982142857143,
+        "cost": 92.25
+      },
+      {
+        "store_id": "S004",
+        "offer": 0,
+        "baseline_rate": 14.642857142857,
+        "rate": 13.75,
+        "cost": 115.5
+      },
+      {
+        "store_id": "S005",
+        "offer": 1,
+        "baseline_rate": 14.017857142857,
+        "rate": 9.553571428571,
+        "cost": 100.25
+      },
+      {
+        "store_id": "S006",
+        "offer": 0,
+        "baseline_rate": 15.535714285714,
+        "rate": 12.589285714286,
+        "cost": 105.75
+      }
+    ],
+    "groups": [
+      {
+        "group": "Usual operations",
+        "n": 25,
+        "rate": 11.935714285714287,
+        "cost": 100.26
+      },
+      {
+        "group": "Alert offer",
+        "n": 25,
+        "rate": 8.45,
+        "cost": 90.98
+      }
+    ],
+    "lesson": 7,
+    "seed": 20261109,
+    "case": "Retail stockouts and replenishment alerts",
+    "data_fingerprint": "1f5a8196ed6c33123ff12d11f66dd760672947aa1dae56d2990e5c8b54941d69"
+  },
+  "8": {
+    "n": 50,
+    "raw_reduction": 2.063873626373626,
+    "strata": [
+      {
+        "group": "Long lead (4–5 days)",
+        "n": 18,
+        "offered": 12,
+        "control": 6,
+        "usual": 12.574404761904765,
+        "alerts": 9.263392857142858,
+        "reduction": 3.311011904761907,
+        "weight": 0.36,
+        "contribution": 1.1919642857142865
+      },
+      {
+        "group": "Short lead (2–3 days)",
+        "n": 32,
+        "offered": 14,
+        "control": 18,
+        "usual": 9.856150793650794,
+        "alerts": 7.793367346938775,
+        "reduction": 2.062783446712019,
+        "weight": 0.64,
+        "contribution": 1.3201814058956922
+      }
+    ],
+    "standardized": 2.5121456916099785,
+    "balance": [
+      {
+        "variable": "lead_days",
+        "adopters": 3.5384615384615383,
+        "comparison": 2.7083333333333335
+      },
+      {
+        "variable": "urban",
+        "adopters": 0.5384615384615384,
+        "comparison": 0.5833333333333334
+      },
+      {
+        "variable": "baseline_rate",
+        "adopters": 12.778159340659341,
+        "comparison": 11.25
+      }
+    ],
+    "lesson": 8,
+    "seed": 20261109,
+    "case": "Retail stockouts and replenishment alerts",
+    "data_fingerprint": "1f5a8196ed6c33123ff12d11f66dd760672947aa1dae56d2990e5c8b54941d69"
+  },
+  "9": {
+    "n": 50,
+    "raw_reduction": 2.063873626373626,
+    "estimate": 3.008635859937046,
+    "se": 0.31489284731396244,
+    "low": 2.3914458792016795,
+    "high": 3.6258258406724124,
+    "att": 3.383562777710751,
+    "matching_att": 2.8983516483516487,
+    "matches": [
+      {
+        "adopter": "S053",
+        "comparison": "S052",
+        "adopter_rate": 10.446428571428571,
+        "comparison_rate": 14.375,
+        "reduction": 3.928571428571429
+      },
+      {
+        "adopter": "S054",
+        "comparison": "S051",
+        "adopter_rate": 8.303571428571429,
+        "comparison_rate": 12.678571428571429,
+        "reduction": 4.375
+      },
+      {
+        "adopter": "S056",
+        "comparison": "S064",
+        "adopter_rate": 6.964285714285714,
+        "comparison_rate": 7.589285714285714,
+        "reduction": 0.625
+      },
+      {
+        "adopter": "S062",
+        "comparison": "S071",
+        "adopter_rate": 8.035714285714286,
+        "comparison_rate": 10.714285714285714,
+        "reduction": 2.678571428571427
+      },
+      {
+        "adopter": "S063",
+        "comparison": "S064",
+        "adopter_rate": 5.714285714285714,
+        "comparison_rate": 7.589285714285714,
+        "reduction": 1.875
+      }
+    ],
+    "sample": [
+      {
+        "store_id": "S051",
+        "lead_days": 3,
+        "urban": 1,
+        "baseline_rate": 11.517857142857,
+        "offer": 0,
+        "usual_prediction": 11.658069835857,
+        "alert_prediction": 8.653834550559,
+        "reduction": 3.004235285298
+      },
+      {
+        "store_id": "S052",
+        "lead_days": 4,
+        "urban": 1,
+        "baseline_rate": 13.839285714286,
+        "offer": 0,
+        "usual_prediction": 13.482340442359,
+        "alert_prediction": 9.521252563861,
+        "reduction": 3.961087878497
+      },
+      {
+        "store_id": "S053",
+        "lead_days": 5,
+        "urban": 1,
+        "baseline_rate": 17.5,
+        "offer": 1,
+        "usual_prediction": 15.703023619847,
+        "alert_prediction": 10.78508314815,
+        "reduction": 4.917940471697
+      },
+      {
+        "store_id": "S054",
+        "lead_days": 3,
+        "urban": 1,
+        "baseline_rate": 11.785714285714,
+        "offer": 1,
+        "usual_prediction": 11.737352350054,
+        "alert_prediction": 8.733117064756,
+        "reduction": 3.004235285298
+      },
+      {
+        "store_id": "S055",
+        "lead_days": 2,
+        "urban": 1,
+        "baseline_rate": 12.857142857143,
+        "offer": 0,
+        "usual_prediction": 10.917326923384,
+        "alert_prediction": 8.869944231285,
+        "reduction": 2.047382692099
+      }
+    ],
+    "predicted_usual": 11.221952644409491,
+    "predicted_alert": 8.213316784472445,
+    "truth": 3.336,
+    "truth_att": 3.646153846153846,
+    "coefficients": [
+      7.110133019257751,
+      -3.1882097900592794,
+      1.1371554834592341,
+      1.7073664478469628,
+      0.2959880530030463,
+      -0.9568525931994118,
+      -0.2944517918384897
+    ],
+    "coefficient_names": [
+      "Intercept",
+      "Offer",
+      "Lead minus 3.5",
+      "Urban",
+      "Baseline rate",
+      "Offer × centered lead",
+      "Offer × urban"
+    ],
+    "lesson": 9,
+    "seed": 20261109,
+    "case": "Retail stockouts and replenishment alerts",
+    "data_fingerprint": "1f5a8196ed6c33123ff12d11f66dd760672947aa1dae56d2990e5c8b54941d69"
+  },
+  "10": {
+    "n": 50,
+    "adopters": 25,
+    "comparison": 25,
+    "effect": {
+      "value": 4.585714285714285,
+      "se": 0.3317794350730843,
+      "df": 47.10745198869161,
+      "low": 3.9183003410594237,
+      "high": 5.253128230369147,
+      "n_a": 25,
+      "n_b": 25
+    },
+    "savings": {
+      "value": 18.52,
+      "se": 2.7869472546139082,
+      "df": 47.1074519886916,
+      "low": 12.913722864899162,
+      "high": 24.126277135100835,
+      "n_a": 25,
+      "n_b": 25
+    },
+    "adopter_pre": 13.732142857142858,
+    "adopter_post": 10.385714285714284,
+    "comparison_pre": 10.357142857142856,
+    "comparison_post": 11.596428571428573,
+    "adopter_change": -3.346428571428571,
+    "comparison_change": 1.239285714285714,
+    "counterfactual": 14.971428571428572,
+    "truth": 4.4719999999999995,
+    "sample": [
+      {
+        "store_id": "S101",
+        "offer": 1,
+        "pre": 13.035714285714,
+        "pre_cost": 109.5,
+        "post": 10.178571428571,
+        "post_cost": 105.5,
+        "truth_effect": 4.2,
+        "change": -2.857142857143,
+        "cost_change": -4.0
+      },
+      {
+        "store_id": "S102",
+        "offer": 1,
+        "pre": 12.857142857143,
+        "pre_cost": 108.0,
+        "post": 8.392857142857,
+        "post_cost": 90.5,
+        "truth_effect": 4.6,
+        "change": -4.464285714286,
+        "cost_change": -17.5
+      },
+      {
+        "store_id": "S103",
+        "offer": 0,
+        "pre": 14.285714285714,
+        "pre_cost": 120.0,
+        "post": 12.589285714286,
+        "post_cost": 105.75,
+        "truth_effect": 4.6,
+        "change": -1.696428571429,
+        "cost_change": -14.25
+      },
+      {
+        "store_id": "S104",
+        "offer": 0,
+        "pre": 11.160714285714,
+        "pre_cost": 93.75,
+        "post": 12.321428571429,
+        "post_cost": 103.5,
+        "truth_effect": 2.6,
+        "change": 1.160714285714,
+        "cost_change": 9.75
+      },
+      {
+        "store_id": "S105",
+        "offer": 0,
+        "pre": 10.357142857143,
+        "pre_cost": 87.0,
+        "post": 11.160714285714,
+        "post_cost": 93.75,
+        "truth_effect": 3.8,
+        "change": 0.803571428571,
+        "cost_change": 6.75
+      }
+    ],
+    "weekly": [
+      {
+        "week": 1,
+        "usual": 11.485714285714284,
+        "adopters": 14.114285714285714
+      },
+      {
+        "week": 2,
+        "usual": 10.971428571428568,
+        "adopters": 14.885714285714284
+      },
+      {
+        "week": 3,
+        "usual": 11.2,
+        "adopters": 14.942857142857143
+      },
+      {
+        "week": 4,
+        "usual": 11.82857142857143,
+        "adopters": 15.628571428571428
+      },
+      {
+        "week": 5,
+        "usual": 11.342857142857142,
+        "adopters": 15.428571428571429
+      },
+      {
+        "week": 6,
+        "usual": 11.628571428571428,
+        "adopters": 15.028571428571427
+      },
+      {
+        "week": 7,
+        "usual": 11.742857142857142,
+        "adopters": 14.857142857142858
+      },
+      {
+        "week": 8,
+        "usual": 11.285714285714285,
+        "adopters": 15.971428571428572
+      },
+      {
+        "week": 9,
+        "usual": 11.142857142857144,
+        "adopters": 14.371428571428572
+      },
+      {
+        "week": 10,
+        "usual": 10.885714285714286,
+        "adopters": 14.314285714285715
+      },
+      {
+        "week": 11,
+        "usual": 11.514285714285712,
+        "adopters": 13.542857142857144
+      },
+      {
+        "week": 12,
+        "usual": 10.2,
+        "adopters": 14.657142857142855
+      },
+      {
+        "week": 13,
+        "usual": 10.800000000000002,
+        "adopters": 15.085714285714287
+      },
+      {
+        "week": 14,
+        "usual": 10.771428571428574,
+        "adopters": 13.685714285714287
+      },
+      {
+        "week": 15,
+        "usual": 9.942857142857143,
+        "adopters": 15.17142857142857
+      },
+      {
+        "week": 16,
+        "usual": 10.514285714285716,
+        "adopters": 13.257142857142858
+      },
+      {
+        "week": 17,
+        "usual": 10.314285714285715,
+        "adopters": 13.8
+      },
+      {
+        "week": 18,
+        "usual": 10.17142857142857,
+        "adopters": 12.742857142857142
+      },
+      {
+        "week": 19,
+        "usual": 10.285714285714285,
+        "adopters": 13.085714285714287
+      },
+      {
+        "week": 20,
+        "usual": 9.885714285714286,
+        "adopters": 14.257142857142858
+      },
+      {
+        "week": 21,
+        "usual": 10.142857142857142,
+        "adopters": 13.714285714285714
+      },
+      {
+        "week": 22,
+        "usual": 10.685714285714285,
+        "adopters": 13.77142857142857
+      },
+      {
+        "week": 23,
+        "usual": 10.942857142857143,
+        "adopters": 14.457142857142857
+      },
+      {
+        "week": 24,
+        "usual": 10.428571428571429,
+        "adopters": 14.028571428571428
+      },
+      {
+        "week": 25,
+        "usual": 10.714285714285715,
+        "adopters": 10.14285714285714
+      },
+      {
+        "week": 26,
+        "usual": 11.199999999999998,
+        "adopters": 9.428571428571429
+      },
+      {
+        "week": 27,
+        "usual": 12.057142857142857,
+        "adopters": 10.085714285714285
+      },
+      {
+        "week": 28,
+        "usual": 12.342857142857145,
+        "adopters": 11.400000000000002
+      },
+      {
+        "week": 29,
+        "usual": 11.257142857142856,
+        "adopters": 10.685714285714287
+      },
+      {
+        "week": 30,
+        "usual": 11.657142857142858,
+        "adopters": 10.657142857142858
+      },
+      {
+        "week": 31,
+        "usual": 11.714285714285714,
+        "adopters": 9.942857142857143
+      },
+      {
+        "week": 32,
+        "usual": 11.82857142857143,
+        "adopters": 10.742857142857142
+      }
+    ],
+    "lesson": 10,
+    "seed": 20261109,
+    "case": "Retail stockouts and replenishment alerts",
+    "data_fingerprint": "1f5a8196ed6c33123ff12d11f66dd760672947aa1dae56d2990e5c8b54941d69"
+  }
+}

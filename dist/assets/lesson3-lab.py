@@ -1,98 +1,212 @@
-"""Original synthetic inference lab. Seed 43023. No network or input files.
-The fictional Lumen index has IID normal log changes with mean .0003, SD .011.
-A separate waiting-time population is shifted exponential (mean 12, SD 8).
-Paired retail quotes and independent queue samples are invented. Parameters are
-chosen for teaching, never calibrated to historical records. numpy/pandas/scipy.
+"""One reproducible retail world for all ten lessons. No external data required.
+
+Units: 150 stores, 32 weeks, 140 scheduled product-days per store-week.
+The three 50-store cohorts are disjoint. Pilot and voluntary adoption begin
+in week 17; a separate later rollout begins in week 25. Baseline ends in 16.
+All rates are percentages; a difference in rates is in percentage points.
 """
+from functools import lru_cache
+import hashlib
 import json
 import numpy as np
 import pandas as pd
-from scipy import stats
-rng=np.random.default_rng(43023)
-def ci_mean(x,level=.95):
-    x=np.asarray(x);n=len(x);mean=x.mean();sd=x.std(ddof=1);se=sd/np.sqrt(n)
-    q=stats.t.ppf((1+level)/2,n-1)
-    return dict(n=n,mean=float(mean),sd=float(sd),se=float(se),critical=float(q),low=float(mean-q*se),high=float(mean+q*se))
-def wilson(k,n,level=.95):
-    z=stats.norm.ppf((1+level)/2);ph=k/n;den=1+z*z/n
-    center=(ph+z*z/(2*n))/den;half=z*np.sqrt(ph*(1-ph)/n+z*z/(4*n*n))/den
-    return [float(center-half),float(center+half)]
-# 1. A planned session calendar, not every date. Do not fabricate closed-day prices.
-calendar=pd.date_range('2030-01-01',periods=370,freq='D')
-sessions=calendar[calendar.dayofweek<5]
-sessions=sessions.delete([15,82,140])[:250]
-log_change=rng.normal(.0003,.011,len(sessions)-1)
-level=100*np.exp(np.r_[0,np.cumsum(log_change)])
-change=np.diff(level)/level[:-1] # simple session-to-session changes
-loss=change<-.012;n=len(change);k=int(loss.sum());ph=k/n
-# IID benchmark calculations are conditional on the authored DGP; transfer to a
-# real time series would require dependence, missingness and regime diagnostics.
-# 2. Sampling distributions: skewed population, independent draws, fixed seed.
-sample_sizes=[5,20,80];sampling=[]
-for m in sample_sizes:
-    means=(4+rng.exponential(8,size=(4000,m))).mean(axis=1)
-    sampling.append(dict(n=m,mean=float(means.mean()),sd=float(means.std(ddof=1)),theory_se=float(8/np.sqrt(m)),skew=float(stats.skew(means,bias=False))))
-path=4+rng.exponential(8,size=5000);cum=np.cumsum(path)/np.arange(1,len(path)+1)
-path_n=[5,10,20,40,80,160,320,640,1280,2560,5000]
-# Small sample calculation separates normal-known-sigma from t-estimated-sigma.
-small=np.array([7.,9.,10.,12.,17.]);small_ci=ci_mean(small)
-# Repeated interval coverage is measured here for a genuinely normal population.
-coverage_draws=rng.normal(12,8,size=(3000,20));means=coverage_draws.mean(axis=1)
-ses=coverage_draws.std(axis=1,ddof=1)/np.sqrt(20);q=stats.t.ppf(.975,19)
-coverage=float(((means-q*ses<=12)&(means+q*ses>=12)).mean())
-# 3. One skewed sample: same-size bootstrap versus smaller subsets without replacement.
-wait=4+rng.exponential(8,size=80);wait_ci=ci_mean(wait)
-B=4000
-boot=rng.choice(wait,size=(B,len(wait)),replace=True).mean(axis=1)
-sub=np.array([rng.choice(wait,size=20,replace=False).mean() for _ in range(B)])
-# Resampling SDs target different designs. Finite-population adjustment explains
-# much of the subset variability: s*sqrt((1-m/n)/m), with small finite correction.
-boot_ci=np.quantile(boot,[.025,.975])
-# Cluster demonstration: 30 groups x 8 measurements with a shared group shock.
-cluster=30;within=8;shock=rng.normal(0,4,cluster);noise=rng.normal(0,3,(cluster,within))
-cluster_data=20+shock[:,None]+noise
-naive=cluster_data.ravel().std(ddof=1)/np.sqrt(cluster*within)
-cluster_se=cluster_data.mean(axis=1).std(ddof=1)/np.sqrt(cluster)
-# 4. Exact one-sided binomial test and power use the identical fixed rejection rule.
-# H0 p=.10 versus p>.10, n=100, alpha=.05; threshold is selected before data.
-ntest=100;p0=.10;alpha=.05
-critical=next(c for c in range(ntest+1) if stats.binom.sf(c-1,ntest,p0)<=alpha)
-obs=int(rng.binomial(ntest,.18))
-pval=float(stats.binom.sf(obs-1,ntest,p0))
-power_ps=[.10,.12,.15,.18,.20,.25]
-powers=[float(stats.binom.sf(critical-1,ntest,v)) for v in power_ps]
-strict=next(c for c in range(ntest+1) if stats.binom.sf(c-1,ntest,p0)<=.01)
-# 5. Matched retail quotes: same invented product on two channels, at one time.
-# Product base prices create positive pairing correlation. Differences have their
-# own distribution; analyzing all prices as independent discards this information.
-products=40;base=rng.uniform(25,90,products)
-offline=base+rng.normal(0,1.3,products)
-delta=rng.normal(.45,1.55,products);online=offline+delta
-d=online-offline;pair=ci_mean(d);paired_test=stats.ttest_rel(online,offline)
-ci90=ci_mean(d,.90);margin=1.5
-# TOST equivalence: reject both H0 mu<=-margin and H0 mu>=margin at alpha .05.
-tlower=(pair['mean']+margin)/pair['se'];tupper=(pair['mean']-margin)/pair['se']
-tost_p_lower=float(stats.t.sf(tlower,products-1));tost_p_upper=float(stats.t.cdf(tupper,products-1))
-# Independent groups: Welch-Satterthwaite rather than a forced common variance.
-a=rng.normal(12,2,22);b=rng.normal(13.1,3.4,30)
-va=a.var(ddof=1)/len(a);vb=b.var(ddof=1)/len(b);diff=float(a.mean()-b.mean());se=float(np.sqrt(va+vb));df=(va+vb)**2/(va*va/(len(a)-1)+vb*vb/(len(b)-1));wq=stats.t.ppf(.975,df);wt=stats.ttest_ind(a,b,equal_var=False)
-# Multiplicity: these are hypothetical p-values, not concealed external tests.
-raw_p=np.array([.003,.018,.041,.22,.61]);m=len(raw_p);order=np.argsort(raw_p)
-holm_sorted=np.minimum(1,np.maximum.accumulate((m-np.arange(m))*raw_p[order]));holm=np.empty(m);holm[order]=holm_sorted
-# Sampling distribution histogram for the original-sample bootstrap means.
-binedges=np.linspace(float(boot.min()),float(boot.max()),13);bincounts,_=np.histogram(boot,binedges)
-out={'seed':43023,'synthetic':True,'calendar_days':len(calendar),'sessions':len(sessions),'returns_n':n,
- 'session_excerpt':[{'date':str(sessions[i].date()),'index':float(level[i]),'change_pct':None if i==0 else float(change[i-1]*100)} for i in range(8)],
- 'index_path':{'x':list(range(0,len(level),10)),'level':level[::10].tolist()},
- 'risk':{'threshold':-.012,'count':k,'n':n,'proportion':ph,'wilson':wilson(k,n),'quantile_05':float(np.quantile(change,.05)),'sparse_wilson':wilson(1,20)},
- 'sampling':sampling,'lln':{'n':path_n,'means':[float(cum[v-1]) for v in path_n]},
- 'small':small_ci,'coverage':coverage,
- 'wait':wait_ci,'resampling':{'B':B,'bootstrap_se':float(boot.std(ddof=1)),'bootstrap_ci':boot_ci.tolist(),'subset_size':20,'subset_sd':float(sub.std(ddof=1)),'subset_theory':float(wait.std(ddof=1)*np.sqrt((1-20/80)/20)),'edges':binedges.tolist(),'counts':bincounts.tolist()},
- 'cluster':{'n':cluster*within,'clusters':cluster,'naive_se':float(naive),'cluster_se':float(cluster_se),'population_icc':16/25,'design_effect':1+7*16/25},
- 'test':{'n':ntest,'p0':p0,'alpha':alpha,'critical':critical,'actual_alpha':float(stats.binom.sf(critical-1,ntest,p0)),'observed':obs,'pvalue':pval,'reject':pval<=alpha,'strict_critical':strict,'strict_power_018':float(stats.binom.sf(strict-1,ntest,.18)),'alternatives':power_ps,'power':powers},
- 'paired':dict(pair,t=float(paired_test.statistic),p=float(paired_test.pvalue),ci90=[ci90['low'],ci90['high']],margin=margin,tost_p=[tost_p_lower,tost_p_upper],equivalent=max(tost_p_lower,tost_p_upper)<.05,min=float(d.min()),max=float(d.max()),correlation=float(np.corrcoef(online,offline)[0,1]),differences=d.tolist(),points=[] )}
-# Add raw pairs and independent-group summaries for reproducible auditing.
-out['paired']['points']=np.column_stack([offline,online]).tolist()
-out['welch']={'n_a':len(a),'n_b':len(b),'mean_a':float(a.mean()),'mean_b':float(b.mean()),'sd_a':float(a.std(ddof=1)),'sd_b':float(b.std(ddof=1)),'difference':diff,'se':se,'df':float(df),'t':float(wt.statistic),'p':float(wt.pvalue),'ci':[float(diff-wq*se),float(diff+wq*se)]}
-out['multiplicity']={'p':raw_p.tolist(),'holm':holm.tolist(),'bonferroni_cutoff':.05/m,'fwer_20_independent':float(1-.95**20)}
-print(json.dumps(out,allow_nan=False))
+from scipy.stats import t
+from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeRegressor
+
+SEED = 20261109
+SPEC = dict(case='Retail stockouts and replenishment alerts', seed=SEED,
+    stores=150, weeks=32, exposure=140, currency='CU',
+    outcome='stockout product-days / 140 × 100',
+    cost_per_stockout_day=6, weekly_alert_fee=12, weekly_extra_holding_cost=8,
+    cost_definition='6 × stockout product-days + 20 when alerts are offered',
+    cost_status='Management accounting scenario; no claim about recovered sales',
+    decision='Reduce stockouts profitably; decide where to expand alerts',
+    releases=[dict(name='Baseline',weeks='1–16',cohort='All 150 stores'),
+      dict(name='Randomized pilot',weeks='17–24',cohort='S001–S050; 25 random offers'),
+      dict(name='Voluntary adoption',weeks='17–24',cohort='S051–S100; selected by observed starting conditions'),
+      dict(name='Later rollout',weeks='25–32',cohort='S101–S150; 25 selected adopters')])
+
+def records(frame):
+    return json.loads(frame.to_json(orient='records',double_precision=12))
+
+def interval(values):
+    a=np.asarray(values,float); n=len(a); mean=float(a.mean())
+    sd=float(a.std(ddof=1)); se=sd/np.sqrt(n); critical=float(t.ppf(.975,n-1))
+    return dict(n=n,mean=mean,sd=sd,se=se,critical=critical,low=mean-critical*se,high=mean+critical*se)
+
+def difference(a,b):
+    """Mean(a)-mean(b), independent store-level Welch interval."""
+    a=np.asarray(a,float); b=np.asarray(b,float)
+    va=a.var(ddof=1)/len(a); vb=b.var(ddof=1)/len(b); se=float(np.sqrt(va+vb))
+    df=float((va+vb)**2/(va**2/(len(a)-1)+vb**2/(len(b)-1)))
+    value=float(a.mean()-b.mean()); z=float(t.ppf(.975,df))
+    return dict(value=value,se=se,df=df,low=value-z*se,high=value+z*se,n_a=len(a),n_b=len(b))
+
+def fit_ols(X,y):
+    X=np.asarray(X,float); y=np.asarray(y,float); b=np.linalg.lstsq(X,y,rcond=None)[0]
+    residual=y-X@b; bread=np.linalg.pinv(X.T@X)
+    covariance=(len(y)/(len(y)-X.shape[1]))*bread@(X.T@(residual[:,None]**2*X))@bread
+    return b,covariance,residual
+
+@lru_cache(maxsize=1)
+def world():
+    rng=np.random.default_rng(SEED)
+    stores=pd.DataFrame(dict(store_id=[f'S{i:03d}' for i in range(1,151)],
+        cohort=np.repeat(['Pilot','Voluntary','Rollout'],50),
+        lead_days=rng.integers(2,6,150),urban=rng.binomial(1,.5,150)))
+    stores['base_demand']=rng.normal(100,12,150)
+    stores['store_effect']=rng.normal(0,.006,150)
+    rows=[]
+    for s in stores.itertuples(index=False):
+        for week in range(1,33):
+            promo=int(rng.random()<.22)
+            forecast=s.base_demand+5*np.sin(week/3)+.15*week+8*promo
+            demand=forecast+rng.normal(0,7)
+            p0=.055+.014*s.lead_days+.0005*(demand-100)+.018*s.urban+.003*(s.lead_days-3)*s.urban+.02*promo+s.store_effect+.006*np.sin(week/4)
+            tau=.006+.008*s.lead_days+.004*s.urban
+            assert 0<p0-tau<p0<1
+            draws=rng.random(140)
+            y0=int((draws<p0).sum()); y1=int((draws<p0-tau).sum())
+            rows.append(dict(store_id=s.store_id,cohort=s.cohort,week=week,lead_days=int(s.lead_days),urban=int(s.urban),
+                demand_forecast=float(forecast),demand_index=float(demand),promotion_plan=promo,
+                exposure=140,y0=y0,y1=y1,p0=float(p0),effect_pp=float(100*tau)))
+    panel=pd.DataFrame(rows)
+    baseline=panel.query('week<=8').groupby('store_id',sort=False).agg(
+        baseline_rate=('y0',lambda x:100*x.mean()/140),baseline_demand=('demand_index','mean'),
+        promotion_share=('promotion_plan','mean')).reset_index()
+    stores=stores.merge(baseline,on='store_id',validate='one_to_one')
+    stores['offer']=0
+    pilot=stores.index[stores.cohort=='Pilot'].to_numpy()
+    stores.loc[rng.choice(pilot,25,replace=False),'offer']=1
+    voluntary=stores.cohort=='Voluntary'
+    score=-.15+.65*(stores.lead_days-3.5)+.35*stores.urban+.15*(stores.baseline_rate-stores.baseline_rate.mean())
+    propensity=1/(1+np.exp(-score))
+    stores.loc[voluntary,'offer']=(rng.random(int(voluntary.sum()))<propensity[voluntary]).astype(int)
+    rollout=stores[stores.cohort=='Rollout'].sort_values('baseline_rate').tail(25).index
+    stores.loc[rollout,'offer']=1
+    stores['risk_group']=np.where(stores.lead_days>=4,'Long lead (4–5 days)','Short lead (2–3 days)')
+    panel=panel.merge(stores[['store_id','offer','baseline_rate','risk_group']],on='store_id',validate='many_to_one')
+    panel['active']=((panel.offer==1)&(((panel.cohort!='Rollout')&(panel.week>=17))|((panel.cohort=='Rollout')&(panel.week>=25)))).astype(int)
+    panel['stockout_days']=np.where(panel.active==1,panel.y1,panel.y0)
+    panel['stockout_rate']=100*panel.stockout_days/panel.exposure
+    panel['operating_cost']=6*panel.stockout_days+20*panel.active
+    panel['lag_rate']=panel.groupby('store_id').stockout_rate.shift(1)
+    # Defects in the initial export are reconciled against a transaction ledger.
+    clean=panel.query('week<=8')[['store_id','week','exposure','stockout_days']].reset_index(drop=True)
+    raw=clean.copy(); bad=rng.choice(len(raw),12,replace=False)
+    repairs=clean.iloc[bad].copy(); repairs['reason']=['Missing count']*8+['Negative count']*4
+    raw.loc[bad[:8],'stockout_days']=np.nan; raw.loc[bad[8:],'stockout_days']=-1
+    raw=pd.concat([raw,raw.iloc[rng.choice(len(raw),12,replace=False)]],ignore_index=True)
+    audit_source=panel.query('week==16').copy()
+    chosen=rng.choice(len(audit_source),30,replace=False)
+    audit=audit_source.iloc[chosen][['store_id','exposure','p0']].copy()
+    audit['stockout_days']=rng.binomial(140,audit.p0.to_numpy())
+    audit['stockout_rate']=100*audit.stockout_days/140
+    public_cols=['store_id','cohort','week','lead_days','urban','demand_forecast','demand_index','promotion_plan','exposure','stockout_days','stockout_rate','operating_cost','lag_rate','offer','active']
+    public=panel[public_cols]
+    fingerprint=hashlib.sha256(public.to_csv(index=False,float_format='%.8f',lineterminator='\n').encode()).hexdigest()
+    return dict(stores=stores,panel=panel,public=public,raw=raw,repairs=repairs,clean=clean,audit=audit,
+        audit_truth=float(100*audit_source.p0.mean()),fingerprint=fingerprint)
+
+def voluntary_design(frame,D):
+    lead=frame.lead_days.to_numpy()-3.5; urban=frame.urban.to_numpy(); d=np.asarray(D)
+    return np.column_stack([np.ones(len(frame)),d,lead,urban,frame.baseline_rate.to_numpy(),d*lead,d*urban])
+
+@lru_cache(maxsize=1)
+def all_results():
+    w=world(); p=w['panel']; stores=w['stores']; out={}
+    raw=w['raw']; dedup=raw.drop_duplicates(['store_id','week']); flagged=dedup.stockout_days.isna()|(dedup.stockout_days<0)
+    fixed=dedup.merge(w['repairs'][['store_id','week','stockout_days']],on=['store_id','week'],how='left',suffixes=('','_ledger'),validate='one_to_one')
+    fixed.loc[fixed.stockout_days.isna()|(fixed.stockout_days<0),'stockout_days']=fixed.stockout_days_ledger
+    fixed=fixed.sort_values(['store_id','week'])
+    assert np.array_equal(fixed.stockout_days.to_numpy(),w['clean'].sort_values(['store_id','week']).stockout_days.to_numpy())
+    example=fixed.iloc[0]
+    out[1]=dict(raw=len(raw),deduplicated=len(dedup),duplicates=len(raw)-len(dedup),flagged=int(flagged.sum()),clean=len(fixed),
+        sample=records(fixed[['store_id','week','exposure','stockout_days']].head(5)),repairs=records(w['repairs'].head(5)),
+        total_stockouts=int(fixed.stockout_days.sum()),total_exposure=int(fixed.exposure.sum()),rate=float(100*fixed.stockout_days.sum()/fixed.exposure.sum()),
+        worked=dict(store=example.store_id,week=int(example.week),count=int(example.stockout_days),exposure=int(example.exposure),rate=float(100*example.stockout_days/example.exposure)))
+    b=stores.copy(); groups=[]
+    for label,g in b.groupby('risk_group',sort=True):
+        groups.append(dict(group=label,n=len(g),mean=float(g.baseline_rate.mean()),median=float(g.baseline_rate.median()),above=int((g.baseline_rate>10).sum()),share=float((g.baseline_rate>10).mean())))
+    out[2]=dict(n=len(b),mean=float(b.baseline_rate.mean()),median=float(b.baseline_rate.median()),q1=float(b.baseline_rate.quantile(.25)),q3=float(b.baseline_rate.quantile(.75)),groups=groups,
+        top=records(b.nlargest(5,'baseline_rate')[['store_id','lead_days','urban','baseline_rate']]),weekly=records(p.query('week<=8').groupby('week').stockout_rate.mean().reset_index()))
+    out[3]=dict(**interval(w['audit'].stockout_rate),target=10,exposure=140,
+        sample=records(w['audit'][['store_id','stockout_days','exposure','stockout_rate']].head(6)),truth=w['audit_truth'])
+    X=np.column_stack([np.ones(len(b)),b.lead_days]); coef,cov,res=fit_ols(X,b.baseline_rate)
+    out[4]=dict(n=len(b),intercept=float(coef[0]),slope=float(coef[1]),rmse=float(np.sqrt(np.mean(res**2))),
+        sample=records(b[['store_id','lead_days','baseline_rate']].head(5).assign(prediction=(X@coef)[:5],residual=res[:5])),
+        group_means=records(b.groupby('lead_days').baseline_rate.mean().reset_index()),predictions=[dict(lead=x,rate=float(coef[0]+coef[1]*x)) for x in range(2,6)])
+    X5=np.column_stack([np.ones(len(b)),b.lead_days,b.urban,b.baseline_demand-100,b.promotion_share,b.lead_days*b.urban])
+    coef5,cov5,res5=fit_ols(X5,b.baseline_rate)
+    profiles=[]
+    for urban in (0,1):
+        for lead in (2,4,5):
+            row=np.array([1,lead,urban,0,.25,lead*urban]); profiles.append(dict(urban=urban,lead=lead,demand=100,promotion_share=.25,predicted=float(row@coef5)))
+    out[5]=dict(n=len(b),coefficients=dict(zip(['Intercept','Lead days','Urban','Demand above 100','Promotion share','Lead × urban'],map(float,coef5))),
+        profiles=profiles,short_slope=float(coef[1]),rural_slope=float(coef5[1]),urban_slope=float(coef5[1]+coef5[5]),rmse=float(np.sqrt(np.mean(res5**2))))
+    features=['lag_rate','lead_days','urban','demand_forecast','promotion_plan']
+    forecast=p.query('3<=week<=16').copy(); train=forecast.query('week<=10'); val=forecast.query('11<=week<=13'); test=forecast.query('week>=14')
+    candidates={'Linear regression':LinearRegression(),'Small tree':DecisionTreeRegressor(max_depth=3,min_samples_leaf=30,random_state=SEED)}
+    scores=[]
+    for name,model in candidates.items():
+        model.fit(train[features],train.stockout_rate); pred=model.predict(val[features]); scores.append(dict(model=name,rmse=float(np.sqrt(np.mean((val.stockout_rate-pred)**2)))))
+    choice=min(scores,key=lambda z:z['rmse'])['model']; model=candidates[choice]; dev=forecast.query('week<=13'); model.fit(dev[features],dev.stockout_rate)
+    predicted=model.predict(test[features]); baseline=float(dev.stockout_rate.mean()); errors=test.stockout_rate.to_numpy()-predicted
+    ex=test[['store_id','week','stockout_rate']].copy();ex['prediction']=predicted;ex['error']=errors;ex['squared_error']=errors**2
+    watch=ex.query('week==16').nlargest(5,'prediction')
+    out[6]=dict(features=features,train_n=len(train),validation_n=len(val),test_n=len(test),scores=scores,selected=choice,
+        baseline=baseline,baseline_rmse=float(np.sqrt(np.mean((test.stockout_rate-baseline)**2))),rmse=float(np.sqrt(np.mean(errors**2))),mae=float(np.mean(np.abs(errors))),
+        sample=records(ex.head(5)),watchlist=records(watch),windows=dict(training=[3,10],validation=[11,13],test=[14,16]))
+    post=p.query('17<=week<=24').groupby(['store_id','cohort','offer']).agg(rate=('stockout_rate','mean'),cost=('operating_cost','mean'),
+        truth_effect=('effect_pp','mean'),realized_effect=('y0',lambda x:0)).reset_index()
+    post=post.drop(columns='realized_effect').merge(stores[['store_id','lead_days','urban','baseline_rate','risk_group']],on='store_id',validate='one_to_one')
+    pilot=post.query("cohort=='Pilot'"); treated=pilot[pilot.offer==1];control=pilot[pilot.offer==0]
+    trial=difference(control.rate,treated.rate); savings=difference(control.cost,treated.cost)
+    out[7]=dict(n=len(pilot),offered=len(treated),control=len(control),offered_mean=float(treated.rate.mean()),control_mean=float(control.rate.mean()),effect=trial,savings=savings,
+        cost_threshold=100*20/(6*140),truth=float(pilot.truth_effect.mean()),
+        sample=records(pilot[['store_id','offer','baseline_rate','rate','cost']].head(6)),
+        groups=[dict(group='Usual operations',n=len(control),rate=float(control.rate.mean()),cost=float(control.cost.mean())),dict(group='Alert offer',n=len(treated),rate=float(treated.rate.mean()),cost=float(treated.cost.mean()))])
+    v=post.query("cohort=='Voluntary'").reset_index(drop=True); strata=[]
+    for name,g in v.groupby('risk_group',sort=True):
+        ct=g[g.offer==0];tr=g[g.offer==1];assert len(ct)>0 and len(tr)>0
+        gap=float(ct.rate.mean()-tr.rate.mean());strata.append(dict(group=name,n=len(g),offered=len(tr),control=len(ct),usual=float(ct.rate.mean()),alerts=float(tr.rate.mean()),reduction=gap,weight=len(g)/len(v),contribution=gap*len(g)/len(v)))
+    raw_gap=float(v[v.offer==0].rate.mean()-v[v.offer==1].rate.mean())
+    out[8]=dict(n=len(v),raw_reduction=raw_gap,strata=strata,standardized=float(sum(s['contribution'] for s in strata)),
+        balance=[dict(variable=k,adopters=float(v[v.offer==1][k].mean()),comparison=float(v[v.offer==0][k].mean())) for k in ['lead_days','urban','baseline_rate']])
+    D=v.offer.to_numpy();Xv=voluntary_design(v,D);beta,covv,rv=fit_ols(Xv,v.rate)
+    X0=voluntary_design(v,np.zeros(len(v)));X1=voluntary_design(v,np.ones(len(v)));pred0=X0@beta;pred1=X1@beta;effects=pred0-pred1
+    contrast=(X0-X1).mean(axis=0);se=float(np.sqrt(contrast@covv@contrast));estimate=float(effects.mean())
+    ctr=v[v.offer==0]; tr=v[v.offer==1];scale=v[['lead_days','urban','baseline_rate']].std(ddof=0).to_numpy()
+    distances=((tr[['lead_days','urban','baseline_rate']].to_numpy()[:,None,:]-ctr[['lead_days','urban','baseline_rate']].to_numpy()[None,:,:])/scale)**2
+    nearest=np.argmin(distances.sum(axis=2),axis=1)
+    matches=[dict(adopter=a.store_id,comparison=ctr.iloc[j].store_id,adopter_rate=float(a.rate),comparison_rate=float(ctr.iloc[j].rate),reduction=float(ctr.iloc[j].rate-a.rate)) for a,j in zip(tr.itertuples(),nearest)]
+    vs=v[['store_id','lead_days','urban','baseline_rate','offer']].copy();vs['usual_prediction']=pred0;vs['alert_prediction']=pred1;vs['reduction']=effects
+    out[9]=dict(n=len(v),raw_reduction=raw_gap,estimate=estimate,se=se,low=estimate-1.96*se,high=estimate+1.96*se,
+        att=float(effects[D==1].mean()),matching_att=float(np.mean([m['reduction'] for m in matches])),matches=matches[:5],sample=records(vs.head(5)),
+        predicted_usual=float(pred0.mean()),predicted_alert=float(pred1.mean()),truth=float(v.truth_effect.mean()),truth_att=float(v[v.offer==1].truth_effect.mean()),
+        coefficients=list(map(float,beta)),coefficient_names=['Intercept','Offer','Lead minus 3.5','Urban','Baseline rate','Offer × centered lead','Offer × urban'])
+    roll=p.query("cohort=='Rollout'").copy(); pre=roll.query('17<=week<=24').groupby(['store_id','offer']).agg(pre=('stockout_rate','mean'),pre_cost=('operating_cost','mean')).reset_index()
+    after=roll.query('25<=week<=32').groupby('store_id').agg(post=('stockout_rate','mean'),post_cost=('operating_cost','mean'),truth_effect=('effect_pp','mean')).reset_index()
+    rd=pre.merge(after,on='store_id',validate='one_to_one');rd['change']=rd.post-rd.pre;rd['cost_change']=rd.post_cost-rd.pre_cost
+    a=rd[rd.offer==1];c=rd[rd.offer==0];did=difference(c.change,a.change);costdid=difference(c.cost_change,a.cost_change)
+    out[10]=dict(n=len(rd),adopters=len(a),comparison=len(c),effect=did,savings=costdid,
+        adopter_pre=float(a.pre.mean()),adopter_post=float(a.post.mean()),comparison_pre=float(c.pre.mean()),comparison_post=float(c.post.mean()),
+        adopter_change=float(a.change.mean()),comparison_change=float(c.change.mean()),counterfactual=float(a.pre.mean()+c.change.mean()),truth=float(a.truth_effect.mean()),
+        sample=records(rd.head(5)),weekly=[dict(week=int(week),usual=float(g[g.offer==0].stockout_rate.mean()),adopters=float(g[g.offer==1].stockout_rate.mean())) for week,g in roll.groupby('week')])
+    for number,result in out.items():
+        result.update(lesson=number,seed=SEED,case=SPEC['case'],data_fingerprint=w['fingerprint'])
+    return out
+
+def lesson_result(number):
+    return all_results()[int(number)]
+
+audit = world()['audit']
+a = audit.stockout_rate.to_numpy()
+mean = a.mean()
+sd = a.std(ddof=1)
+se = sd / np.sqrt(len(a))
+critical = t.ppf(.975, len(a)-1)
+worked_interval = [mean-critical*se, mean+critical*se]
+assert np.allclose(worked_interval, [lesson_result(3)['low'], lesson_result(3)['high']])
+print(json.dumps(lesson_result(3), indent=2, allow_nan=False))

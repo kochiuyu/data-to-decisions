@@ -1,0 +1,38 @@
+{
+  "case": "Retail stockouts and replenishment alerts",
+  "seed": 20261109,
+  "stores": 150,
+  "weeks": 32,
+  "exposure": 140,
+  "currency": "CU",
+  "outcome": "stockout product-days / 140 × 100",
+  "cost_per_stockout_day": 6,
+  "weekly_alert_fee": 12,
+  "weekly_extra_holding_cost": 8,
+  "cost_definition": "6 × stockout product-days + 20 when alerts are offered",
+  "cost_status": "Management accounting scenario; no claim about recovered sales",
+  "decision": "Reduce stockouts profitably; decide where to expand alerts",
+  "releases": [
+    {
+      "name": "Baseline",
+      "weeks": "1–16",
+      "cohort": "All 150 stores"
+    },
+    {
+      "name": "Randomized pilot",
+      "weeks": "17–24",
+      "cohort": "S001–S050; 25 random offers"
+    },
+    {
+      "name": "Voluntary adoption",
+      "weeks": "17–24",
+      "cohort": "S051–S100; selected by observed starting conditions"
+    },
+    {
+      "name": "Later rollout",
+      "weeks": "25–32",
+      "cohort": "S101–S150; 25 selected adopters"
+    }
+  ],
+  "data_fingerprint": "1f5a8196ed6c33123ff12d11f66dd760672947aa1dae56d2990e5c8b54941d69"
+}
