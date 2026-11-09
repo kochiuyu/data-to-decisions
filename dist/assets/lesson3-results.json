@@ -47,6 +47,77 @@
     }
   ],
   "truth": 11.432504497346388,
+  "depth": {
+    "bootstrap_se": 0.6164369690481104,
+    "bootstrap_low": 10.35654761904762,
+    "bootstrap_high": 12.73809523809524,
+    "subsample_size": 15,
+    "subsample_sd": 0.6222230952184417,
+    "t_statistic": 2.3881863250167252,
+    "p_one_sided": 0.011831952434178785,
+    "p_two_sided": 0.02366390486835757,
+    "proportion": {
+      "successes": 19,
+      "n": 30,
+      "value": 0.6333333333333333,
+      "low": 0.45513563654794875,
+      "high": 0.7812607919389928
+    },
+    "paired": {
+      "n": 30,
+      "mean": 0.26190476190476186,
+      "sd": 3.2731787718993557,
+      "se": 0.5975979493721113,
+      "critical": 2.045229642132704,
+      "low": -0.960320278228799,
+      "high": 1.4841298020383227,
+      "statistic": 0.4382624843005936,
+      "p": 0.6644434504968895
+    },
+    "independent": {
+      "value": 1.7619047619047592,
+      "se": 1.2342955823910553,
+      "df": 26.93975326484345,
+      "low": -0.7709256170875101,
+      "high": 4.2947351408970285,
+      "n_a": 15,
+      "n_b": 15,
+      "p": 0.16493768817016513
+    },
+    "paired_rows": [
+      {
+        "store_id": "S030",
+        "stockout_rate_audit": 15.0,
+        "stockout_rate_system": 17.142857142857,
+        "urban": 0
+      },
+      {
+        "store_id": "S149",
+        "stockout_rate_audit": 10.0,
+        "stockout_rate_system": 10.714285714286,
+        "urban": 1
+      },
+      {
+        "store_id": "S079",
+        "stockout_rate_audit": 18.571428571429,
+        "stockout_rate_system": 9.285714285714,
+        "urban": 1
+      },
+      {
+        "store_id": "S004",
+        "stockout_rate_audit": 6.428571428571,
+        "stockout_rate_system": 9.285714285714,
+        "urban": 0
+      },
+      {
+        "store_id": "S122",
+        "stockout_rate_audit": 12.142857142857,
+        "stockout_rate_system": 8.571428571429,
+        "urban": 0
+      }
+    ],
+    "bootstrap_repetitions": 2000
+  },
   "lesson": 3,
   "seed": 20261109,
   "case": "Retail stockouts and replenishment alerts",

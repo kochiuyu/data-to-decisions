@@ -43,6 +43,50 @@
       "comparison": 11.25
     }
   ],
+  "depth": {
+    "weights": [
+      {
+        "group": "Long lead (4\u20135 days)",
+        "reduction": 3.311011904761907,
+        "ate_weight": 0.36,
+        "att_weight": 0.46153846153846156,
+        "atu_weight": 0.25
+      },
+      {
+        "group": "Short lead (2\u20133 days)",
+        "reduction": 2.062783446712019,
+        "ate_weight": 0.64,
+        "att_weight": 0.5384615384615384,
+        "atu_weight": 0.75
+      }
+    ],
+    "ate": 2.5121456916099785,
+    "att": 2.63888888888889,
+    "atu": 2.3748405612244907,
+    "simulations": [
+      {
+        "mechanism": "Chain",
+        "control": "Post-offer review effort",
+        "total_reduction": 3.0,
+        "naive": 2.988464750515946,
+        "adjusted": -0.01582940993976223
+      },
+      {
+        "mechanism": "Fork",
+        "control": "Pre-offer operating pressure",
+        "total_reduction": 3.0,
+        "naive": 1.1290665850537909,
+        "adjusted": 3.0884857453357313
+      },
+      {
+        "mechanism": "Collider",
+        "control": "Post-offer escalation score",
+        "total_reduction": 3.0,
+        "naive": 3.0117402436591045,
+        "adjusted": 2.1911437891434886
+      }
+    ]
+  },
   "lesson": 8,
   "seed": 20261109,
   "case": "Retail stockouts and replenishment alerts",

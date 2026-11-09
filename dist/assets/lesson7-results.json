@@ -82,6 +82,74 @@
       "cost": 90.98
     }
   ],
+  "depth": {
+    "potential_rows": [
+      {
+        "store_id": "S001",
+        "offer": 0,
+        "y0": 10.803571428571,
+        "y1": 6.785714285714,
+        "reduction": 4.017857142857
+      },
+      {
+        "store_id": "S002",
+        "offer": 0,
+        "y0": 8.035714285714,
+        "y1": 5.357142857143,
+        "reduction": 2.678571428571
+      },
+      {
+        "store_id": "S003",
+        "offer": 0,
+        "y0": 10.982142857143,
+        "y1": 8.75,
+        "reduction": 2.232142857143
+      },
+      {
+        "store_id": "S004",
+        "offer": 0,
+        "y0": 13.75,
+        "y1": 8.660714285714,
+        "reduction": 5.089285714286
+      },
+      {
+        "store_id": "S005",
+        "offer": 1,
+        "y0": 13.214285714286,
+        "y1": 9.553571428571,
+        "reduction": 3.660714285714
+      },
+      {
+        "store_id": "S006",
+        "offer": 0,
+        "y0": 12.589285714286,
+        "y1": 8.303571428571,
+        "reduction": 4.285714285714
+      }
+    ],
+    "ate": 3.719642857142857,
+    "att": 3.607142857142857,
+    "atu": 3.8321428571428577,
+    "treated_share": 0.5,
+    "selection_component": -0.12142857142857011,
+    "balance": [
+      {
+        "variable": "lead_days",
+        "offered": 3.6,
+        "usual": 3.88
+      },
+      {
+        "variable": "urban",
+        "offered": 0.6,
+        "usual": 0.48
+      },
+      {
+        "variable": "baseline_rate",
+        "offered": 12.857142857142858,
+        "usual": 12.964285714285714
+      }
+    ]
+  },
   "lesson": 7,
   "seed": 20261109,
   "case": "Retail stockouts and replenishment alerts",

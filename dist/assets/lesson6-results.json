@@ -122,6 +122,115 @@
       16
     ]
   },
+  "depth": {
+    "folds": [
+      {
+        "train_end": 7,
+        "validation_start": 8,
+        "validation_end": 9
+      },
+      {
+        "train_end": 9,
+        "validation_start": 10,
+        "validation_end": 11
+      },
+      {
+        "train_end": 11,
+        "validation_start": 12,
+        "validation_end": 13
+      }
+    ],
+    "tuning": [
+      {
+        "alpha": 0.001,
+        "rmse": 2.7961126781704757,
+        "fold_rmse": [
+          2.790863270041244,
+          2.8979743898980312,
+          2.6958421635004592
+        ]
+      },
+      {
+        "alpha": 0.01,
+        "rmse": 2.7818135228297782,
+        "fold_rmse": [
+          2.748718709230204,
+          2.9006186051060423,
+          2.6919168992813254
+        ]
+      },
+      {
+        "alpha": 0.1,
+        "rmse": 2.7870055331833083,
+        "fold_rmse": [
+          2.719067317871142,
+          2.910274655170408,
+          2.727484899745722
+        ]
+      },
+      {
+        "alpha": 1.0,
+        "rmse": 3.208351461024278,
+        "fold_rmse": [
+          3.161302023390088,
+          3.2335231679348824,
+          3.2297143421219072
+        ]
+      }
+    ],
+    "alpha": 0.01,
+    "retained": 11,
+    "candidate_features": 20,
+    "largest": [
+      {
+        "feature": "lead_days urban",
+        "coefficient": 1.1582579634451258
+      },
+      {
+        "feature": "lead_days",
+        "coefficient": 0.9972936017844186
+      },
+      {
+        "feature": "promotion_plan",
+        "coefficient": 0.7110233036137535
+      },
+      {
+        "feature": "lag_rate urban",
+        "coefficient": -0.6771403789013346
+      },
+      {
+        "feature": "demand_forecast",
+        "coefficient": 0.5802575418479767
+      },
+      {
+        "feature": "lag_rate lead_days",
+        "coefficient": 0.46112403000628016
+      }
+    ],
+    "test_rmse": 2.9683637822318327,
+    "test_mae": 2.37692807727757,
+    "criteria": [
+      {
+        "degree": 1,
+        "parameters": 6,
+        "training_rmse": 2.778068460389901,
+        "aic": 3383.7944297312956,
+        "bic": 3416.2456131326635
+      },
+      {
+        "degree": 2,
+        "parameters": 21,
+        "training_rmse": 2.748071026558746,
+        "aic": 3377.9674281885027,
+        "bic": 3491.54657009329
+      }
+    ],
+    "log_example": {
+      "naive": 10.0,
+      "smearing": 1.020066755619076,
+      "mean": 10.200667556190758
+    }
+  },
   "lesson": 6,
   "seed": 20261109,
   "case": "Retail stockouts and replenishment alerts",

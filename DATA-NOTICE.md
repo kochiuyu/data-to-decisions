@@ -6,6 +6,8 @@ All quantitative case observations in the current release come from one shared g
 
 Case names are fictional. Numeric constants used to specify a mathematical model are teaching assumptions, not estimates taken from an external dataset. Displayed case estimates, tables, plots and notebook outputs are calculated from these new generators.
 
+Lesson 1 includes explicitly illustrative staffing and transfer ledgers and a deliberately incomplete submission extract. Lesson 8 includes separate numerical mechanism experiments for chains, forks, and colliders. They teach relationships and adjustment rules; they do not add observations to, or change outcomes in, the shared 150-store history. Auxiliary resampling and mechanism experiments use documented random streams derived from the course seed.
+
 ## Included and excluded
 
 Included: generator source, analysis source, synthetic CSV releases, repair ledger, original teaching explanations, calculated results, charts, notebooks, and study pages. The shared public store-week CSV excludes the alternate policy outcomes and latent probabilities; these remain available through the generator for known-answer exercises.

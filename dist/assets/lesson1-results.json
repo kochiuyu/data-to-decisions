@@ -83,6 +83,494 @@
     "exposure": 140,
     "rate": 12.857142857142858
   },
+  "preparation": {
+    "long": [
+      {
+        "store_id": "S001",
+        "week": 1,
+        "exposure": 140,
+        "stockout_days": 18
+      },
+      {
+        "store_id": "S001",
+        "week": 2,
+        "exposure": 140,
+        "stockout_days": 9
+      },
+      {
+        "store_id": "S002",
+        "week": 1,
+        "exposure": 140,
+        "stockout_days": 12
+      },
+      {
+        "store_id": "S002",
+        "week": 2,
+        "exposure": 140,
+        "stockout_days": 9
+      }
+    ],
+    "wide": [
+      {
+        "store_id": "S001",
+        "stockout_days_1": 18,
+        "stockout_days_2": 9,
+        "exposure_1": 140,
+        "exposure_2": 140
+      },
+      {
+        "store_id": "S002",
+        "stockout_days_1": 12,
+        "stockout_days_2": 9,
+        "exposure_1": 140,
+        "exposure_2": 140
+      }
+    ],
+    "wide_columns": [
+      "stockout_days_1",
+      "stockout_days_2",
+      "exposure_1",
+      "exposure_2"
+    ],
+    "joined": [
+      {
+        "store_id": "S001",
+        "week": 1,
+        "exposure": 140,
+        "stockout_days": 18,
+        "lead_days": 4,
+        "urban": 0
+      },
+      {
+        "store_id": "S001",
+        "week": 2,
+        "exposure": 140,
+        "stockout_days": 9,
+        "lead_days": 4,
+        "urban": 0
+      },
+      {
+        "store_id": "S001",
+        "week": 3,
+        "exposure": 140,
+        "stockout_days": 16,
+        "lead_days": 4,
+        "urban": 0
+      },
+      {
+        "store_id": "S001",
+        "week": 4,
+        "exposure": 140,
+        "stockout_days": 15,
+        "lead_days": 4,
+        "urban": 0
+      },
+      {
+        "store_id": "S001",
+        "week": 5,
+        "exposure": 140,
+        "stockout_days": 12,
+        "lead_days": 4,
+        "urban": 0
+      }
+    ],
+    "joined_rows": 1200,
+    "store_counts": [
+      {
+        "cohort": "Pilot",
+        "stores": 50
+      },
+      {
+        "cohort": "Rollout",
+        "stores": 50
+      },
+      {
+        "cohort": "Voluntary",
+        "stores": 50
+      }
+    ],
+    "assignments": [
+      {
+        "store_id": "S001",
+        "manager_id": "M01",
+        "start_week": 1,
+        "end_week": 4
+      },
+      {
+        "store_id": "S001",
+        "manager_id": "M02",
+        "start_week": 5,
+        "end_week": 8
+      },
+      {
+        "store_id": "S002",
+        "manager_id": "M03",
+        "start_week": 1,
+        "end_week": 8
+      }
+    ],
+    "assignment_candidates": 24,
+    "assignment_rows": 16,
+    "assigned_sample": [
+      {
+        "store_id": "S001",
+        "week": 3,
+        "manager_id": "M01",
+        "stockout_days": 16
+      },
+      {
+        "store_id": "S001",
+        "week": 4,
+        "manager_id": "M01",
+        "stockout_days": 15
+      },
+      {
+        "store_id": "S001",
+        "week": 5,
+        "manager_id": "M02",
+        "stockout_days": 12
+      },
+      {
+        "store_id": "S001",
+        "week": 6,
+        "manager_id": "M02",
+        "stockout_days": 13
+      }
+    ],
+    "transfers": [
+      {
+        "transfer_id": "T001",
+        "week": 2,
+        "from_store": "S001",
+        "to_store": "S002",
+        "units": 6
+      },
+      {
+        "transfer_id": "T002",
+        "week": 3,
+        "from_store": "S002",
+        "to_store": "S003",
+        "units": 4
+      }
+    ],
+    "perspectives": [
+      {
+        "transfer_id": "T001",
+        "week": 2,
+        "store_id": "S002",
+        "direction": "In",
+        "signed_units": 6
+      },
+      {
+        "transfer_id": "T001",
+        "week": 2,
+        "store_id": "S001",
+        "direction": "Out",
+        "signed_units": -6
+      },
+      {
+        "transfer_id": "T002",
+        "week": 3,
+        "store_id": "S003",
+        "direction": "In",
+        "signed_units": 4
+      },
+      {
+        "transfer_id": "T002",
+        "week": 3,
+        "store_id": "S002",
+        "direction": "Out",
+        "signed_units": -4
+      }
+    ],
+    "reports": [
+      {
+        "store_id": "S001",
+        "week": 1,
+        "exposure": 140,
+        "stockout_days": 18
+      },
+      {
+        "store_id": "S002",
+        "week": 1,
+        "exposure": 140,
+        "stockout_days": 12
+      },
+      {
+        "store_id": "S002",
+        "week": 2,
+        "exposure": 140,
+        "stockout_days": 9
+      },
+      {
+        "store_id": "S003",
+        "week": 1,
+        "exposure": 140,
+        "stockout_days": 22
+      },
+      {
+        "store_id": "S003",
+        "week": 2,
+        "exposure": 140,
+        "stockout_days": 19
+      },
+      {
+        "store_id": "S003",
+        "week": 3,
+        "exposure": 140,
+        "stockout_days": 20
+      },
+      {
+        "store_id": "S003",
+        "week": 4,
+        "exposure": 140,
+        "stockout_days": 19
+      },
+      {
+        "store_id": "S003",
+        "week": 5,
+        "exposure": 140,
+        "stockout_days": 22
+      },
+      {
+        "store_id": "S003",
+        "week": 6,
+        "exposure": 140,
+        "stockout_days": 16
+      },
+      {
+        "store_id": "S003",
+        "week": 7,
+        "exposure": 140,
+        "stockout_days": 19
+      },
+      {
+        "store_id": "S003",
+        "week": 8,
+        "exposure": 140,
+        "stockout_days": 22
+      },
+      {
+        "store_id": "S004",
+        "week": 1,
+        "exposure": 140,
+        "stockout_days": 18
+      },
+      {
+        "store_id": "S004",
+        "week": 2,
+        "exposure": 140,
+        "stockout_days": 22
+      },
+      {
+        "store_id": "S004",
+        "week": 3,
+        "exposure": 140,
+        "stockout_days": 28
+      },
+      {
+        "store_id": "S004",
+        "week": 4,
+        "exposure": 140,
+        "stockout_days": 19
+      },
+      {
+        "store_id": "S004",
+        "week": 5,
+        "exposure": 140,
+        "stockout_days": 23
+      },
+      {
+        "store_id": "S004",
+        "week": 6,
+        "exposure": 140,
+        "stockout_days": 15
+      },
+      {
+        "store_id": "S004",
+        "week": 7,
+        "exposure": 140,
+        "stockout_days": 21
+      },
+      {
+        "store_id": "S004",
+        "week": 8,
+        "exposure": 140,
+        "stockout_days": 18
+      },
+      {
+        "store_id": "S005",
+        "week": 1,
+        "exposure": 140,
+        "stockout_days": 17
+      },
+      {
+        "store_id": "S005",
+        "week": 2,
+        "exposure": 140,
+        "stockout_days": 25
+      },
+      {
+        "store_id": "S005",
+        "week": 3,
+        "exposure": 140,
+        "stockout_days": 20
+      },
+      {
+        "store_id": "S005",
+        "week": 4,
+        "exposure": 140,
+        "stockout_days": 16
+      },
+      {
+        "store_id": "S005",
+        "week": 5,
+        "exposure": 140,
+        "stockout_days": 21
+      },
+      {
+        "store_id": "S005",
+        "week": 6,
+        "exposure": 140,
+        "stockout_days": 26
+      },
+      {
+        "store_id": "S005",
+        "week": 7,
+        "exposure": 140,
+        "stockout_days": 20
+      },
+      {
+        "store_id": "S005",
+        "week": 8,
+        "exposure": 140,
+        "stockout_days": 12
+      },
+      {
+        "store_id": "S006",
+        "week": 1,
+        "exposure": 140,
+        "stockout_days": 29
+      },
+      {
+        "store_id": "S006",
+        "week": 2,
+        "exposure": 140,
+        "stockout_days": 15
+      },
+      {
+        "store_id": "S006",
+        "week": 3,
+        "exposure": 140,
+        "stockout_days": 22
+      },
+      {
+        "store_id": "S006",
+        "week": 4,
+        "exposure": 140,
+        "stockout_days": 16
+      },
+      {
+        "store_id": "S006",
+        "week": 5,
+        "exposure": 140,
+        "stockout_days": 20
+      },
+      {
+        "store_id": "S006",
+        "week": 6,
+        "exposure": 140,
+        "stockout_days": 19
+      },
+      {
+        "store_id": "S006",
+        "week": 7,
+        "exposure": 140,
+        "stockout_days": 30
+      },
+      {
+        "store_id": "S006",
+        "week": 8,
+        "exposure": 140,
+        "stockout_days": 23
+      }
+    ],
+    "summary": [
+      {
+        "store_id": "S002",
+        "weeks": 2,
+        "stockouts": 21,
+        "exposure": 280,
+        "rate": 7.5
+      },
+      {
+        "store_id": "S001",
+        "weeks": 1,
+        "stockouts": 18,
+        "exposure": 140,
+        "rate": 12.857142857143
+      },
+      {
+        "store_id": "S005",
+        "weeks": 8,
+        "stockouts": 157,
+        "exposure": 1120,
+        "rate": 14.017857142857
+      },
+      {
+        "store_id": "S003",
+        "weeks": 8,
+        "stockouts": 159,
+        "exposure": 1120,
+        "rate": 14.196428571429
+      },
+      {
+        "store_id": "S004",
+        "weeks": 8,
+        "stockouts": 164,
+        "exposure": 1120,
+        "rate": 14.642857142857
+      },
+      {
+        "store_id": "S006",
+        "weeks": 8,
+        "stockouts": 174,
+        "exposure": 1120,
+        "rate": 15.535714285714
+      }
+    ],
+    "eligible": [
+      {
+        "store_id": "S005",
+        "weeks": 8,
+        "stockouts": 157,
+        "exposure": 1120,
+        "rate": 14.017857142857
+      },
+      {
+        "store_id": "S003",
+        "weeks": 8,
+        "stockouts": 159,
+        "exposure": 1120,
+        "rate": 14.196428571429
+      },
+      {
+        "store_id": "S004",
+        "weeks": 8,
+        "stockouts": 164,
+        "exposure": 1120,
+        "rate": 14.642857142857
+      },
+      {
+        "store_id": "S006",
+        "weeks": 8,
+        "stockouts": 174,
+        "exposure": 1120,
+        "rate": 15.535714285714
+      }
+    ]
+  },
+  "depth": {},
   "lesson": 1,
   "seed": 20261109,
   "case": "Retail stockouts and replenishment alerts",

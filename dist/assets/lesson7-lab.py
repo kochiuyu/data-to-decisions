@@ -10,8 +10,10 @@ import hashlib
 import json
 import numpy as np
 import pandas as pd
-from scipy.stats import t
-from sklearn.linear_model import LinearRegression
+from scipy.stats import t, norm, skew, kurtosis, binomtest, gaussian_kde
+from sklearn.linear_model import LinearRegression, Lasso, LogisticRegression
+from sklearn.preprocessing import StandardScaler, PolynomialFeatures
+from sklearn.pipeline import make_pipeline
 from sklearn.tree import DecisionTreeRegressor
 
 SEED = 20261109
@@ -114,6 +116,45 @@ def voluntary_design(frame,D):
     return np.column_stack([np.ones(len(frame)),d,lead,urban,frame.baseline_rate.to_numpy(),d*lead,d*urban])
 
 @lru_cache(maxsize=1)
+def preparation_examples():
+    """Small worked extracts and explicitly illustrative operational ledgers."""
+    w=world(); clean=w['clean'].copy(); stores=w['stores']
+    long=clean.query("store_id in ['S001','S002'] and week<=2").copy()
+    wide=long.set_index(['store_id','week'])[['stockout_days','exposure']].unstack('week')
+    wide.columns=[f'{variable}_{week}' for variable,week in wide.columns]
+    joined=clean.merge(stores[['store_id','lead_days','urban']],on='store_id',how='left',validate='many_to_one',indicator=True)
+    assert len(joined)==len(clean) and joined['_merge'].eq('both').all()
+    # Supplemental staffing and transfer ledgers illustrate relationships only;
+    # they never alter stockout outcomes or any intervention study.
+    assignments=pd.DataFrame([
+        ['S001','M01',1,4],['S001','M02',5,8],['S002','M03',1,8]],
+        columns=['store_id','manager_id','start_week','end_week'])
+    weekly=clean.query("store_id in ['S001','S002']")
+    candidates=weekly.merge(assignments,on='store_id',validate='many_to_many')
+    responsible=candidates[candidates.week.between(candidates.start_week,candidates.end_week)].copy()
+    assert len(responsible)==len(weekly) and not responsible.duplicated(['store_id','week']).any()
+    transfers=pd.DataFrame([
+        ['T001',2,'S001','S002',6],['T002',3,'S002','S003',4]],
+        columns=['transfer_id','week','from_store','to_store','units'])
+    outgoing=transfers[['transfer_id','week','from_store','units']].rename(columns={'from_store':'store_id'}).assign(direction='Out',signed_units=lambda x:-x.units)
+    incoming=transfers[['transfer_id','week','to_store','units']].rename(columns={'to_store':'store_id'}).assign(direction='In',signed_units=lambda x:x.units)
+    perspectives=pd.concat([outgoing,incoming],ignore_index=True).sort_values(['transfer_id','direction'])
+    assert len(perspectives)==4 and perspectives.signed_units.sum()==0
+    # An incomplete submission extract demonstrates an explicit eligibility rule.
+    reports=clean.query("store_id in ['S001','S002','S003','S004','S005','S006']").copy()
+    reports=reports[~((reports.store_id.eq('S001')&(reports.week>1))|(reports.store_id.eq('S002')&(reports.week>2)))]
+    summary=reports.groupby('store_id').agg(weeks=('week','size'),stockouts=('stockout_days','sum'),exposure=('exposure','sum'))
+    summary['rate']=100*summary.stockouts/summary.exposure
+    summary=summary.sort_values('rate').reset_index()
+    return dict(long=records(long),wide=records(wide.reset_index()),wide_columns=list(wide.columns),
+        joined=records(joined.drop(columns='_merge').head(5)),joined_rows=len(joined),
+        store_counts=records(stores.groupby('cohort').size().rename('stores').reset_index()),
+        assignments=records(assignments),assignment_candidates=len(candidates),assignment_rows=len(responsible),
+        assigned_sample=records(responsible.query("store_id=='S001' and 3<=week<=6")[['store_id','week','manager_id','stockout_days']]),
+        transfers=records(transfers),perspectives=records(perspectives[['transfer_id','week','store_id','direction','signed_units']]),
+        reports=records(reports),summary=records(summary),eligible=records(summary.query('weeks>=6')))
+
+@lru_cache(maxsize=1)
 def all_results():
     w=world(); p=w['panel']; stores=w['stores']; out={}
     raw=w['raw']; dedup=raw.drop_duplicates(['store_id','week']); flagged=dedup.stockout_days.isna()|(dedup.stockout_days<0)
@@ -125,7 +166,7 @@ def all_results():
     out[1]=dict(raw=len(raw),deduplicated=len(dedup),duplicates=len(raw)-len(dedup),flagged=int(flagged.sum()),clean=len(fixed),
         sample=records(fixed[['store_id','week','exposure','stockout_days']].head(5)),repairs=records(w['repairs'].head(5)),
         total_stockouts=int(fixed.stockout_days.sum()),total_exposure=int(fixed.exposure.sum()),rate=float(100*fixed.stockout_days.sum()/fixed.exposure.sum()),
-        worked=dict(store=example.store_id,week=int(example.week),count=int(example.stockout_days),exposure=int(example.exposure),rate=float(100*example.stockout_days/example.exposure)))
+        worked=dict(store=example.store_id,week=int(example.week),count=int(example.stockout_days),exposure=int(example.exposure),rate=float(100*example.stockout_days/example.exposure)),preparation=preparation_examples())
     b=stores.copy(); groups=[]
     for label,g in b.groupby('risk_group',sort=True):
         groups.append(dict(group=label,n=len(g),mean=float(g.baseline_rate.mean()),median=float(g.baseline_rate.median()),above=int((g.baseline_rate>10).sum()),share=float((g.baseline_rate>10).mean())))
@@ -194,12 +235,180 @@ def all_results():
         adopter_pre=float(a.pre.mean()),adopter_post=float(a.post.mean()),comparison_pre=float(c.pre.mean()),comparison_post=float(c.post.mean()),
         adopter_change=float(a.change.mean()),comparison_change=float(c.change.mean()),counterfactual=float(a.pre.mean()+c.change.mean()),truth=float(a.truth_effect.mean()),
         sample=records(rd.head(5)),weekly=[dict(week=int(week),usual=float(g[g.offer==0].stockout_rate.mean()),adopters=float(g[g.offer==1].stockout_rate.mean())) for week,g in roll.groupby('week')])
+    expanded=expanded_results(w,out)
     for number,result in out.items():
+        result['depth']=expanded.get(number,{})
         result.update(lesson=number,seed=SEED,case=SPEC['case'],data_fingerprint=w['fingerprint'])
     return out
 
 def lesson_result(number):
     return all_results()[int(number)]
+
+def expanded_results(w,core):
+    """Worked teaching material restored from the original ten-slide curriculum.
+
+    All case estimates use the same records. Auxiliary resampling, design
+    demonstrations and model tuning have separate, fixed random streams.
+    """
+    s=w['stores']; p=w['panel']; out={}; y=s.baseline_rate.to_numpy(); n=len(s)
+    # Lesson 2: distribution, visualization, association and composition.
+    hist=[]
+    for width in (2,4):
+        edges=np.arange(0,32+width,width); counts,_=np.histogram(y,bins=edges)
+        hist.append(dict(width=width,bins=[dict(low=float(a),high=float(b),count=int(c)) for a,b,c in zip(edges[:-1],edges[1:],counts)]))
+    q1,q3=np.quantile(y,[.25,.75]); iqr=q3-q1
+    composition=[]
+    for name,g in s.groupby('risk_group'):
+        counts=[int((g.baseline_rate<=10).sum()),int(g.baseline_rate.between(10,15,inclusive='right').sum()),int((g.baseline_rate>15).sum())]
+        composition.append(dict(group=name,n=len(g),counts=counts,percent=[100*c/len(g) for c in counts]))
+    bs=s.assign(bin=pd.qcut(s.baseline_demand,5,duplicates='drop')).groupby('bin',observed=True).agg(demand=('baseline_demand','mean'),rate=('baseline_rate','mean'),n=('store_id','size'))
+    density_x=np.linspace(0,30,61);density_y=gaussian_kde(y)(density_x)
+    out[2]=dict(density=[dict(rate=float(x),density=float(v)) for x,v in zip(density_x,density_y)],sd=float(np.std(y,ddof=1)),variance=float(np.var(y,ddof=1)),minimum=float(min(y)),maximum=float(max(y)),iqr=float(iqr),
+        skewness=float(skew(y,bias=False)),excess_kurtosis=float(kurtosis(y,bias=False)),histograms=hist,composition=composition,
+        low_fence=float(q1-1.5*iqr),high_fence=float(q3+1.5*iqr),outliers=int(((y<q1-1.5*iqr)|(y>q3+1.5*iqr)).sum()),
+        covariance=float(np.cov(s.baseline_demand,y,ddof=1)[0,1]),correlation=float(np.corrcoef(s.baseline_demand,y)[0,1]),bins=records(bs.reset_index(drop=True)))
+    # Lesson 3: sampling variation, proportions, resampling, and three t tests.
+    audit=w['audit']; a=audit.stockout_rate.to_numpy(); an=len(a); rng=np.random.default_rng(SEED+303)
+    boot=a[rng.integers(0,an,size=(2000,an))].mean(axis=1)
+    sub=np.array([rng.choice(a,15,replace=False).mean() for _ in range(2000)])
+    se=np.std(a,ddof=1)/np.sqrt(an); statistic=(a.mean()-10)/se
+    successes=int((a>10).sum()); prop=binomtest(successes,an).proportion_ci(method='wilson')
+    paired=audit[['store_id','stockout_rate']].merge(p.query('week==16')[['store_id','stockout_rate','urban']],on='store_id',suffixes=('_audit','_system'),validate='one_to_one')
+    d=paired.stockout_rate_audit-paired.stockout_rate_system; pair=interval(d)
+    pair.update(statistic=float(pair['mean']/pair['se']),p=float(2*t.sf(abs(pair['mean']/pair['se']),an-1)))
+    independent=difference(paired[paired.urban==1].stockout_rate_audit,paired[paired.urban==0].stockout_rate_audit)
+    independent['p']=float(2*t.sf(abs(independent['value']/independent['se']),independent['df']))
+    out[3]=dict(bootstrap_se=float(boot.std(ddof=1)),bootstrap_low=float(np.quantile(boot,.025)),bootstrap_high=float(np.quantile(boot,.975)),subsample_size=15,subsample_sd=float(sub.std(ddof=1)),
+        t_statistic=float(statistic),p_one_sided=float(t.sf(statistic,an-1)),p_two_sided=float(2*t.sf(abs(statistic),an-1)),
+        proportion=dict(successes=successes,n=an,value=successes/an,low=float(prop.low),high=float(prop.high)),paired=pair,independent=independent,
+        paired_rows=records(paired.head(5)),bootstrap_repetitions=2000)
+    # Lesson 4: the OLS decomposition, transformations and flexible forms.
+    x=s.lead_days.to_numpy(); X=np.column_stack([np.ones(n),x]); b,vc,res=fit_ols(X,y); fitted=X@b
+    sst=float(((y-y.mean())**2).sum()); sse=float((res**2).sum()); ssr=float(((fitted-y.mean())**2).sum())
+    forms=[]
+    for name,xx,yy,log_y in [('Level–level',x,y,False),('Log–level',x,np.log(y),True),('Level–log',np.log(x),y,False),('Log–log',np.log(x),np.log(y),True)]:
+        design=np.column_stack([np.ones(n),xx]); beta,_,err=fit_ols(design,yy); smearing=float(np.mean(np.exp(err))) if log_y else 1.
+        pred=np.exp(design@beta)*smearing if log_y else design@beta
+        forms.append(dict(model=name,intercept=float(beta[0]),slope=float(beta[1]),smearing=smearing,rmse_original=float(np.sqrt(np.mean((y-pred)**2)))))
+    nonlinear=[]
+    for degree in [1,2,3]:
+        design=np.column_stack([x**k for k in range(degree+1)]); beta,_,err=fit_ols(design,y)
+        nonlinear.append(dict(model=['','Linear','Quadratic','Cubic'][degree],parameters=degree+1,rmse=float(np.sqrt(np.mean(err**2))),coefficients=list(map(float,beta))))
+    design=np.column_stack([np.ones(n),x,np.maximum(x-3.5,0)]); beta,_,err=fit_ols(design,y)
+    nonlinear.append(dict(model='Spline, knot 3.5',parameters=3,rmse=float(np.sqrt(np.mean(err**2))),coefficients=list(map(float,beta))))
+    # A local linear smoother on a continuous store characteristic.
+    dx=s.baseline_demand.to_numpy(); grid=np.linspace(dx.min(),dx.max(),7); local=[]
+    for point in grid:
+        dist=abs(dx-point); bandwidth=np.partition(dist,int(.6*n))[int(.6*n)]; weights=np.maximum(1-(dist/bandwidth)**3,0)**3
+        design=np.column_stack([np.ones(n),dx-point]); fit=np.linalg.lstsq(design*np.sqrt(weights[:,None]),y*np.sqrt(weights),rcond=None)[0]
+        local.append(dict(demand=float(point),rate=float(fit[0])))
+    out[4]=dict(sst=sst,sse=sse,ssr=ssr,r_squared=1-sse/sst,mse=sse/n,rmse=np.sqrt(sse/n),slope_covariance=float(np.cov(x,y,ddof=1)[0,1]/np.var(x,ddof=1)),forms=forms,nonlinear=nonlinear,local=local)
+    # Lesson 5: regression uncertainty, omitted-variable identity, residual use.
+    X5=np.column_stack([np.ones(n),x,s.urban,s.baseline_demand-100,s.promotion_share,x*s.urban]); b5,v5,e5=fit_ols(X5,y)
+    coefficients=[]
+    for name,value,standard in zip(core[5]['coefficients'],b5,np.sqrt(np.diag(v5))):
+        coefficients.append(dict(term=name,value=float(value),se=float(standard),low=float(value-1.96*standard),high=float(value+1.96*standard),p=float(2*norm.sf(abs(value/standard)))))
+    Xfull=np.column_stack([np.ones(n),x,s.urban]); bf,_,_=fit_ols(Xfull,y); aux,_,_=fit_ols(X,s.urban)
+    sigma2=sse/(n-2); bread=np.linalg.inv(X.T@X); intervals=[]
+    for val in [2,3.5,5]:
+        row=np.array([1,val]); mu=float(row@b); mean_se=float(np.sqrt(sigma2*(row@bread@row))); pred_se=float(np.sqrt(sigma2+mean_se**2)); crit=t.ppf(.975,n-2)
+        intervals.append(dict(lead=val,mean=mu,mean_low=mu-crit*mean_se,mean_high=mu+crit*mean_se,prediction_low=mu-crit*pred_se,prediction_high=mu+crit*pred_se))
+    residuals=s[['store_id','baseline_rate']].assign(predicted=X5@b5,residual=e5).nlargest(5,'residual')
+    out[5]=dict(coefficients=coefficients,intervals=intervals,ovb=dict(short=float(b[1]),long=float(bf[1]),omitted_effect=float(bf[2]),sorting=float(aux[1]),product=float(bf[2]*aux[1])),
+        residuals=records(residuals),r_squared=float(1-np.sum(e5**2)/sst),adjusted_r_squared=float(1-(np.sum(e5**2)/(n-X5.shape[1]))/(sst/(n-1))))
+    # Lesson 6: rolling validation and scaling confined to each training fold.
+    features=core[6]['features']; data=p.query('3<=week<=16').copy(); dev=data.query('week<=13'); test=data.query('week>=14')
+    folds=[(7,8,9),(9,10,11),(11,12,13)]; alphas=[.001,.01,.1,1.]; tuning=[]
+    for alpha in alphas:
+        errors=[]; fold_scores=[]
+        for end,start,stop in folds:
+            tr=dev[dev.week<=end]; va=dev[dev.week.between(start,stop)]
+            model=make_pipeline(PolynomialFeatures(2,include_bias=False),StandardScaler(),Lasso(alpha=alpha,max_iter=10000))
+            model.fit(tr[features],tr.stockout_rate); error=va.stockout_rate.to_numpy()-model.predict(va[features]); errors.extend(error)
+            fold_scores.append(float(np.sqrt(np.mean(error**2))))
+        tuning.append(dict(alpha=alpha,rmse=float(np.sqrt(np.mean(np.square(errors)))),fold_rmse=fold_scores))
+    best=min(tuning,key=lambda row:row['rmse'])['alpha']
+    tuned=make_pipeline(PolynomialFeatures(2,include_bias=False),StandardScaler(),Lasso(alpha=best,max_iter=10000));tuned.fit(dev[features],dev.stockout_rate)
+    prediction=tuned.predict(test[features]); errors=test.stockout_rate.to_numpy()-prediction
+    names=tuned[0].get_feature_names_out(features); terms=sorted([dict(feature=str(name),coefficient=float(coef)) for name,coef in zip(names,tuned[-1].coef_) if abs(coef)>1e-10],key=lambda d:abs(d['coefficient']),reverse=True)
+    criteria=[]
+    for degree in [1,2]:
+        model=make_pipeline(PolynomialFeatures(degree,include_bias=False),LinearRegression());model.fit(dev[features],dev.stockout_rate)
+        error=dev.stockout_rate-model.predict(dev[features]); rss=float(np.sum(error**2)); k=int(model[0].n_output_features_+1); nn=len(dev)
+        criteria.append(dict(degree=degree,parameters=k,training_rmse=float(np.sqrt(rss/nn)),aic=nn*np.log(rss/nn)+2*k,bic=nn*np.log(rss/nn)+k*np.log(nn)))
+    out[6]=dict(folds=[dict(train_end=a,validation_start=b,validation_end=c) for a,b,c in folds],tuning=tuning,alpha=best,
+        retained=len(terms),candidate_features=len(names),largest=terms[:6],test_rmse=float(np.sqrt(np.mean(errors**2))),test_mae=float(np.mean(abs(errors))),criteria=criteria,
+        log_example=dict(naive=10.,smearing=float(np.mean(np.exp([-.2,.2]))),mean=float(10*np.mean(np.exp([-.2,.2])))))
+    # Lesson 7: reveal both potential paths only in a known-answer exercise.
+    pilot=p.query("cohort=='Pilot' and 17<=week<=24").groupby(['store_id','offer']).agg(y0=('y0','mean'),y1=('y1','mean')).reset_index()
+    pilot['y0']=100*pilot.y0/140;pilot['y1']=100*pilot.y1/140;pilot['reduction']=pilot.y0-pilot.y1
+    tr=pilot.offer==1; ate=float(pilot.reduction.mean());att=float(pilot.loc[tr,'reduction'].mean());atu=float(pilot.loc[~tr,'reduction'].mean())
+    bias=float(pilot.loc[~tr,'y0'].mean()-pilot.loc[tr,'y0'].mean())
+    ps=s.query("cohort=='Pilot'"); balance=[]
+    for var in ['lead_days','urban','baseline_rate']:
+        balance.append(dict(variable=var,offered=float(ps[ps.offer==1][var].mean()),usual=float(ps[ps.offer==0][var].mean())))
+    out[7]=dict(potential_rows=records(pilot.head(6)),ate=ate,att=att,atu=atu,treated_share=float(tr.mean()),selection_component=bias,balance=balance)
+    # Lesson 8: use population-specific stratum weights on the same comparisons.
+    strata=core[8]['strata']; nt=sum(g['offered'] for g in strata); nc=sum(g['control'] for g in strata)
+    weights=[dict(group=g['group'],reduction=g['reduction'],ate_weight=g['n']/50,att_weight=g['offered']/nt,atu_weight=g['control']/nc) for g in strata]
+    rng=np.random.default_rng(SEED+808); simulations=[]; count=3000
+    # Separate mechanism experiments for the DAG appendix, not extra field records.
+    offer=rng.binomial(1,.5,count); mediator=1.5*offer+rng.normal(size=count); outcome=20-2*mediator+rng.normal(size=count)
+    naive,_,_=fit_ols(np.column_stack([np.ones(count),offer]),outcome)
+    adjusted,_,_=fit_ols(np.column_stack([np.ones(count),offer,mediator]),outcome)
+    simulations.append(dict(mechanism='Chain',control='Post-offer review effort',total_reduction=3.,naive=float(-naive[1]),adjusted=float(-adjusted[1])))
+    common=rng.normal(size=count);offer=(.8*common+rng.normal(size=count)>0).astype(int);outcome=12+2*common-3*offer+rng.normal(size=count)
+    naive,_,_=fit_ols(np.column_stack([np.ones(count),offer]),outcome)
+    adjusted,_,_=fit_ols(np.column_stack([np.ones(count),offer,common]),outcome)
+    simulations.append(dict(mechanism='Fork',control='Pre-offer operating pressure',total_reduction=3.,naive=float(-naive[1]),adjusted=float(-adjusted[1])))
+    offer=rng.binomial(1,.5,count);outcome=12-3*offer+rng.normal(size=count);collider=.8*offer+.8*outcome+rng.normal(size=count)
+    naive,_,_=fit_ols(np.column_stack([np.ones(count),offer]),outcome)
+    adjusted,_,_=fit_ols(np.column_stack([np.ones(count),offer,collider]),outcome)
+    simulations.append(dict(mechanism='Collider',control='Post-offer escalation score',total_reduction=3.,naive=float(-naive[1]),adjusted=float(-adjusted[1])))
+    out[8]=dict(weights=weights,ate=sum(g['reduction']*g['ate_weight'] for g in weights),att=sum(g['reduction']*g['att_weight'] for g in weights),atu=sum(g['reduction']*g['atu_weight'] for g in weights),simulations=simulations)
+    # Lesson 9: exact/coarsened/propensity matching, explicit overlap and targets.
+    v=p.query("cohort=='Voluntary' and 17<=week<=24").groupby(['store_id','offer']).stockout_rate.mean().reset_index().merge(s[['store_id','lead_days','urban','baseline_rate']],on='store_id',validate='one_to_one')
+    matching=[]
+    for method,cols in [('Exact on lead and location',['lead_days','urban']),('Coarsened baseline + lead + location',['lead_days','urban','baseline_band'])]:
+        frame=v.assign(baseline_band=np.floor(v.baseline_rate/5)); effects=[]; kept=[]
+        for _,group in frame.groupby(cols):
+            treated=group[group.offer==1]; control=group[group.offer==0]
+            if len(control) and len(treated):effects.extend((control.stockout_rate.mean()-treated.stockout_rate).tolist());kept.extend(treated.store_id.tolist())
+        matching.append(dict(method=method,matched_adopters=len(effects),total_adopters=int(v.offer.sum()),estimate=float(np.mean(effects))))
+    covars=['lead_days','urban','baseline_rate']; scoremodel=make_pipeline(StandardScaler(),LogisticRegression(C=1.,max_iter=1000));scoremodel.fit(v[covars],v.offer)
+    score=scoremodel.predict_proba(v[covars])[:,1];logit=np.log(score/(1-score));v=v.assign(score=score,logit=logit)
+    tr=v[v.offer==1];ct=v[v.offer==0];caliper=.2*np.std(logit,ddof=1);matches=[]
+    for a in tr.itertuples():
+        index=(ct.logit-a.logit).abs().idxmin(); c=ct.loc[index]
+        if abs(c.logit-a.logit)<=caliper:matches.append((a.Index,index))
+    effects=[v.loc[c,'stockout_rate']-v.loc[a,'stockout_rate'] for a,c in matches]
+    matching.append(dict(method='Propensity, logit caliper',matched_adopters=len(matches),total_adopters=len(tr),estimate=float(np.mean(effects))))
+    balance=[]
+    for col in covars:
+        denom=np.sqrt((tr[col].var(ddof=1)+ct[col].var(ddof=1))/2)
+        balance.append(dict(variable=col,before=float((tr[col].mean()-ct[col].mean())/denom),after=float((v.loc[[a for a,c in matches],col].mean()-v.loc[[c for a,c in matches],col].mean())/denom)))
+    models=[]
+    for name,design in [('Unadjusted',np.column_stack([np.ones(len(v)),v.offer])),('Starting conditions',np.column_stack([np.ones(len(v)),v.offer,v[covars]]))]:
+        beta,cov,err=fit_ols(design,v.stockout_rate);standard=float(np.sqrt(cov[1,1]));models.append(dict(model=name,reduction=float(-beta[1]),low=float(-beta[1]-1.96*standard),high=float(-beta[1]+1.96*standard)))
+    models.append(dict(model='Heterogeneous, standardized',reduction=core[9]['estimate'],low=core[9]['low'],high=core[9]['high']))
+    out[9]=dict(matching=matching,balance=balance,models=models,caliper=float(caliper),unique_comparisons=len(set(c for a,c in matches)),
+        score_ranges=[dict(group='Adopters',low=float(tr.score.min()),high=float(tr.score.max())),dict(group='Nonadopters',low=float(ct.score.min()),high=float(ct.score.max()))])
+    # Lesson 10: regression equivalence, placebo windows, targets and controls.
+    roll=p.query("cohort=='Rollout' and 17<=week<=32"); periods=roll.assign(after=(roll.week>=25).astype(int)).groupby(['store_id','offer','after']).stockout_rate.mean().reset_index()
+    design=np.column_stack([np.ones(len(periods)),periods.offer,periods.after,periods.offer*periods.after]);beta,_,_=fit_ols(design,periods.stockout_rate)
+    wide=periods.pivot(index=['store_id','offer'],columns='after',values='stockout_rate').reset_index().merge(s[['store_id','lead_days','urban','baseline_rate']],on='store_id',validate='one_to_one');wide['change']=wide[1]-wide[0]
+    X=np.column_stack([np.ones(len(wide)),wide.offer,wide.lead_days,wide.urban,wide.baseline_rate]);bc,vc,ec=fit_ols(X,wide.change);standard=float(np.sqrt(vc[1,1]))
+    earlier=roll.query('week<=24').assign(later=lambda x:(x.week>=21).astype(int)).groupby(['store_id','offer','later']).stockout_rate.mean().unstack('later').reset_index();earlier['change']=earlier[1]-earlier[0]
+    placebo=difference(earlier[earlier.offer==0].change,earlier[earlier.offer==1].change)
+    subgroups=[]
+    for urban,group in wide.groupby('urban'):
+        result=difference(group[group.offer==0].change,group[group.offer==1].change)
+        subgroups.append(dict(urban=int(urban),adopters=int(group.offer.sum()),comparison=int((group.offer==0).sum()),**result))
+    weight=np.where(wide.lead_days>=4,2.,1.);treated=wide.offer==1
+    weighted=float(np.average(wide.loc[~treated,'change'],weights=weight[~treated])-np.average(wide.loc[treated,'change'],weights=weight[treated]))
+    out[10]=dict(regression=list(map(float,beta)),regression_reduction=float(-beta[3]),balanced_stores=len(wide),period_rows=len(periods),placebo=placebo,
+        controlled=dict(value=float(-bc[1]),low=float(-bc[1]-1.96*standard),high=float(-bc[1]+1.96*standard)),subgroups=subgroups,priority_weighted=weighted)
+    return out
 
 p = world()['panel']
 pilot = p[(p.cohort == 'Pilot') & p.week.between(17,24)]
@@ -208,4 +417,16 @@ worked = difference(s.loc[s.offer==0,'stockout_rate'], s.loc[s.offer==1,'stockou
 assert np.isclose(worked['value'], lesson_result(7)['effect']['value'])
 net_saving = 8.4 * worked['value'] - 20
 assert np.isclose(net_saving, lesson_result(7)['savings']['value'])
+
+# Teaching reveal: recover the potential-outcome targets.
+potential = world()['panel'].query("cohort=='Pilot' and 17<=week<=24")
+potential = potential.groupby(['store_id','offer'])[['y0','y1']].mean().reset_index()
+potential['reduction'] = 100*(potential.y0-potential.y1)/140
+share = potential.offer.mean()
+att = potential.loc[potential.offer==1,'reduction'].mean()
+atu = potential.loc[potential.offer==0,'reduction'].mean()
+ate = potential.reduction.mean()
+assert np.isclose(ate,share*att+(1-share)*atu)
+assert np.isclose(ate,lesson_result(7)['depth']['ate'])
+
 print(json.dumps(lesson_result(7), indent=2, allow_nan=False))

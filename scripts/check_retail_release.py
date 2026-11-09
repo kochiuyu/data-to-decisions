@@ -6,6 +6,7 @@ import ast,json,re,sys,subprocess,urllib.parse,math,os,hashlib
 import numpy as np
 import pandas as pd
 from retail_case import world,all_results,SPEC
+from curriculum_map import validate_coverage,SLIDE_COUNTS
 ROOT=Path(__file__).resolve().parents[1];SITE=ROOT/'dist'
 
 class Page(HTMLParser):
@@ -63,9 +64,26 @@ def check_science():
     assert np.allclose(public.stockout_rate,w['public'].stockout_rate,atol=1e-7)
     baseline=pd.read_csv(SITE/'assets/baseline.csv')
     assert baseline.week.max()==16 and not {'offer','active'} & set(baseline.columns)
+    for histogram in r[2]['depth']['histograms']:
+        assert sum(b['count'] for b in histogram['bins'])==150
+    for g in r[2]['depth']['composition']:assert np.isclose(sum(g['percent']),100)
+    assert 0<=r[3]['depth']['proportion']['low']<=r[3]['depth']['proportion']['high']<=1
+    d=r[4]['depth'];assert np.isclose(d['sst'],d['sse']+d['ssr'])
+    d=r[5]['depth']['ovb'];assert np.isclose(d['short'],d['long']+d['product'])
+    for row in r[5]['depth']['intervals']:
+        assert row['prediction_low']<row['mean_low']<row['mean_high']<row['prediction_high']
+    d=r[6]['depth'];assert d['alpha']==min(d['tuning'],key=lambda v:v['rmse'])['alpha']
+    assert all(v['train_end']<v['validation_start']<=v['validation_end']<=13 for v in d['folds'])
+    d=r[7]['depth'];assert np.isclose(d['ate'],d['treated_share']*d['att']+(1-d['treated_share'])*d['atu'])
+    assert np.isclose(r[7]['effect']['value'],d['att']+d['selection_component'])
+    for name in ['ate','att','atu']:
+        assert np.isclose(sum(g[name+'_weight'] for g in r[8]['depth']['weights']),1)
+    for row in r[9]['depth']['matching']:assert 0<row['matched_adopters']<=row['total_adopters']
+    assert np.isclose(r[10]['depth']['regression_reduction'],r[10]['effect']['value'])
     return r
 
 def validate(execute=False):
+    validate_coverage()
     results=check_science()
     texts={path:path.read_text(encoding='utf-8') for path in SITE.glob('*.html')}
     pages={path:Page(txt) for path,txt in texts.items()};assert len(pages)==35
@@ -85,9 +103,11 @@ def validate(execute=False):
         assert text==texts[SITE/f'lesson-{n}-guide.html'],(n,'Guide bookmark must retain the full lesson')
         assert all(k in page.ids for k in ['decision-brief','read-data','calculate','interpret','act','memo','big-picture'])
         assert '<table>' in text and f'lesson-{n}-appendix.html#calculation' in text
+        assert 'data-present-start' in text and 'data-present-source' in text and 'teaching-block' in text
         main=text.split('<main',1)[1].split('</main>')[0];lengths[n]=len(re.sub('<[^>]+>',' ',main).split())
         assert lengths[n]>=650,(n,'Insufficient core explanation',lengths[n])
         assert all(k in pages[SITE/f'lesson-{n}-appendix.html'].ids for k in ['data','calculation','uncertainty','extension','generation','known-answer'])
+        assert 'original-coverage' in pages[SITE/f'lesson-{n}-appendix.html'].ids
         data=json.loads((SITE/f'assets/lesson{n}-results.json').read_text(encoding='utf-8'))
         assert equivalent(data,results[n]),(n,'Saved analysis differs')
         src=(SITE/f'assets/lesson{n}-lab.py').read_text(encoding='utf-8');ast.parse(src)
@@ -110,6 +130,6 @@ def validate(execute=False):
             txt=path.read_text(encoding='utf-8')
             assert not re.search(r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}',txt)
             if path.suffix in {'.py','.ipynb'}:assert not re.search(r'read_(?:csv|excel)\s*\(\s*[\'\"]https?://|requests\.get|urlopen\(',txt)
-    print(json.dumps(dict(pages=len(pages),case=SPEC['case'],shared_data_verified=True,lesson_words=lengths,labs_rerun=10 if execute else 0),indent=2))
+    print(json.dumps(dict(pages=len(pages),case=SPEC['case'],shared_data_verified=True,original_slides_mapped=sum(SLIDE_COUNTS.values()),lesson_words=lengths,labs_rerun=10 if execute else 0),indent=2))
 
 if __name__=='__main__':validate('--execute' in sys.argv)

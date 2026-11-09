@@ -118,6 +118,79 @@
     "Offer \u00d7 centered lead",
     "Offer \u00d7 urban"
   ],
+  "depth": {
+    "matching": [
+      {
+        "method": "Exact on lead and location",
+        "matched_adopters": 20,
+        "total_adopters": 26,
+        "estimate": 2.5620535714285717
+      },
+      {
+        "method": "Coarsened baseline + lead + location",
+        "matched_adopters": 13,
+        "total_adopters": 26,
+        "estimate": 2.795673076923076
+      },
+      {
+        "method": "Propensity, logit caliper",
+        "matched_adopters": 19,
+        "total_adopters": 26,
+        "estimate": 3.4962406015037586
+      }
+    ],
+    "balance": [
+      {
+        "variable": "lead_days",
+        "before": 0.8760594059452709,
+        "after": 0.0
+      },
+      {
+        "variable": "urban",
+        "before": -0.08867833452144065,
+        "after": -0.5200684280204781
+      },
+      {
+        "variable": "baseline_rate",
+        "before": 0.6434880885387787,
+        "after": -0.22162475621820604
+      }
+    ],
+    "models": [
+      {
+        "model": "Unadjusted",
+        "reduction": 2.0638736263736255,
+        "low": 0.998641836843416,
+        "high": 3.129105415903835
+      },
+      {
+        "model": "Starting conditions",
+        "reduction": 2.903194561059795,
+        "low": 2.209538657601014,
+        "high": 3.5968504645185764
+      },
+      {
+        "model": "Heterogeneous, standardized",
+        "reduction": 3.008635859937046,
+        "low": 2.3914458792016795,
+        "high": 3.6258258406724124
+      }
+    ],
+    "caliper": 0.1733319313344941,
+    "unique_comparisons": 10,
+    "score_ranges": [
+      {
+        "group": "Adopters",
+        "low": 0.2783364491470138,
+        "high": 0.8594195114777178
+      },
+      {
+        "group": "Nonadopters",
+        "low": 0.26986794558815635,
+        "high": 0.7200266490697519
+      }
+    ]
+  },
   "lesson": 9,
   "seed": 20261109,
   "case": "Retail stockouts and replenishment alerts",
