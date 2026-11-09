@@ -1,12 +1,12 @@
 # Data to decisions
 
-A public, reproducible course in applied business statistics: ten lessons, 246 teaching stops, worked explanations, accessible charts, and executable Python labs.
+A public, reproducible course in applied business statistics: ten short business lessons, optional technical appendices with 246 detailed teaching stops, accessible charts, and executable Python labs.
 
 ## This edition
 
 Every case dataset is newly generated for teaching from a documented model and fixed seed. The public release contains no historical source records, resampled historical records, fitted historical results, or private site files. Its numbers are not claims about real people, firms or markets. The earlier private course remains a separate edition.
 
-Topics progress from measurement, distributions and inference to regression, prediction, experiments, causal graphs, matching and difference-in-differences. Five supporting pages provide navigation, study guidance, Python help, provenance and a final synthesis.
+Topics progress from measurement, distributions and inference to regression, prediction, experiments, causal graphs, matching and difference-in-differences. Each short lesson presents a decision, an observed result, a question, and a reveal of the synthetic model's known truth. Its appendix contains the data-generating process and the original detailed methods. Five supporting pages provide navigation, study guidance, Python help, provenance and a final synthesis.
 
 ## Reproduce
 
