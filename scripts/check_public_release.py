@@ -46,6 +46,9 @@ def validate(execute=False):
    n=int(match[1]);assert page.stops==0,(path,'Main lesson should be concise',page.stops)
    text=path.read_text(encoding='utf-8')
    assert 'Reveal the case’s known answer' in text and f'lesson-{n}-guide.html' in text,(path,'Missing case answer or guide link')
+   assert all(f'<section id="{section}">' in text for section in ('situation','evidence','decision')),(path,'Missing business narrative section')
+   main=text.split('<main id="main">',1)[1].split('</main>',1)[0]
+   assert len(re.findall(r"[A-Za-z0-9]+",re.sub(r'<[^>]+>',' ',main)))>=350,(path,'Business case is too brief')
   if guide:
    n=int(guide[1]);data=json.loads((SITE/f'assets/lesson{n}-results.json').read_text(encoding='utf-8'))
    assert page.stops==len(story(n,data)['chapters'])==3,(path,'Guided chapter count',page.stops)

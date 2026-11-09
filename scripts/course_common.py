@@ -2,6 +2,7 @@
 from pathlib import Path
 import html, json, subprocess, sys
 from business_cases import case
+from business_route_expansion import EXPANSION
 from guided_paths import story
 ROOT=Path(__file__).resolve().parents[1]
 DIST=ROOT/'dist'
@@ -42,6 +43,7 @@ def render_lesson(number,title,intro,sections,*,outcomes=None):
     """Publish a short business lesson and preserve the full lesson in an appendix."""
     result=json.loads((DIST/'assets'/f'lesson{number}-results.json').read_text(encoding='utf-8'))
     brief=case(number,result)
+    business=EXPANSION[number]
     toc=''.join(f'<li><a href="#{esc(s["id"])}">{i+1:02d}. {esc(s["title"])}</a></li>' for i,s in enumerate(sections))
     blocks=[]
     for i,s in enumerate(sections):
@@ -68,22 +70,23 @@ def render_lesson(number,title,intro,sections,*,outcomes=None):
         guide_blocks.append(f'<section class="lesson-step" id="chapter-{i+1}"><p class="eyebrow">Part {i+1} of {len(guided)}</p><h2>{esc(s["title"])}</h2>{body}</section>')
     short=(f'<main id="main"><div class="hero wrap"><p class="eyebrow">Lesson {number} · Business route</p><h1>{esc(title)}</h1>'
            f'<p class="lead">{esc(brief["question"])}</p></div>'
-           f'<div class="content wrap"><section id="evidence"><h2>What the data show</h2><p>{esc(brief["evidence"])}</p></section>'
-           f'<section id="decision"><h2>What would you decide?</h2><p>{esc(brief["decision"])}</p><aside class="check"><h3>Pause and explain</h3><p>{esc(brief["prompt"])}</p><details><summary>Compare your reasoning</summary><div><p>{esc(brief["answer"])}</p></div></details></aside></section>'
+           f'<div class="content wrap"><section id="situation"><h2>The business problem</h2><p>{esc(business["situation"])}</p></section>'
+           f'<section id="evidence"><h2>What the data show</h2><p>{esc(brief["evidence"])}</p><p>{esc(business["meaning"])}</p></section>'
+           f'<section id="decision"><h2>What would you decide?</h2><p>{esc(brief["decision"])}</p><p>{esc(business["action"])}</p><aside class="check"><h3>Pause and explain</h3><p>{esc(brief["prompt"])}</p><details><summary>Compare your reasoning</summary><div><p>{esc(brief["answer"])}</p></div></details></aside></section>'
            f'<section id="reveal"><h2>Check your judgment</h2><details><summary>Reveal the case’s known answer</summary><div><p>{esc(brief["truth"])}</p></div></details></section>'
-           f'<section id="deeper"><h2>Continue at your own depth</h2><p><a class="button" href="{guide}">Read the guided lesson</a></p><p>The guided lesson follows this business decision through the practical problem, evidence and next action. The <a href="{appendix}">technical appendix</a> has the generation rules, derivations and all {len(sections)} original teaching stops.</p></section>'
+           f'<section id="deeper"><h2>Continue at your own depth</h2><p><a class="button" href="{guide}">Read the guided lesson</a></p><p>Follow the full story of this decision in the guided lesson. The <a href="{appendix}">technical appendix</a> has the generation rules, derivations and all {len(sections)} original teaching stops.</p></section>'
            f'<nav class="lesson-end" aria-label="Lessons">{previous}{nxt}</nav></div></main>')
     (DIST/f'lesson-{number}.html').write_text(shell(f'Lesson {number}: {title}',short),encoding='utf-8',newline='\n')
     guided_body=(f'<main id="main"><div class="hero wrap"><p class="eyebrow">Lesson {number} · Guided route</p><h1>{esc(title)}: guided case</h1>'
-                 f'<p class="lead">{esc(brief["question"])}</p><p>Follow one business problem from the manager’s request to a practical next step. The <a href="lesson-{number}.html">short case</a> gives the decision at a glance; the <a href="{appendix}#generation">technical appendix</a> holds the complete model and derivations.</p>'
-                 f'<div class="downloads"><a class="button" href="lesson-{number}.html">Short case</a><a class="text-link" href="{appendix}">Technical appendix</a></div></div>'
+                 f'<p class="lead">{esc(brief["question"])}</p><p>Follow one business problem from the manager’s request to a practical next step. The <a href="lesson-{number}.html">business case</a> presents the decision and action plan; the <a href="{appendix}#generation">technical appendix</a> holds the complete model and derivations.</p>'
+                 f'<div class="downloads"><a class="button" href="lesson-{number}.html">Business case</a><a class="text-link" href="{appendix}">Technical appendix</a></div></div>'
                  f'<div class="lesson-layout wrap"><aside class="roadmap"><details open><summary>Story chapters</summary><ol>{guide_toc}</ol></details></aside><article>'
                  +''.join(guide_blocks)
                  +f'<section class="appendix-intro" id="guided-reveal"><h2>Check your judgment</h2><details><summary>Reveal the case’s known answer</summary><div><p>{esc(brief["truth"])}</p></div></details></section>'
-                 +f'<nav class="lesson-end" aria-label="Lessons"><a href="lesson-{number}.html">← Short case</a><a href="{appendix}">Technical appendix →</a></nav></article></div></main>')
+                 +f'<nav class="lesson-end" aria-label="Lessons"><a href="lesson-{number}.html">← Business case</a><a href="{appendix}">Technical appendix →</a></nav></article></div></main>')
     (DIST/guide).write_text(shell(f'Lesson {number} guided case: {title}',guided_body),encoding='utf-8',newline='\n')
     detailed=(f'<main id="main"><div class="hero wrap"><p class="eyebrow">Lesson {number} · Optional technical appendix</p><h1>{esc(title)}: methods and data</h1>'
-              f'<p class="lead">Keep the business question in view while inspecting how this fictional case was made and analyzed.</p><div class="downloads"><a class="button" href="{guide}">Guided lesson</a><a class="text-link" href="lesson-{number}.html">Short case</a>{links}</div></div>'
+              f'<p class="lead">Keep the business question in view while inspecting how this fictional case was made and analyzed.</p><div class="downloads"><a class="button" href="{guide}">Guided lesson</a><a class="text-link" href="lesson-{number}.html">Business case</a>{links}</div></div>'
               f'<div class="lesson-layout wrap"><aside class="roadmap"><details open><summary>Appendix roadmap</summary><ol><li><a href="#generation">Data generation</a></li>{toc}</ol></details></aside><article>'
               f'<section class="appendix-intro" id="generation"><p class="eyebrow">Reproducibility</p><h2>How the fictional data were generated</h2><p>{esc(brief["generator"])}</p><p><strong>Fixed seed:</strong> {esc(result["seed"])}. <a href="assets/lesson{number}-lab.py" download>Read the complete generator and analysis code</a>; <a href="assets/lesson{number}-results.json">inspect the saved results</a>.</p><p><strong>Known truth:</strong> {esc(brief["truth"])}</p><p>These are model assumptions and generated outcomes, not claims about a real population.</p></section>'
               +''.join(blocks)+f'<nav class="lesson-end" aria-label="Lessons"><a href="lesson-{number}.html">← Short lesson</a>{nxt}</nav></article></div></main>')
