@@ -109,7 +109,8 @@ caliper = .2*v.logit.std(ddof=1)
 controls = v[v.offer==0]
 matched_effects = []
 for adopter in v[v.offer==1].itertuples():
-    closest = (controls.logit-adopter.logit).abs().idxmin()
+    # Numerically tied distances use the lowest store ID.
+    closest = nearest_score_match(controls,adopter.logit)
     comparison = controls.loc[closest]
     if abs(comparison.logit-adopter.logit)<=caliper:
         matched_effects.append(comparison.stockout_rate-adopter.stockout_rate)

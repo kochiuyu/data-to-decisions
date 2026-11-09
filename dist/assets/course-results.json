@@ -2249,7 +2249,7 @@
           "method": "Propensity, logit caliper",
           "matched_adopters": 19,
           "total_adopters": 26,
-          "estimate": 3.4962406015037586
+          "estimate": 3.543233082706766
         }
       ],
       "balance": [
@@ -2266,7 +2266,7 @@
         {
           "variable": "baseline_rate",
           "before": 0.6434880885387787,
-          "after": -0.22162475621820604
+          "after": -0.23745509594807784
         }
       ],
       "models": [

@@ -51,6 +51,12 @@ def fit_ols(X,y):
     covariance=(len(y)/(len(y)-X.shape[1]))*bread@(X.T@(residual[:,None]**2*X))@bread
     return b,covariance,residual
 
+def nearest_score_match(controls,target):
+    """Nearest logit; scores within 1e-10 of the minimum tie by store ID."""
+    distance=(controls.logit-target).abs()
+    tied=controls.loc[np.isclose(distance,distance.min(),rtol=0,atol=1e-10)]
+    return tied.sort_values('store_id').index[0]
+
 @lru_cache(maxsize=1)
 def world():
     rng=np.random.default_rng(SEED)
@@ -379,7 +385,7 @@ def expanded_results(w,core):
     score=scoremodel.predict_proba(v[covars])[:,1];logit=np.log(score/(1-score));v=v.assign(score=score,logit=logit)
     tr=v[v.offer==1];ct=v[v.offer==0];caliper=.2*np.std(logit,ddof=1);matches=[]
     for a in tr.itertuples():
-        index=(ct.logit-a.logit).abs().idxmin(); c=ct.loc[index]
+        index=nearest_score_match(ct,a.logit); c=ct.loc[index]
         if abs(c.logit-a.logit)<=caliper:matches.append((a.Index,index))
     effects=[v.loc[c,'stockout_rate']-v.loc[a,'stockout_rate'] for a,c in matches]
     matching.append(dict(method='Propensity, logit caliper',matched_adopters=len(matches),total_adopters=len(tr),estimate=float(np.mean(effects))))
