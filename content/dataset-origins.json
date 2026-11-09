@@ -1,0 +1,88 @@
+{
+  "edition": "Original synthetic public edition",
+  "external_observations_included": false,
+  "empirical_calibration_used": false,
+  "statement": "Every case is generated de novo from the disclosed code and seed. Results do not describe actual people, businesses or markets.",
+  "lessons": [
+    {
+      "lesson": 1,
+      "case": "Fictional lodging offers and team fixtures",
+      "origin": "Original synthetic generator",
+      "seed": 41021,
+      "generator": "dist/assets/lesson1-lab.py",
+      "calculated_results": "dist/assets/lesson1-results.json"
+    },
+    {
+      "lesson": 2,
+      "case": "Fictional lodging prices and firm attributes",
+      "origin": "Original synthetic generator",
+      "seed": 42022,
+      "generator": "dist/assets/lesson2-lab.py",
+      "calculated_results": "dist/assets/lesson2-results.json"
+    },
+    {
+      "lesson": 3,
+      "case": "Simulated index sessions, sensor readings and paired prices",
+      "origin": "Original synthetic generator",
+      "seed": 43023,
+      "generator": "dist/assets/lesson3-lab.py",
+      "calculated_results": "dist/assets/lesson3-results.json"
+    },
+    {
+      "lesson": 4,
+      "case": "Juniper workshop service costs",
+      "origin": "Original synthetic generator",
+      "seed": 440731,
+      "generator": "dist/assets/lesson4-lab.py",
+      "calculated_results": "dist/assets/lesson4-results.json"
+    },
+    {
+      "lesson": 5,
+      "case": "Cedar calibration rigs",
+      "origin": "Original synthetic generator",
+      "seed": 550829,
+      "generator": "dist/assets/lesson5-lab.py",
+      "calculated_results": "dist/assets/lesson5-results.json"
+    },
+    {
+      "lesson": 6,
+      "case": "Mica dispatch costs",
+      "origin": "Original synthetic generator",
+      "seed": 660913,
+      "generator": "dist/assets/lesson6-lab.py",
+      "calculated_results": "dist/assets/lesson6-results.json"
+    },
+    {
+      "lesson": 7,
+      "case": "Fictional team outcomes and advertising experiment",
+      "origin": "Original synthetic generator",
+      "seed": 7107,
+      "generator": "dist/assets/lesson7-lab.py",
+      "calculated_results": "dist/assets/lesson7-results.json"
+    },
+    {
+      "lesson": 8,
+      "case": "Graph-generated confounding, collider and mediation systems",
+      "origin": "Original synthetic generator",
+      "seed": 8108,
+      "generator": "dist/assets/lesson8-lab.py",
+      "calculated_results": "dist/assets/lesson8-results.json"
+    },
+    {
+      "lesson": 9,
+      "case": "Fictional program selection and outcomes",
+      "origin": "Original synthetic generator",
+      "seed": 9109,
+      "generator": "dist/assets/lesson9-lab.py",
+      "calculated_results": "dist/assets/lesson9-results.json"
+    },
+    {
+      "lesson": 10,
+      "case": "Fictional facility rollout panel",
+      "origin": "Original synthetic generator",
+      "seed": 10110,
+      "generator": "dist/assets/lesson10-lab.py",
+      "calculated_results": "dist/assets/lesson10-results.json"
+    }
+  ]
+}

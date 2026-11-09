@@ -1,0 +1,119 @@
+{
+  "lesson": 9,
+  "seed": 9109,
+  "provenance": "Original fixed-seed program-selection population with nonlinear baseline, heterogeneous effects, standardization, CEM, propensity weighting, balance, eligibility audit and transport exercise.",
+  "sections": [
+    {
+      "id": "target-trial",
+      "title": "Start with the trial you wish you could run"
+    },
+    {
+      "id": "assignment-audit",
+      "title": "Reconstruct why facilities received treatment"
+    },
+    {
+      "id": "dgp",
+      "title": "Open the new process-coaching generator"
+    },
+    {
+      "id": "clock",
+      "title": "Draw the graph in chronological order"
+    },
+    {
+      "id": "control-causes",
+      "title": "Adjust for causes of selection and outcome"
+    },
+    {
+      "id": "bad-controls",
+      "title": "Not every useful predictor is a useful control"
+    },
+    {
+      "id": "estimand",
+      "title": "Choose whose gains the decision concerns"
+    },
+    {
+      "id": "versions",
+      "title": "Audit what the treatment flag actually contains"
+    },
+    {
+      "id": "sample-rule",
+      "title": "A one-character Boolean error changes the population"
+    },
+    {
+      "id": "descriptive",
+      "title": "Read both group means before explaining the difference"
+    },
+    {
+      "id": "standardization",
+      "title": "Regression adjustment is predict, contrast, average"
+    },
+    {
+      "id": "interactions",
+      "title": "A treatment coefficient is not always an average effect"
+    },
+    {
+      "id": "averaging",
+      "title": "Hold the fitted contrasts fixed and change target weights"
+    },
+    {
+      "id": "shape",
+      "title": "Audit omitted causes, shape and support separately"
+    },
+    {
+      "id": "hidden-confounding",
+      "title": "A separate hidden-cause experiment tests a real vulnerability"
+    },
+    {
+      "id": "overlap",
+      "title": "Show who can actually be compared"
+    },
+    {
+      "id": "positivity",
+      "title": "A model cannot create an untreated comparison"
+    },
+    {
+      "id": "balance",
+      "title": "Measure balance under the weights actually used"
+    },
+    {
+      "id": "cem",
+      "title": "Coarsened exact matching makes a tradeoff explicit"
+    },
+    {
+      "id": "cem-target",
+      "title": "Matching weights preserve a stated target"
+    },
+    {
+      "id": "propensity",
+      "title": "A score organizes comparisons, not causal knowledge"
+    },
+    {
+      "id": "ipw",
+      "title": "Weights reveal the cost of rare comparisons"
+    },
+    {
+      "id": "method-comparison",
+      "title": "Compare like targets before comparing methods"
+    },
+    {
+      "id": "uncertainty",
+      "title": "Attach uncertainty to the actual estimator"
+    },
+    {
+      "id": "validity",
+      "title": "Internal validity and transport ask different questions"
+    },
+    {
+      "id": "transport",
+      "title": "Transport the effect function, not the raw average"
+    },
+    {
+      "id": "reproduction",
+      "title": "Reproduction should expose decisions, not just rerun code"
+    },
+    {
+      "id": "bounded-brief",
+      "title": "Say what the evidence supports and what comes next"
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "lesson": 10,
+  "seed": 10110,
+  "provenance": "Original fixed-seed facility panel with a common adoption date, serially correlated noise, clustered DiD inference, pretrend diagnostics and explicit alternative DGPs for design threats.",
+  "sections": [
+    {
+      "id": "decision",
+      "title": "Begin with the rollout decision, not a regression"
+    },
+    {
+      "id": "generator",
+      "title": "Inspect the synthetic panel before estimating it"
+    },
+    {
+      "id": "missing-outcome",
+      "title": "The missing outcome is adopters without rollout"
+    },
+    {
+      "id": "target",
+      "title": "An adopter effect is not an effect for every facility"
+    },
+    {
+      "id": "two-by-two",
+      "title": "Make the two-by-two layout visible"
+    },
+    {
+      "id": "first-differences",
+      "title": "First difference: measure each group\u2019s movement"
+    },
+    {
+      "id": "second-difference",
+      "title": "Second difference: subtract the comparison trend"
+    },
+    {
+      "id": "counterfactual",
+      "title": "Construct the treated group\u2019s counterfactual trend"
+    },
+    {
+      "id": "scale",
+      "title": "A change in levels is not a proportional change"
+    },
+    {
+      "id": "parallel",
+      "title": "Parallel trends concerns unobserved untreated outcomes"
+    },
+    {
+      "id": "drift",
+      "title": "Quantify the consequence of a differential untreated trend"
+    },
+    {
+      "id": "anticipation",
+      "title": "The treatment can begin before its official date"
+    },
+    {
+      "id": "spillovers",
+      "title": "The comparison group must remain a meaningful alternative"
+    },
+    {
+      "id": "composition",
+      "title": "Changing participants can mimic a treatment effect"
+    },
+    {
+      "id": "pretrends",
+      "title": "Pre-trend evidence can challenge but not certify the design"
+    },
+    {
+      "id": "interaction",
+      "title": "The interaction regression reproduces the same contrast"
+    },
+    {
+      "id": "weights",
+      "title": "An average effect needs an explicit weighting rule"
+    },
+    {
+      "id": "cluster",
+      "title": "Repeated rows are not independent assignment units"
+    },
+    {
+      "id": "conditional",
+      "title": "Conditional DiD needs its own comparability argument"
+    },
+    {
+      "id": "chronology",
+      "title": "The chronology determines the analysis window"
+    },
+    {
+      "id": "ratios",
+      "title": "Aggregate compatible totals rather than averaging arbitrary ratios"
+    },
+    {
+      "id": "frozen-labels",
+      "title": "Freeze design labels at baseline"
+    },
+    {
+      "id": "denominators",
+      "title": "Audit the row count and the unit count separately"
+    },
+    {
+      "id": "logs",
+      "title": "Subtract log changes before translating them"
+    },
+    {
+      "id": "intensity",
+      "title": "A binary rollout flag and an exposure slope ask different questions"
+    },
+    {
+      "id": "heterogeneity",
+      "title": "Heterogeneous effects complicate aggregation and staggered adoption"
+    },
+    {
+      "id": "decision-audit",
+      "title": "A narrow interval does not remove design uncertainty"
+    },
+    {
+      "id": "brief",
+      "title": "Write a claim another analyst can reconstruct"
+    }
+  ]
+}

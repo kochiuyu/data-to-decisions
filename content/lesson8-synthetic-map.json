@@ -1,0 +1,119 @@
+{
+  "lesson": 8,
+  "seed": 8108,
+  "provenance": "Original fixed-seed strata, nearest-neighbor matching, and independent structural simulations for confounding, collider adjustment and mediation. Each equation is explicit and no external input is used.",
+  "sections": [
+    {
+      "id": "conditional",
+      "title": "Compare like with like, then name the target"
+    },
+    {
+      "id": "strata-generator",
+      "title": "Generate a transparent observational population"
+    },
+    {
+      "id": "strata-calculation",
+      "title": "Subclassification is a weighted calculation"
+    },
+    {
+      "id": "target-weights",
+      "title": "ATE, ATT and ATU keep the gaps but change the weights"
+    },
+    {
+      "id": "matching",
+      "title": "A match supplies an estimate, not an observed counterfactual"
+    },
+    {
+      "id": "graph-language",
+      "title": "Arrows encode causal commitments"
+    },
+    {
+      "id": "chain",
+      "title": "A chain carries a mediated effect"
+    },
+    {
+      "id": "fork",
+      "title": "A fork creates common-cause association"
+    },
+    {
+      "id": "collider",
+      "title": "A common consequence behaves differently"
+    },
+    {
+      "id": "d-separation",
+      "title": "Trace each path one internal node at a time"
+    },
+    {
+      "id": "descendants",
+      "title": "A collider\u2019s descendant can open the path"
+    },
+    {
+      "id": "graph-evidence",
+      "title": "Graphical implications are not automatic discoveries"
+    },
+    {
+      "id": "confounder-dgp",
+      "title": "A common cause can reverse the observed slope"
+    },
+    {
+      "id": "confounder-results",
+      "title": "Adjustment recovers the constructed target"
+    },
+    {
+      "id": "collider-dgp",
+      "title": "Adding a predictive consequence can create bias"
+    },
+    {
+      "id": "collider-results",
+      "title": "A higher R\u00b2 can accompany the wrong causal answer"
+    },
+    {
+      "id": "backdoor",
+      "title": "Block every backdoor path, not every path"
+    },
+    {
+      "id": "mediator-estimand",
+      "title": "Choose total or direct effect before fitting controls"
+    },
+    {
+      "id": "precision",
+      "title": "Useful controls depend on what variation they remove"
+    },
+    {
+      "id": "proxy",
+      "title": "A noisy proxy does not automatically close a backdoor"
+    },
+    {
+      "id": "overlap",
+      "title": "Show the comparison population, not just an estimate"
+    },
+    {
+      "id": "small-cells",
+      "title": "Nonempty cells can still be fragile"
+    },
+    {
+      "id": "matching-direction",
+      "title": "Check the sign before averaging matched differences"
+    },
+    {
+      "id": "balance-not-proof",
+      "title": "Balance is a diagnostic, not a causal certificate"
+    },
+    {
+      "id": "effect-shape",
+      "title": "Identification does not specify a regression shape"
+    },
+    {
+      "id": "sensitivity",
+      "title": "Ask which unsupported assumption could change the answer"
+    },
+    {
+      "id": "exercise",
+      "title": "Build an adjustment brief from the synthetic strata"
+    },
+    {
+      "id": "brief",
+      "title": "Make the causal reasoning reviewable"
+    }
+  ]
+}

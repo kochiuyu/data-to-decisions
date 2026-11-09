@@ -1,0 +1,211 @@
+{
+  "seed": 9109,
+  "n": 2400,
+  "treated": 1220,
+  "control": 1180,
+  "means": {
+    "treated": 54.77724616604963,
+    "control": 46.20438945266521
+  },
+  "raw_gap": 8.572856713384418,
+  "truth": {
+    "ate": 3.8694695123394043,
+    "att": 4.689613989327346,
+    "atu": 3.021523527656956
+  },
+  "regression": {
+    "ate_se": 0.22712809706599413,
+    "ate_low": 3.4114050227108783,
+    "ate_high": 4.301747163209575,
+    "beta": [
+      45.174250741489566,
+      2.794036573246899,
+      4.136922759856857,
+      1.9376599956017575,
+      2.703449245010243,
+      1.471904036481822,
+      2.4184858583359423
+    ],
+    "ate": 3.8565760929602266,
+    "att": 4.702773935903048,
+    "atu": 2.981693577375275,
+    "subgroup_b0": 2.6892000396621882,
+    "subgroup_b1": 5.231579829059005
+  },
+  "additive": {
+    "ate_se": 0.23095843319362724,
+    "ate_low": 3.3815196411884507,
+    "ate_high": 4.286876699307469,
+    "beta": [
+      44.79210888935748,
+      3.8341981702479604,
+      4.904412852737461,
+      2.211525345674564,
+      3.9696968225167306
+    ],
+    "ate": 3.83419817024796,
+    "att": 3.83419817024796,
+    "atu": 3.8341981702479595,
+    "subgroup_b0": 3.8341981702479586,
+    "subgroup_b1": 3.834198170247959
+  },
+  "ipw": 3.887701815604771,
+  "cem": 5.0183635317981725,
+  "cem_truth_att": 4.689613989327346,
+  "cem_kept_treated": 1220,
+  "cem_kept_control": 1180,
+  "cells": [
+    {
+      "cell": 0,
+      "treated": 8,
+      "control": 86,
+      "retained": true
+    },
+    {
+      "cell": 1,
+      "treated": 11,
+      "control": 60,
+      "retained": true
+    },
+    {
+      "cell": 2,
+      "treated": 30,
+      "control": 179,
+      "retained": true
+    },
+    {
+      "cell": 3,
+      "treated": 64,
+      "control": 129,
+      "retained": true
+    },
+    {
+      "cell": 4,
+      "treated": 134,
+      "control": 244,
+      "retained": true
+    },
+    {
+      "cell": 5,
+      "treated": 165,
+      "control": 133,
+      "retained": true
+    },
+    {
+      "cell": 6,
+      "treated": 188,
+      "control": 176,
+      "retained": true
+    },
+    {
+      "cell": 7,
+      "treated": 192,
+      "control": 75,
+      "retained": true
+    },
+    {
+      "cell": 8,
+      "treated": 142,
+      "control": 52,
+      "retained": true
+    },
+    {
+      "cell": 9,
+      "treated": 165,
+      "control": 28,
+      "retained": true
+    },
+    {
+      "cell": 10,
+      "treated": 47,
+      "control": 12,
+      "retained": true
+    },
+    {
+      "cell": 11,
+      "treated": 74,
+      "control": 6,
+      "retained": true
+    }
+  ],
+  "balance": [
+    {
+      "variable": "workload X",
+      "before": 0.9749789182257695,
+      "ipw": -0.0031489495582916016,
+      "cem": 0.05500815296368271
+    },
+    {
+      "variable": "baseline B",
+      "before": 0.37721160341664955,
+      "ipw": 0.014368365613933629,
+      "cem": 0.0
+    },
+    {
+      "variable": "workload squared",
+      "before": -0.07939127406663055,
+      "ipw": -0.050297996625106756,
+      "cem": 0.035485685202781045
+    }
+  ],
+  "scores": {
+    "min": 0.012815883363987514,
+    "max": 0.9914054714203335,
+    "tail_n": 39,
+    "hist_centers": [
+      0.05,
+      0.15000000000000002,
+      0.25,
+      0.35000000000000003,
+      0.45,
+      0.55,
+      0.6500000000000001,
+      0.75,
+      0.8500000000000001,
+      0.95
+    ],
+    "control_hist": [
+      75,
+      171,
+      207,
+      201,
+      159,
+      154,
+      98,
+      68,
+      40,
+      7
+    ],
+    "treated_hist": [
+      7,
+      24,
+      63,
+      123,
+      146,
+      164,
+      198,
+      206,
+      199,
+      90
+    ]
+  },
+  "weights": {
+    "max": 22.78912479540801,
+    "ess_t": 846.6852176922787,
+    "ess_c": 748.2100782272346
+  },
+  "hard_assignment_treated_without_controls": 722,
+  "audit": {
+    "correct_n": 1367,
+    "wrong_n": 2286,
+    "extra_n": 919
+  },
+  "hidden_cause": {
+    "true_effect": 3,
+    "adjusted_omitting_u": 4.969214722600902
+  },
+  "transport": {
+    "true_target": 5.480747434336528,
+    "estimated_target": 5.544289384759075
+  }
+}

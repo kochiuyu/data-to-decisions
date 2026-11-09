@@ -1,0 +1,103 @@
+{
+  "lesson": 7,
+  "seed": 7107,
+  "provenance": "Original fixed-seed potential-outcome population, exhaustive randomization, encouragement and user-level advertising experiment. All probabilities, effects and cost inputs are invented teaching assumptions.",
+  "sections": [
+    {
+      "id": "causal-question",
+      "title": "Will changing the action change the outcome?"
+    },
+    {
+      "id": "generator",
+      "title": "Open the teaching world before analyzing it"
+    },
+    {
+      "id": "define-intervention",
+      "title": "Make \u201cadopt the tool\u201d operational"
+    },
+    {
+      "id": "potential-outcomes",
+      "title": "One team has two alternative outcomes"
+    },
+    {
+      "id": "switching",
+      "title": "Use the switching equation in the right direction"
+    },
+    {
+      "id": "identification",
+      "title": "Missing by design is not missing at random in a spreadsheet"
+    },
+    {
+      "id": "heterogeneity",
+      "title": "High outcomes and large effects are different"
+    },
+    {
+      "id": "estimands",
+      "title": "ATE, ATT and ATU are different population choices"
+    },
+    {
+      "id": "observed-gap",
+      "title": "Compute the observed gap before calling it causal"
+    },
+    {
+      "id": "decomposition",
+      "title": "Separate recipients\u2019 effect from baseline selection"
+    },
+    {
+      "id": "exchangeability",
+      "title": "Comparability is an assignment claim"
+    },
+    {
+      "id": "assumptions",
+      "title": "Keep versions, interference and overlap visible"
+    },
+    {
+      "id": "random-rule",
+      "title": "Randomize assignment, not potential outcomes"
+    },
+    {
+      "id": "enumeration",
+      "title": "Enumerate all six two-of-four rollouts"
+    },
+    {
+      "id": "audit-randomization",
+      "title": "Evidence of randomization lives in the process"
+    },
+    {
+      "id": "unit",
+      "title": "Choose a stable unit and analyze that design"
+    },
+    {
+      "id": "noncompliance",
+      "title": "Assignment and receipt can diverge"
+    },
+    {
+      "id": "ad-design",
+      "title": "A new advertising experiment with explicit denominators"
+    },
+    {
+      "id": "denominators",
+      "title": "A rate answers the question in its denominator"
+    },
+    {
+      "id": "click-interval",
+      "title": "Quantify uncertainty in the click contrast"
+    },
+    {
+      "id": "action-interval",
+      "title": "Keep the downstream endpoint fixed"
+    },
+    {
+      "id": "binary-regression",
+      "title": "With only a treatment indicator, the slope is the gap"
+    },
+    {
+      "id": "decision",
+      "title": "Translate effects into a decision threshold"
+    },
+    {
+      "id": "brief",
+      "title": "Write a bounded causal decision brief"
+    }
+  ]
+}

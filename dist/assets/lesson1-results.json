@@ -1,0 +1,453 @@
+{
+  "seed": 41021,
+  "synthetic": true,
+  "assumptions": [
+    "Fictional currency CU",
+    "Two nights, one room, tax applied to room plus cleaning",
+    "Poisson fixture goals with mean 1.4",
+    "No empirical calibration"
+  ],
+  "quality": {
+    "raw": 61,
+    "deduplicated": 60,
+    "duplicates_removed": 1,
+    "initial_missing": 2,
+    "invalid_nonpositive": 1,
+    "scoped": 40,
+    "complete": 37,
+    "excluded_missing_in_scope": 3,
+    "unsafe_join_rows": 39,
+    "safe_join_rows": 37
+  },
+  "raw_excerpt": [
+    {
+      "lodging_id": "L001",
+      "arrival": "2030-04-17",
+      "town": "Willow Bay",
+      "kind": "Guesthouse",
+      "room": "Shared",
+      "nightly_cu": 133.05,
+      "cleaning_cu": 0.0,
+      "tax_rate": 0.08,
+      "refundable": false,
+      "rating": 2
+    },
+    {
+      "lodging_id": "L003",
+      "arrival": "2030-04-10",
+      "town": "Juniper Vale",
+      "kind": "Hotel",
+      "room": "Private",
+      "nightly_cu": 77.78,
+      "cleaning_cu": 24.0,
+      "tax_rate": 0.08,
+      "refundable": false,
+      "rating": 4
+    },
+    {
+      "lodging_id": "L005",
+      "arrival": "2030-04-17",
+      "town": "Cedar Reach",
+      "kind": "Hotel",
+      "room": "Private",
+      "nightly_cu": null,
+      "cleaning_cu": 12.0,
+      "tax_rate": 0.08,
+      "refundable": false,
+      "rating": 2
+    },
+    {
+      "lodging_id": "L012",
+      "arrival": "2030-04-10",
+      "town": "Juniper Vale",
+      "kind": "Hotel",
+      "room": "Private",
+      "nightly_cu": null,
+      "cleaning_cu": 24.0,
+      "tax_rate": 0.08,
+      "refundable": true,
+      "rating": 5
+    },
+    {
+      "lodging_id": "L018",
+      "arrival": "2030-04-17",
+      "town": "Juniper Vale",
+      "kind": "Hotel",
+      "room": "Private",
+      "nightly_cu": -15.0,
+      "cleaning_cu": 24.0,
+      "tax_rate": 0.08,
+      "refundable": true,
+      "rating": 3
+    },
+    {
+      "lodging_id": "L003",
+      "arrival": "2030-04-10",
+      "town": "Juniper Vale",
+      "kind": "Hotel",
+      "room": "Private",
+      "nightly_cu": 77.78,
+      "cleaning_cu": 24.0,
+      "tax_rate": 0.08,
+      "refundable": false,
+      "rating": 4
+    }
+  ],
+  "offers": [
+    {
+      "lodging_id": "L020",
+      "arrival": "2030-04-17",
+      "town": "Cedar Reach",
+      "kind": "Hotel",
+      "room": "Private",
+      "nightly_cu": 51.75,
+      "cleaning_cu": 12.0,
+      "tax_rate": 0.08,
+      "refundable": true,
+      "rating": 5,
+      "two_night_total_cu": 124.74,
+      "walk_minutes": 21
+    },
+    {
+      "lodging_id": "L020",
+      "arrival": "2030-04-10",
+      "town": "Cedar Reach",
+      "kind": "Hotel",
+      "room": "Private",
+      "nightly_cu": 70.02,
+      "cleaning_cu": 12.0,
+      "tax_rate": 0.08,
+      "refundable": true,
+      "rating": 5,
+      "two_night_total_cu": 164.2032,
+      "walk_minutes": 21
+    },
+    {
+      "lodging_id": "L002",
+      "arrival": "2030-04-10",
+      "town": "Cedar Reach",
+      "kind": "Hotel",
+      "room": "Private",
+      "nightly_cu": 74.88,
+      "cleaning_cu": 12.0,
+      "tax_rate": 0.08,
+      "refundable": true,
+      "rating": 3,
+      "two_night_total_cu": 174.7008,
+      "walk_minutes": 11
+    },
+    {
+      "lodging_id": "L024",
+      "arrival": "2030-04-10",
+      "town": "Juniper Vale",
+      "kind": "Hotel",
+      "room": "Private",
+      "nightly_cu": 69.9,
+      "cleaning_cu": 24.0,
+      "tax_rate": 0.08,
+      "refundable": true,
+      "rating": 5,
+      "two_night_total_cu": 176.904,
+      "walk_minutes": 4
+    },
+    {
+      "lodging_id": "L025",
+      "arrival": "2030-04-10",
+      "town": "Willow Bay",
+      "kind": "Hotel",
+      "room": "Private",
+      "nightly_cu": 82.89,
+      "cleaning_cu": 0.0,
+      "tax_rate": 0.08,
+      "refundable": false,
+      "rating": 2,
+      "two_night_total_cu": 179.0424,
+      "walk_minutes": 17
+    },
+    {
+      "lodging_id": "L010",
+      "arrival": "2030-04-17",
+      "town": "Willow Bay",
+      "kind": "Hotel",
+      "room": "Private",
+      "nightly_cu": 83.5,
+      "cleaning_cu": 0.0,
+      "tax_rate": 0.08,
+      "refundable": true,
+      "rating": 3,
+      "two_night_total_cu": 180.36,
+      "walk_minutes": 16
+    }
+  ],
+  "town_summary": [
+    {
+      "town": "Cedar Reach",
+      "n": 11,
+      "mean": 258.4125818182,
+      "median": 276.1992
+    },
+    {
+      "town": "Juniper Vale",
+      "n": 12,
+      "mean": 256.2102,
+      "median": 226.5948
+    },
+    {
+      "town": "Willow Bay",
+      "n": 14,
+      "mean": 239.0626285714,
+      "median": 253.1088
+    }
+  ],
+  "service_wide": [
+    {
+      "town": "Willow Bay",
+      "Q1": 119,
+      "Q2": 80,
+      "Q3": 72.0
+    },
+    {
+      "town": "Cedar Reach",
+      "Q1": 106,
+      "Q2": 106,
+      "Q3": 122.0
+    },
+    {
+      "town": "Juniper Vale",
+      "Q1": 106,
+      "Q2": 106,
+      "Q3": null
+    }
+  ],
+  "service_long": [
+    {
+      "town": "Willow Bay",
+      "quarter": "Q1",
+      "requests": 119.0
+    },
+    {
+      "town": "Cedar Reach",
+      "quarter": "Q1",
+      "requests": 106.0
+    },
+    {
+      "town": "Juniper Vale",
+      "quarter": "Q1",
+      "requests": 106.0
+    },
+    {
+      "town": "Willow Bay",
+      "quarter": "Q2",
+      "requests": 80.0
+    },
+    {
+      "town": "Cedar Reach",
+      "quarter": "Q2",
+      "requests": 106.0
+    },
+    {
+      "town": "Juniper Vale",
+      "quarter": "Q2",
+      "requests": 106.0
+    },
+    {
+      "town": "Willow Bay",
+      "quarter": "Q3",
+      "requests": 72.0
+    },
+    {
+      "town": "Cedar Reach",
+      "quarter": "Q3",
+      "requests": 122.0
+    },
+    {
+      "town": "Juniper Vale",
+      "quarter": "Q3",
+      "requests": null
+    }
+  ],
+  "trace": 80,
+  "fixtures": [
+    {
+      "date": "2030-01-05",
+      "home": "Aster",
+      "away": "Bracken",
+      "hg": 0,
+      "ag": 2
+    },
+    {
+      "date": "2030-01-05",
+      "home": "Clover",
+      "away": "Dahlia",
+      "hg": 2,
+      "ag": 1
+    }
+  ],
+  "assigned_excerpt": [
+    {
+      "fixture_id": "F11",
+      "date": "2030-02-09",
+      "team": "Aster",
+      "manager": "Aster North",
+      "points": 0
+    },
+    {
+      "fixture_id": "F13",
+      "date": "2030-02-16",
+      "team": "Aster",
+      "manager": "Aster South",
+      "points": 3
+    }
+  ],
+  "fixtures_n": 24,
+  "team_rows_n": 48,
+  "candidate_rows_n": 96,
+  "manager_summary": [
+    {
+      "team": "Bracken",
+      "manager": "Bracken North",
+      "games": 6,
+      "observed": 6,
+      "total": 18,
+      "ppg": 3.0
+    },
+    {
+      "team": "Dahlia",
+      "manager": "Dahlia South",
+      "games": 6,
+      "observed": 6,
+      "total": 12,
+      "ppg": 2.0
+    },
+    {
+      "team": "Aster",
+      "manager": "Aster South",
+      "games": 6,
+      "observed": 6,
+      "total": 9,
+      "ppg": 1.5
+    },
+    {
+      "team": "Bracken",
+      "manager": "Bracken South",
+      "games": 6,
+      "observed": 6,
+      "total": 9,
+      "ppg": 1.5
+    },
+    {
+      "team": "Clover",
+      "manager": "Clover North",
+      "games": 6,
+      "observed": 6,
+      "total": 9,
+      "ppg": 1.5
+    },
+    {
+      "team": "Dahlia",
+      "manager": "Dahlia North",
+      "games": 6,
+      "observed": 6,
+      "total": 9,
+      "ppg": 1.5
+    },
+    {
+      "team": "Clover",
+      "manager": "Clover South",
+      "games": 6,
+      "observed": 6,
+      "total": 6,
+      "ppg": 1.0
+    },
+    {
+      "team": "Aster",
+      "manager": "Aster North",
+      "games": 6,
+      "observed": 6,
+      "total": 0,
+      "ppg": 0.0
+    }
+  ],
+  "eligible": [
+    {
+      "team": "Bracken",
+      "manager": "Bracken North",
+      "games": 6,
+      "observed": 6,
+      "total": 18,
+      "ppg": 3.0
+    },
+    {
+      "team": "Dahlia",
+      "manager": "Dahlia South",
+      "games": 6,
+      "observed": 6,
+      "total": 12,
+      "ppg": 2.0
+    },
+    {
+      "team": "Aster",
+      "manager": "Aster South",
+      "games": 6,
+      "observed": 6,
+      "total": 9,
+      "ppg": 1.5
+    },
+    {
+      "team": "Bracken",
+      "manager": "Bracken South",
+      "games": 6,
+      "observed": 6,
+      "total": 9,
+      "ppg": 1.5
+    },
+    {
+      "team": "Clover",
+      "manager": "Clover North",
+      "games": 6,
+      "observed": 6,
+      "total": 9,
+      "ppg": 1.5
+    },
+    {
+      "team": "Dahlia",
+      "manager": "Dahlia North",
+      "games": 6,
+      "observed": 6,
+      "total": 9,
+      "ppg": 1.5
+    },
+    {
+      "team": "Clover",
+      "manager": "Clover South",
+      "games": 6,
+      "observed": 6,
+      "total": 6,
+      "ppg": 1.0
+    },
+    {
+      "team": "Aster",
+      "manager": "Aster North",
+      "games": 6,
+      "observed": 6,
+      "total": 0,
+      "ppg": 0.0
+    }
+  ],
+  "toy": {
+    "n": [
+      2,
+      8
+    ],
+    "totals": [
+      6,
+      8
+    ],
+    "means": [
+      3.0,
+      1.0
+    ],
+    "weighted": 1.4,
+    "unweighted": 2.0
+  }
+}
