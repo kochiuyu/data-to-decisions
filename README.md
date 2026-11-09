@@ -6,7 +6,7 @@ A public, reproducible course in applied business statistics: ten short business
 
 Every case dataset is newly generated for teaching from a documented model and fixed seed. The public release contains no historical source records, resampled historical records, fitted historical results, or private site files. Its numbers are not claims about real people, firms or markets. The earlier private course remains a separate edition.
 
-Topics progress from measurement, distributions and inference to regression, prediction, experiments, causal graphs, matching and difference-in-differences. Each short case presents a decision, an observed result, a question, and a reveal of the synthetic model's known truth. A guided lesson then works through selected charts, calculations and decision checks. Its appendix contains the data-generating process and the original detailed methods. Five supporting pages provide navigation, study guidance, Python help, provenance and a final synthesis.
+Topics progress from measurement, distributions and inference to regression, prediction, experiments, causal graphs, matching and difference-in-differences. Each short case presents a decision, an observed result, a question, and a reveal of the synthetic model's known truth. A guided lesson follows one business problem through the practical obstacle, evidence, and next action. Its appendix contains the data-generating process and the original detailed methods. Five supporting pages provide navigation, study guidance, Python help, provenance and a final synthesis.
 
 ## Reproduce
 

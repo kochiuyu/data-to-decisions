@@ -2,7 +2,7 @@
 from pathlib import Path
 import html, json, subprocess, sys
 from business_cases import case
-from guided_paths import selected
+from guided_paths import story
 ROOT=Path(__file__).resolve().parents[1]
 DIST=ROOT/'dist'
 def esc(value): return html.escape(str(value))
@@ -53,25 +53,31 @@ def render_lesson(number,title,intro,sections,*,outcomes=None):
     nxt=f'<a href="lesson-{number+1}.html">Lesson {number+1} →</a>' if number<10 else '<a href="synthesis.html">Course synthesis →</a>'
     appendix=f'lesson-{number}-appendix.html'
     guide=f'lesson-{number}-guide.html'
-    guided=selected(number,sections)
-    guide_toc=''.join(f'<li><a href="#{esc(s["id"])}">{i+1:02d}. {esc(s["title"])}</a></li>' for i,s in enumerate(guided))
+    guided_story=story(number,result)
+    guided=guided_story['chapters']
+    guide_toc=''.join(f'<li><a href="#chapter-{i+1}">{i+1:02d}. {esc(s["title"])}</a></li>' for i,s in enumerate(guided))
     guide_blocks=[]
     for i,s in enumerate(guided):
-        check=''
-        if s.get('check'):check='<aside class="check"><h3>Pause and explain</h3><p>'+s['check']+'</p><details><summary>Compare your reasoning</summary><div>'+s.get('answer','')+'</div></details></aside>'
-        guide_blocks.append(f'<section class="lesson-step" id="{esc(s["id"])}"><p class="eyebrow">Guided step {i+1:02d} / {len(guided)}</p><h2>{esc(s["title"])}</h2>{s["body"]}{check}</section>')
+        paragraphs=s['paragraphs']
+        body='<p>'+esc(paragraphs[0])+'</p>'
+        if s['rows'] is not None:
+            body+=table(s['headers'],s['rows'],s['caption'])
+        body+=''.join('<p>'+esc(p)+'</p>' for p in paragraphs[1:])
+        if i==len(guided)-1:
+            body+='<aside class="check"><h3>Decision check</h3><p>'+esc(guided_story['question'])+'</p><details><summary>Compare your reasoning</summary><div><p>'+esc(guided_story['answer'])+'</p></div></details></aside>'
+        guide_blocks.append(f'<section class="lesson-step" id="chapter-{i+1}"><p class="eyebrow">Part {i+1} of {len(guided)}</p><h2>{esc(s["title"])}</h2>{body}</section>')
     short=(f'<main id="main"><div class="hero wrap"><p class="eyebrow">Lesson {number} · Business route</p><h1>{esc(title)}</h1>'
            f'<p class="lead">{esc(brief["question"])}</p><div class="notice"><strong>Fictional case.</strong> The observations are generated for teaching, not evidence about a real business. The full data-generating process is in the <a href="{appendix}#generation">technical appendix</a>.</div></div>'
            f'<div class="content wrap"><section id="evidence"><h2>What the data show</h2><p>{esc(brief["evidence"])}</p></section>'
            f'<section id="decision"><h2>What would you decide?</h2><p>{esc(brief["decision"])}</p><aside class="check"><h3>Pause and explain</h3><p>{esc(brief["prompt"])}</p><details><summary>Compare your reasoning</summary><div><p>{esc(brief["answer"])}</p></div></details></aside></section>'
            f'<section id="reveal"><h2>What the generator knows</h2><details><summary>Reveal the known truth after making your judgment</summary><div><p>{esc(brief["truth"])}</p></div></details><p>The truth belongs to this invented model. A real organization would still need to test the assumptions and collect its own evidence.</p></section>'
-           f'<section id="deeper"><h2>Continue at your own depth</h2><p><a class="button" href="{guide}">Read the guided lesson</a></p><p>The guided lesson works through {len(guided)} selected steps, charts and decision checks. The <a href="{appendix}">technical appendix</a> has the generation rules, derivations and all {len(sections)} original teaching stops.</p></section>'
+           f'<section id="deeper"><h2>Continue at your own depth</h2><p><a class="button" href="{guide}">Read the guided lesson</a></p><p>The guided lesson follows this business decision through the practical problem, evidence and next action. The <a href="{appendix}">technical appendix</a> has the generation rules, derivations and all {len(sections)} original teaching stops.</p></section>'
            f'<nav class="lesson-end" aria-label="Lessons">{previous}{nxt}</nav></div></main>')
     (DIST/f'lesson-{number}.html').write_text(shell(f'Lesson {number}: {title}',short),encoding='utf-8',newline='\n')
     guided_body=(f'<main id="main"><div class="hero wrap"><p class="eyebrow">Lesson {number} · Guided route</p><h1>{esc(title)}: guided case</h1>'
-                 f'<p class="lead">{esc(brief["question"])}</p><p>Work through {len(guided)} selected steps. The <a href="lesson-{number}.html">short case</a> gives the decision first; the <a href="{appendix}#generation">technical appendix</a> holds the complete model and derivations.</p>'
+                 f'<p class="lead">{esc(brief["question"])}</p><p>Follow one business problem from the manager’s request to a practical next step. The <a href="lesson-{number}.html">short case</a> gives the decision at a glance; the <a href="{appendix}#generation">technical appendix</a> holds the complete model and derivations.</p>'
                  f'<div class="downloads"><a class="button" href="lesson-{number}.html">Short case</a><a class="text-link" href="{appendix}">Technical appendix</a></div></div>'
-                 f'<div class="lesson-layout wrap"><aside class="roadmap"><details open><summary>Guided steps</summary><ol>{guide_toc}</ol></details></aside><article>'
+                 f'<div class="lesson-layout wrap"><aside class="roadmap"><details open><summary>Story chapters</summary><ol>{guide_toc}</ol></details></aside><article>'
                  +''.join(guide_blocks)
                  +f'<section class="appendix-intro" id="guided-reveal"><h2>Compare with the known truth</h2><details><summary>Reveal the generator truth</summary><div><p>{esc(brief["truth"])}</p></div></details><p>This comparison is possible because the case is synthetic. The full generating process is in the <a href="{appendix}#generation">appendix</a>.</p></section>'
                  +f'<nav class="lesson-end" aria-label="Lessons"><a href="lesson-{number}.html">← Short case</a><a href="{appendix}">Technical appendix →</a></nav></article></div></main>')
