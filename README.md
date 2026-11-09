@@ -1,6 +1,6 @@
 # Data to decisions
 
-A public, reproducible business statistics course built around one retail decision: how to reduce stockouts profitably. Ten connected lessons follow the same stores from data reconciliation through prediction, evaluation, and a staged expansion recommendation.
+A public, reproducible business statistics course organized around general concepts and methods. Each of ten lectures follows a short business motivation with theory, a worked retail application, and a synthesis of what transfers to other problems. The shared case asks how to reduce stockouts profitably.
 
 ## This edition
 
@@ -9,6 +9,8 @@ One documented synthetic world contains 150 stores, 32 weeks, and a fixed monito
 The homepage begins with four questions: what is happening, what can be predicted, what would change with action, and which action is worth its cost. Each main lesson contains a decision brief, the relevant rows, a worked calculation, interpretation, an action, and an entry in the cumulative management memo. Technical continuations use the same variables and calculation. Former `lesson-N-guide.html` URLs serve the same complete lesson with a canonical main URL.
 
 The current build uses `scripts/retail_case.py` for the data and analyses, `retail_content.py` for the running narrative, `curriculum_content.py` for the restored teaching blocks, `curriculum_worked.py` for their executable continuations, `retail_pages.py` for orientation and synthesis, and `build_retail_course.py` for rendering and labs. `curriculum_map.py` maps the substantive topics across all 1,096 slides in the ten supplied original decks. Each appendix publishes its coverage map. The previous edition's builders are no longer invoked by `build_all.py`.
+
+`theory_content.py` supplies the general definitions, notation, assumptions, formulas, and interpretation. `lecture_structure.py` places that material before the application and consolidates the general exposition previously interleaved with case results. All worked results, exercises, and technical continuations remain part of the same course. Release checks verify that theory precedes application in every lecture.
 
 ## One website for reading and teaching
 

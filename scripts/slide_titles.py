@@ -13,6 +13,7 @@ class Node:
     def __init__(self, tag='', attrs=(), start=0, end=0):
         self.tag, self.attrs, self.start, self.end = tag, dict(attrs), start, end
         self.children = []
+        self.stop = end
 
     def has(self, name):
         return name in self.attrs.get('class', '').split()
@@ -54,6 +55,8 @@ class Tree(HTMLParser):
     def handle_endtag(self, tag):
         for i in range(len(self.stack)-1, 0, -1):
             if self.stack[i].tag == tag:
+                line,col=self.getpos()
+                self.stack[i].stop=self.offsets[line-1]+col+len(tag)+3
                 del self.stack[i:]
                 break
 
@@ -113,8 +116,8 @@ def groups(html):
             yield node.attrs['id'], node, visual_frames(node,node.find(lambda c:c.tag=='h2').text())
 
 
-def apply_titles(html, number, appendix=False):
-    titles = APPENDIX[number] if appendix else MAIN[number]
+def apply_titles(html, number, appendix=False, titles=None):
+    titles = titles if titles is not None else (APPENDIX[number] if appendix else MAIN[number])
     sections = list(groups(html))
     assert set(titles) == {key for key,_,_ in sections}, (number,appendix,set(titles),[k for k,_,_ in sections])
     edits = []

@@ -7,6 +7,7 @@
   const stage = dialog.querySelector('.slide-card');
   const body = dialog.querySelector('.slide-body');
   const title = dialog.querySelector('.slide-title');
+  const phase = dialog.querySelector('.slide-phase');
   const counter = dialog.querySelector('.slide-counter');
   const chooser = dialog.querySelector('.slide-chooser');
   const notes = dialog.querySelector('.slide-notes');
@@ -46,7 +47,7 @@
   const linkOnly=node=>node.matches('p')&&node.children.length===1&&node.firstElementChild.matches('a');
   function prose(container){
     return [...container.children].flatMap(node=>{
-      if(node.matches('p:not(.calculation)')&&!linkOnly(node))return [node.outerHTML];
+      if(node.matches('p:not(.calculation):not(.lecture-phase)')&&!linkOnly(node))return [node.outerHTML];
       if(node.matches('.memo'))return [prose(node)];
       return [];
     }).join('');
@@ -88,7 +89,7 @@
     build();
     const titles=JSON.parse(container.dataset.slideTitles);
     if(titles.length!==frames.length-first)throw new Error('Slide title count differs from content: '+container.id);
-    titles.forEach((text,i)=>{frames[first+i].title=text;});
+    titles.forEach((text,i)=>{frames[first+i].title=text;frames[first+i].phase=container.dataset.teachingPhase||'Technical continuation';});
   }
   titleFrames(hero,()=>frames.push({title:h1.textContent,source:'main',nodes:[...intro.content.children].map(clean),notes:prose(hero)}));
   const brief=document.querySelector('.brief');
@@ -98,6 +99,7 @@
   let index=0;let showNotes=false;let closing=false;let ownsFullscreen=false;
   function fit(){
     body.style.fontSize='';
+    body.classList.remove('compact-table');
     body.querySelectorAll('figure').forEach(figure=>{
       const svg=figure.querySelector('svg');
       if(svg){
@@ -109,11 +111,12 @@
     if(window.innerWidth<700)return;
     const base=parseFloat(getComputedStyle(body).fontSize);
     for(let size=base;size>=22;size-=1){body.style.fontSize=`${size}px`;if(body.scrollHeight<=body.clientHeight+2 && body.scrollWidth<=body.clientWidth+2)break;}
+    if(body.scrollHeight>body.clientHeight+2 && body.querySelector('table'))body.classList.add('compact-table');
     dialog.querySelector('.slide-scroll-hint').hidden=body.scrollHeight<=body.clientHeight+2 && body.scrollWidth<=body.clientWidth+2;
   }
   function address(){const u=new URL(location.href);u.searchParams.set('present','1');u.searchParams.set('slide',String(index+1));history.replaceState(null,'',u);}
   function render(next){
-    index=Math.max(0,Math.min(frames.length-1,next));const frame=frames[index];title.textContent=frame.title;body.replaceChildren(...frame.nodes.map(clean));
+    index=Math.max(0,Math.min(frames.length-1,next));const frame=frames[index];title.textContent=frame.title;phase.textContent=frame.phase;body.replaceChildren(...frame.nodes.map(clean));
     body.scrollTop=0;notes.innerHTML='<h3>Teaching notes</h3>'+frame.notes;notes.scrollTop=0;
     notes.hidden=!showNotes;notesButton.setAttribute('aria-pressed',String(showNotes));chooser.value=String(index);
     counter.textContent=`${index+1} / ${frames.length}`;stage.dataset.slide=String(index+1);stage.dataset.source=frame.source;

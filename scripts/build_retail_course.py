@@ -8,6 +8,7 @@ from retail_ui import esc,p,table,formula,shell,EXTRA_CSS,presentation_launch,pr
 from curriculum_content import enrich
 from presentation_content import outline,annotate_sections,lesson_points,EXTRA_POINTS,GENERATION_REVEAL
 from slide_titles import apply_titles
+from lecture_structure import reorganize
 
 ROOT=Path(__file__).resolve().parents[1];DIST=ROOT/'dist';ASSETS=DIST/'assets'
 def write(name,text):
@@ -19,24 +20,25 @@ def navigation(n):
     after=f'<a href="lesson-{n+1}.html">Lesson {n+1} →</a>' if n<10 else '<a href="synthesis.html">Complete the recommendation →</a>'
     return '<nav class="lesson-end" aria-label="Lessons">'+before+after+'</nav>'
 def publish_lesson(n,result):
-    c=enrich(n,lesson(n,result),result); sections=c['sections']
+    c=reorganize(n,enrich(n,lesson(n,result),result)); sections=c['sections']
     main_points,appendix_points=lesson_points(n,result)
+    main_points['brief']=c['motivation'];main_points['big-picture']=c['transfer_points']
     roadmap=''.join(f'<li><a href="#{s["id"]}">{esc(s["title"])}</a></li>' for s in sections)
-    body=f'<main id="main"><div class="hero wrap"><p class="eyebrow">Lesson {n} · {esc(MAP[n-1][2])}</p><h1>{esc(c["title"])}</h1><p class="lead">{esc(c["inherited"])}</p><p class="stage-note">{esc(c["stage"])}</p><p><strong>Method in this decision:</strong> {esc(c["method"])}</p><div class="brief" id="decision-brief"><h2>The decision brief</h2>{p(c["brief"])}</div></div>'
+    body=f'<main id="main"><div class="hero wrap" data-teaching-phase="Business motivation"><p class="eyebrow">Lesson {n} · {esc(MAP[n-1][2])}</p><h1>{esc(c["title"])}</h1><p class="lead">{esc(c["inherited"])}</p><p class="stage-note">Business question → General theory → Worked application → Synthesis</p><p>First learn the definitions, notation, and logic of the method. Then use the shared case to work through the calculation and its interpretation.</p><div class="brief" id="decision-brief" data-teaching-phase="Business motivation"><h2>The motivating question</h2>{p(c["brief"])}</div></div>'
     body=body.replace('<div class="brief"',presentation_launch()+'<div class="brief"',1)
     body+=f'<div class="lesson-layout wrap"><aside class="roadmap"><details open><summary>Follow the analysis</summary><ol>{roadmap}<li><a href="#memo">Update the decision memo</a></li><li><a href="#big-picture">The bigger picture</a></li></ol></details></aside><article>'
     for s in sections:
-        body+=f'<section class="lesson-step" data-present-source id="{s["id"]}"><h2>{esc(s["title"])}</h2>{s["body"]}</section>'
+        body+=f'<section class="lesson-step" data-present-source data-teaching-phase="{s["phase"]}" id="{s["id"]}"><h2>{esc(s["title"])}</h2><p class="lecture-phase">{s["phase"]}</p>{s["body"]}</section>'
     body+=f'<section class="lesson-step" id="memo"><h2>Update the decision memo</h2><div class="memo">{p(c["memo"])}</div><aside class="check"><h3>Make the call</h3>{p(c["question"])}<details><summary>Compare your reasoning</summary><div>{p(c["answer"])}</div></details></aside></section>'
     body+=f'<section class="lesson-step" id="big-picture"><h2>The bigger picture</h2>{p(c["bigger"])}<details><summary>After your decision: open the known answer</summary><div>{p(c["truth"])}</div></details><p><a href="lesson-{n}-appendix.html">Continue the same analysis in the technical appendix →</a></p>{downloads(n)}</section>{navigation(n)}</article></div></main>'
-    body=body.replace('class="lesson-step" id="memo"','class="lesson-step" data-present-source id="memo"').replace('class="lesson-step" id="big-picture"','class="lesson-step" data-present-source id="big-picture"')
+    body=body.replace('class="lesson-step" id="memo"','class="lesson-step" data-present-source data-teaching-phase="Decision and synthesis" id="memo"').replace('class="lesson-step" id="big-picture"','class="lesson-step" data-present-source data-teaching-phase="Synthesis" id="big-picture"')
     body=annotate_sections(body,main_points)
-    body=body.replace('<p class="lead">',outline([c['stage'],'Method: '+c['method']])+'<p class="lead">',1)
-    body=body.replace('<h2>The decision brief</h2>','<h2>The decision brief</h2>'+outline(main_points['brief']))
+    body=body.replace('<p class="lead">',outline(c['scope'])+'<p class="lead">',1)
+    body=body.replace('<h2>The motivating question</h2>','<h2>The motivating question</h2>'+outline(main_points['brief']))
     body=body.replace('<h3>Make the call</h3>','<h3>Make the call</h3>'+outline(main_points['question']))
     body=body.replace('<summary>Compare your reasoning</summary>','<summary>Compare your reasoning</summary>'+outline(main_points['answer'],'answer'))
     body=body.replace('<summary>After your decision: open the known answer</summary>','<summary>After your decision: open the known answer</summary>'+outline(main_points['truth'],'answer'))
-    body=apply_titles(body,n)
+    body=apply_titles(body,n,titles=c['headlines'])
     page=shell(c['title'],body+presentation_dialog(),f'lesson-{n}.html');write(f'lesson-{n}.html',page);write(f'lesson-{n}-guide.html',page)
     technical=c['technical']
     app=f'<main id="main"><div class="hero wrap"><p class="eyebrow">Lesson {n} · Technical continuation</p><h1>{esc(c["title"])}</h1><p class="lead">The same stores, calculation, and decision—with the specification and reproducible steps visible.</p><p class="stage-note">{esc(c["stage"])}</p><p><a href="lesson-{n}.html#calculate">← Return to the worked analysis</a></p></div><div class="content wrap">'

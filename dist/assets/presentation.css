@@ -6,3 +6,6 @@
 
 .table-scroll th,.table-scroll td{text-align:left}.table-scroll .number{text-align:right}#lesson-presentation .slide-card:focus-visible{outline:none}
 #lesson-presentation[open]{grid-template-columns:minmax(0,1fr)}.slide-toolbar,.slide-layout,.slide-controls{min-width:0}
+
+.slide-phase,.lecture-phase{font:650 12px/1.4 var(--sans,system-ui,sans-serif);text-transform:uppercase;letter-spacing:.08em;color:#52685f;margin:0 0 10px}.slide-phase{flex-shrink:0}.slide-body .lecture-phase{display:none}
+.slide-body.compact-table th,.slide-body.compact-table td{padding:8px 12px}.slide-body.compact-table caption{padding:8px 12px}
