@@ -37,7 +37,7 @@
       return output.length ? output : [clean(node)];
     }
     if (node.matches('pre')) {
-      const lines = node.textContent.split('\n'); const result=[];
+      const lines = node.textContent.trimEnd().split('\n'); const result=[];
       for(let i=0;i<lines.length;i+=10) {const p=document.createElement('pre');const code=document.createElement('code');code.textContent=lines.slice(i,i+10).join('\n');p.append(code);result.push(p);}
       return result;
     }
@@ -83,10 +83,17 @@
   const hero=document.querySelector('main .hero');
   const h1=hero.querySelector('h1');
   const intro=hero.querySelector(':scope > template[data-slide-outline]');
-  frames.push({title:h1.textContent,source:'main',nodes:[...intro.content.children].map(clean),notes:prose(hero)});
+  function titleFrames(container,build){
+    const first=frames.length;
+    build();
+    const titles=JSON.parse(container.dataset.slideTitles);
+    if(titles.length!==frames.length-first)throw new Error('Slide title count differs from content: '+container.id);
+    titles.forEach((text,i)=>{frames[first+i].title=text;});
+  }
+  titleFrames(hero,()=>frames.push({title:h1.textContent,source:'main',nodes:[...intro.content.children].map(clean),notes:prose(hero)}));
   const brief=document.querySelector('.brief');
-  if(brief)addContainer(brief,'The decision brief','decision-brief');
-  document.querySelectorAll('[data-present-source]').forEach(section=>addContainer(section,section.querySelector('h2').textContent,section.id));
+  if(brief)titleFrames(brief,()=>addContainer(brief,'The decision brief','decision-brief'));
+  document.querySelectorAll('[data-present-source]').forEach(section=>titleFrames(section,()=>addContainer(section,section.querySelector('h2').textContent,section.id)));
   frames.forEach((frame,i)=>{const option=document.createElement('option');option.value=String(i);option.textContent=`${i+1}. ${frame.title}`;chooser.append(option);});
   let index=0;let showNotes=false;let closing=false;let ownsFullscreen=false;
   function fit(){

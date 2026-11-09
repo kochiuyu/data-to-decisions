@@ -7,6 +7,7 @@ from retail_content import MAP,lesson
 from retail_ui import esc,p,table,formula,shell,EXTRA_CSS,presentation_launch,presentation_dialog
 from curriculum_content import enrich
 from presentation_content import outline,annotate_sections,lesson_points,EXTRA_POINTS,GENERATION_REVEAL
+from slide_titles import apply_titles
 
 ROOT=Path(__file__).resolve().parents[1];DIST=ROOT/'dist';ASSETS=DIST/'assets'
 def write(name,text):
@@ -35,6 +36,7 @@ def publish_lesson(n,result):
     body=body.replace('<h3>Make the call</h3>','<h3>Make the call</h3>'+outline(main_points['question']))
     body=body.replace('<summary>Compare your reasoning</summary>','<summary>Compare your reasoning</summary>'+outline(main_points['answer'],'answer'))
     body=body.replace('<summary>After your decision: open the known answer</summary>','<summary>After your decision: open the known answer</summary>'+outline(main_points['truth'],'answer'))
+    body=apply_titles(body,n)
     page=shell(c['title'],body+presentation_dialog(),f'lesson-{n}.html');write(f'lesson-{n}.html',page);write(f'lesson-{n}-guide.html',page)
     technical=c['technical']
     app=f'<main id="main"><div class="hero wrap"><p class="eyebrow">Lesson {n} · Technical continuation</p><h1>{esc(c["title"])}</h1><p class="lead">The same stores, calculation, and decision—with the specification and reproducible steps visible.</p><p class="stage-note">{esc(c["stage"])}</p><p><a href="lesson-{n}.html#calculate">← Return to the worked analysis</a></p></div><div class="content wrap">'
@@ -51,6 +53,7 @@ def publish_lesson(n,result):
     app=annotate_sections(app,{**appendix_points,**EXTRA_POINTS})
     app=app.replace('<p class="lead">',outline([c['stage'],'Reproduce the model, calculation, and decision'])+'<p class="lead">',1)
     app=app.replace('<summary>Inspect the numerical mechanism</summary>','<summary>Inspect the numerical mechanism</summary>'+outline(GENERATION_REVEAL,'answer'))
+    app=apply_titles(app,n,appendix=True)
     write(f'lesson-{n}-appendix.html',shell(c['title']+' — technical continuation',app+presentation_dialog()))
     source=(ROOT/'scripts/retail_case.py').read_text(encoding='utf-8')
     tail=c['code']+f'\nprint(json.dumps(lesson_result({n}), indent=2, allow_nan=False))\n'

@@ -7,6 +7,8 @@ import numpy as np
 import pandas as pd
 from retail_case import world,all_results,SPEC,nearest_score_match
 from curriculum_map import validate_coverage,SLIDE_COUNTS
+from slide_titles import groups
+from slide_headlines import MAIN,APPENDIX
 ROOT=Path(__file__).resolve().parents[1];SITE=ROOT/'dist'
 
 class Page(HTMLParser):
@@ -105,6 +107,12 @@ def validate(execute=False):
     lengths={}
     for n in range(1,11):
         text=texts[SITE/f'lesson-{n}.html'];page=pages[SITE/f'lesson-{n}.html']
+        for suffix,authored in [('',MAIN[n]),('-appendix',APPENDIX[n])]:
+            for key,node,frames in groups(texts[SITE/f'lesson-{n}{suffix}.html']):
+                titles=json.loads(node.attrs['data-slide-titles'])
+                assert titles==authored[key],(n,suffix,key,'Title source drift')
+                assert len(titles)==len(frames),(n,suffix,key,'Title/frame mismatch')
+                assert all(content.strip() for _,content in frames),(n,suffix,key,'Empty visual frame')
         assert text==texts[SITE/f'lesson-{n}-guide.html'],(n,'Guide bookmark must retain the full lesson')
         assert all(k in page.ids for k in ['decision-brief','read-data','calculate','interpret','act','memo','big-picture'])
         assert '<table>' in text and f'lesson-{n}-appendix.html#calculation' in text

@@ -20,6 +20,8 @@ Arrow keys, Page Up/Down, Home/End, the slide menu, and Previous/Next navigate t
 
 Original datasets and repeated code/output screenshots are replaced by worked retail examples. Core concepts, calculations, discussion exercises, and technical continuations are retained and expanded. Historical quotations and unsupported time-allocation slogans are omitted rather than presented as evidence.
 
+Slide titles state the takeaway or the decision question, so the slide menu reads as the lesson's argument. `slide_headlines.py` authors the sequence for each lesson section; `slide_titles.py` embeds it in that same HTML and checks it against the actual visual frames. Give table and code continuations their own specific titles. Preserve discussion and known-answer questions until their reveals. The build rejects missing, duplicate, overlong, or misaligned titles.
+
 ## Reproduce
 
 Python 3.11 or later is required for the labs. Install the tested dependency versions from requirements.txt in a virtual environment, then run:
