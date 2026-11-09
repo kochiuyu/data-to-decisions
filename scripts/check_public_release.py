@@ -45,12 +45,12 @@ def validate(execute=False):
   if match:
    n=int(match[1]);assert page.stops==0,(path,'Main lesson should be concise',page.stops)
    text=path.read_text(encoding='utf-8')
-   assert 'Fictional case.' in text and 'Reveal the known truth' in text and f'lesson-{n}-guide.html' in text,(path,'Missing case, truth reveal or guide link')
+   assert 'Reveal the case’s known answer' in text and f'lesson-{n}-guide.html' in text,(path,'Missing case answer or guide link')
   if guide:
    n=int(guide[1]);data=json.loads((SITE/f'assets/lesson{n}-results.json').read_text(encoding='utf-8'))
    assert page.stops==len(story(n,data)['chapters'])==3,(path,'Guided chapter count',page.stops)
    text=path.read_text(encoding='utf-8')
-   assert 'Guided route' in text and 'Decision check' in text and 'Reveal the generator truth' in text,(path,'Missing guided framing, decision or truth reveal')
+   assert 'Guided route' in text and 'Decision check' in text and 'Reveal the case’s known answer' in text,(path,'Missing guided framing, decision or case answer')
   if appendix:
    n=int(appendix[1]);assert page.stops==expected[n],(path,'Appendix stop count',page.stops)
    assert 'How the fictional data were generated' in path.read_text(encoding='utf-8'),(path,'Missing generation appendix')
