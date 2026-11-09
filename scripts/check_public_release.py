@@ -26,7 +26,7 @@ def finite(value):
   for x in value:finite(x)
 
 def validate(execute=False):
- pages={p:Page(p.read_text()) for p in SITE.glob('*.html')}; assert len(pages)==15,('Page count',len(pages))
+ pages={p:Page(p.read_text(encoding='utf-8')) for p in SITE.glob('*.html')}; assert len(pages)==15,('Page count',len(pages))
  expected={1:18,2:24,3:24,4:24,5:24,6:24,7:24,8:28,9:28,10:28};report={'pages':{},'labs':{},'executed':execute}
  for path,page in pages.items():
   assert page.h1==1,(path,'H1 count');assert len(page.ids)==len(set(page.ids)),(path,'Duplicate IDs')
@@ -37,15 +37,15 @@ def validate(execute=False):
    target=(path.parent/urllib.parse.unquote(u.path)).resolve() if u.path else path.resolve()
    assert target.is_relative_to(SITE.resolve()),(path,'Link escapes site',link)
    assert target.is_file(),(path,'Missing local target',link)
-   if u.fragment and target.suffix=='.html':assert urllib.parse.unquote(u.fragment) in Page(target.read_text()).ids,(path,'Missing anchor',link)
+   if u.fragment and target.suffix=='.html':assert urllib.parse.unquote(u.fragment) in Page(target.read_text(encoding='utf-8')).ids,(path,'Missing anchor',link)
   match=re.fullmatch(r'lesson-(\d+)\.html',path.name)
   if match:
    n=int(match[1]);assert page.stops==expected[n],(path,'Stop count',page.stops)
-   assert 'Synthetic, reproducible examples.' in path.read_text(),(path,'Missing synthetic banner')
+   assert 'Synthetic, reproducible examples.' in path.read_text(encoding='utf-8'),(path,'Missing synthetic banner')
   report['pages'][path.name]={'stops':page.stops,'figures':page.svgs,'tables':page.tables}
  for n in range(1,11):
-  src=(SITE/f'assets/lesson{n}-lab.py').read_text();ast.parse(src)
-  nb=json.loads((SITE/f'assets/lesson{n}-lab.ipynb').read_text());data=json.loads((SITE/f'assets/lesson{n}-results.json').read_text());finite(data)
+  src=(SITE/f'assets/lesson{n}-lab.py').read_text(encoding='utf-8');ast.parse(src)
+  nb=json.loads((SITE/f'assets/lesson{n}-lab.ipynb').read_text(encoding='utf-8'));data=json.loads((SITE/f'assets/lesson{n}-results.json').read_text(encoding='utf-8'));finite(data)
   ids=[c.get('id') for c in nb['cells']]; assert all(ids) and len(ids)==len(set(ids)),(n,'Missing or duplicate notebook cell IDs')
   cells=[c for c in nb['cells'] if c['cell_type']=='code'];assert cells,(n,'No notebook code')
   combined=''.join(''.join(c['source']) for c in cells);assert combined==src,(n,'Notebook/script drift')
@@ -61,7 +61,7 @@ def validate(execute=False):
   if not path.is_file() or any(s in path.parts for s in ['.git','.venv','__pycache__','.openai']):continue
   assert path.suffix.lower() not in {'.csv','.dta','.xlsx','.xls','.zip','.pdf','.parquet','.feather'},(path,'Unexpected embedded artifact')
   if path.suffix in {'.html','.js','.json','.py','.ipynb','.md','.txt','.yml','.css'}:
-   txt=path.read_text()
+   txt=path.read_text(encoding='utf-8')
    assert not re.search(r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}',txt),(path,'Secret-shaped value')
    if path.suffix in {'.html','.py','.ipynb','.json'} and 'outline' not in path.name:
     assert not re.search(r'read_(?:csv|excel|stata|parquet)\s*\(\s*[\'\"]https?://|requests\.get|urlopen\(',txt),(path,'External data access')
