@@ -4,6 +4,7 @@ import html, json, subprocess, sys
 from business_cases import case
 from business_route_expansion import EXPANSION, BIGGER_PICTURE
 from guided_paths import story
+from guided_methods import method
 ROOT=Path(__file__).resolve().parents[1]
 DIST=ROOT/'dist'
 def esc(value): return html.escape(str(value))
@@ -57,6 +58,7 @@ def render_lesson(number,title,intro,sections,*,outcomes=None):
     guide=f'lesson-{number}-guide.html'
     guided_story=story(number,result)
     guided=guided_story['chapters']
+    bridge=method(number,result)
     guide_toc=''.join(f'<li><a href="#chapter-{i+1}">{i+1:02d}. {esc(s["title"])}</a></li>' for i,s in enumerate(guided))
     guide_blocks=[]
     for i,s in enumerate(guided):
@@ -64,6 +66,10 @@ def render_lesson(number,title,intro,sections,*,outcomes=None):
         body='<p>'+esc(paragraphs[0])+'</p>'
         if s['rows'] is not None:
             body+=table(s['headers'],s['rows'],s['caption'])
+        if i==1:
+            body+=(f'<aside class="check" id="worked-method"><h3>How this number is built</h3>'
+                   f'<p>{esc(bridge["setup"])}</p><p><strong>Worked step:</strong> {esc(bridge["worked"])}</p>'
+                   f'<p>{esc(bridge["use"])}</p><p><a href="{appendix}#{esc(bridge["anchor"])}">See the full method in the appendix →</a></p></aside>')
         body+=''.join('<p>'+esc(p)+'</p>' for p in paragraphs[1:])
         if i==len(guided)-1:
             body+='<aside class="check"><h3>Decision check</h3><p>'+esc(guided_story['question'])+'</p><details><summary>Compare your reasoning</summary><div><p>'+esc(guided_story['answer'])+'</p></div></details></aside>'
@@ -79,7 +85,7 @@ def render_lesson(number,title,intro,sections,*,outcomes=None):
            f'<nav class="lesson-end" aria-label="Lessons">{previous}{nxt}</nav></div></main>')
     (DIST/f'lesson-{number}.html').write_text(shell(f'Lesson {number}: {title}',short),encoding='utf-8',newline='\n')
     guided_body=(f'<main id="main"><div class="hero wrap"><p class="eyebrow">Lesson {number} · Guided route</p><h1>{esc(title)}: guided case</h1>'
-                 f'<p class="lead">{esc(brief["question"])}</p><p>Follow one business problem from the manager’s request to a practical next step. The <a href="lesson-{number}.html">business case</a> presents the decision and action plan; the <a href="{appendix}#generation">technical appendix</a> holds the complete model and derivations.</p>'
+                 f'<p class="lead">{esc(brief["question"])}</p><p>Follow the manager’s request through the evidence, a worked step in the analysis, and a practical next action. The <a href="lesson-{number}.html">business case</a> gives the decision at a glance; the <a href="{appendix}#generation">technical appendix</a> takes the method further.</p>'
                  f'<div class="downloads"><a class="button" href="lesson-{number}.html">Business case</a><a class="text-link" href="{appendix}">Technical appendix</a></div></div>'
                  f'<div class="lesson-layout wrap"><aside class="roadmap"><details open><summary>Story chapters</summary><ol>{guide_toc}</ol></details></aside><article>'
                  +''.join(guide_blocks)

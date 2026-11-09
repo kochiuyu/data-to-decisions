@@ -3,6 +3,7 @@ from pathlib import Path
 from html.parser import HTMLParser
 import ast,json,re,sys,subprocess,urllib.parse,math
 from guided_paths import story
+from guided_methods import method
 ROOT=Path(__file__).resolve().parents[1]; SITE=ROOT/'dist'
 class Page(HTMLParser):
  def __init__(self,text):
@@ -55,6 +56,8 @@ def validate(execute=False):
    assert page.stops==len(story(n,data)['chapters'])==3,(path,'Guided chapter count',page.stops)
    text=path.read_text(encoding='utf-8')
    assert 'Guided route' in text and 'Decision check' in text and 'Reveal the case’s known answer' in text,(path,'Missing guided framing, decision or case answer')
+   assert text.count('id="worked-method"')==1 and 'Worked step:' in text,(path,'Missing embedded method')
+   assert f'lesson-{n}-appendix.html#{method(n,data)["anchor"]}' in text,(path,'Missing linked appendix method')
    assert text.index('id="big-picture"')>text.index('id="guided-reveal"'),(path,'Bigger picture should close the guided story')
   if appendix:
    n=int(appendix[1]);assert page.stops==expected[n],(path,'Appendix stop count',page.stops)
