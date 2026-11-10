@@ -50,7 +50,36 @@ audit_rows = world()['audit'][['store_id','stockout_rate']]
 system_rows = world()['panel'].query('week==16')[['store_id','stockout_rate']]
 paired = audit_rows.merge(system_rows, on='store_id', suffixes=('_audit','_system'), validate='one_to_one')
 differences = paired.stockout_rate_audit - paired.stockout_rate_system
-assert np.isclose(differences.mean(), lesson_result(3)['depth']['paired']['mean'])''',
+assert np.isclose(differences.mean(), lesson_result(3)['depth']['paired']['mean'])
+# Complete the paired t-test from the differences.
+paired_se = differences.std(ddof=1) / np.sqrt(len(differences))
+paired_t = differences.mean() / paired_se
+paired_p = 2*t.sf(abs(paired_t), len(differences)-1)
+assert np.isclose(paired_p,lesson_result(3)['depth']['paired']['p'])
+# Independent groups require separate variance contributions.
+context = world()['stores'][['store_id','urban']]
+compare = audit_rows.merge(context,on='store_id',validate='one_to_one')
+u = compare.loc[compare.urban==1,'stockout_rate']
+r = compare.loc[compare.urban==0,'stockout_rate']
+v1, v0 = u.var(ddof=1)/len(u), r.var(ddof=1)/len(r)
+welch_se = np.sqrt(v1+v0)
+welch_df = (v1+v0)**2 / (v1**2/(len(u)-1)+v0**2/(len(r)-1))
+welch_t = (u.mean()-r.mean()) / welch_se
+welch_p = 2*t.sf(abs(welch_t),welch_df)
+expected = lesson_result(3)['depth']['independent']
+assert np.allclose([welch_se,welch_df,welch_p],
+                   [expected['se'],expected['df'],expected['p']])
+# Wilson arithmetic uses the proportion of stores above target.
+n = len(audit)
+phat = np.mean(audit>10)
+z = norm.ppf(.975)
+centre = (phat+z*z/(2*n)) / (1+z*z/n)
+half = z*np.sqrt(phat*(1-phat)/n+z*z/(4*n*n)) / (1+z*z/n)
+expected_prop = lesson_result(3)['depth']['proportion']
+assert np.allclose([centre-half,centre+half],
+                   [expected_prop['low'],expected_prop['high']])
+# Histogram bins retain every paired difference, including the right tail.
+assert np.histogram(differences,bins=np.arange(-5,12,2))[0].sum()==30''',
 4:'''# Verify the OLS variation decomposition and a log specification.
 stores = world()['stores']
 x = stores.lead_days.to_numpy()

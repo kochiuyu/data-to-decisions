@@ -183,11 +183,6 @@ def add_later_lessons(n,c,r):
             'Join the week-16 audit to the week-16 system rate by store ID, subtract within each store, and test the mean difference against zero. Both readings concern the same monitoring basket. The result evaluates agreement between measurements rather than the causal effect of alerts, which have not yet begun.')+
           ask('Choose the next investigation','A team tries many outcomes and thresholds, then reports only the smallest p-value. What should the director ask for?',
             'Ask for the planned primary outcome and the complete set of comparisons, distinguish planned from exploratory findings, and confirm important results with new evidence. Multiple testing raises the chance of finding an apparently unusual result by chance.')))
-        c['appendix_extra']=section_html('inference-details','Connect the inference formulas',
-          formula('t = (estimate − null value) / estimated SE; CI = estimate ± t critical value × SE')+
-          p('For a one-sample mean, use n−1 degrees of freedom. For paired readings, apply that formula to the within-store differences. Welch’s test uses separate group variances and its approximate degrees of freedom. The mean audit interval is an approximate repeated-sampling procedure; the finite-population correction is not applied in this teaching calculation.')+
-          code("audit = world()['audit'].stockout_rate.to_numpy()\nrng = np.random.default_rng(SEED + 303)\nboot = audit[rng.integers(0, len(audit), (2000, len(audit)))].mean(axis=1)\nnp.quantile(boot, [.025, .975])")+
-          p('Unbiasedness concerns the estimator’s expectation across repetitions; consistency concerns convergence as information increases; efficiency compares sampling variance among estimators under stated conditions. These properties are distinct from whether the population itself is the one management wants to act on.'))
     if n==4:
         before(c,'calculate',section('from-bins','Move from a group comparison to a fitted relationship',
           teach('Three increasingly detailed predictions',table(['Rule','Prediction for a store'],[

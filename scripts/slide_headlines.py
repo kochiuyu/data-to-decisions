@@ -245,6 +245,19 @@ APPENDIX[2]['calculation'] = [
     'Check density normalization and the equal-count bin averages',
 ]
 
+from lesson3_depth import DETAIL_TITLES
+APPENDIX[3]['inference-details'] = ['Sampling design links the estimator to its uncertainty calculation'] + DETAIL_TITLES
+APPENDIX[3]['calculation'] = [
+ 'Build the interval from the mean and its standard error',
+ 'Calculate the store-level t interval from the observed audit',
+ 'Resample whole stores and test the service benchmark',
+ 'Match readings by store before calculating the paired standard error',
+ 'Complete the paired test and form independent-group variance contributions',
+ 'Use Welch degrees of freedom for the independent comparison',
+ 'Reconstruct Wilson endpoints and retain every plotted difference',
+]
+
+
 for titles in APPENDIX.values():
     titles['generation'] = [
         'One shared retail world generates all three policy studies',
