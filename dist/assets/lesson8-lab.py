@@ -474,24 +474,63 @@ def expanded_results(w,core):
         controlled=dict(value=float(-bc[1]),low=float(-bc[1]-1.96*standard),high=float(-bc[1]+1.96*standard)),subgroups=subgroups,priority_weighted=weighted)
     return out
 
-p = world()['panel']
-v = p[(p.cohort == 'Voluntary') & p.week.between(17,24)]
-s = v.groupby(['store_id','offer','risk_group']).stockout_rate.mean().reset_index()
-worked = 0.0
-for group, rows in s.groupby('risk_group'):
-    reduction = rows.loc[rows.offer==0,'stockout_rate'].mean() - rows.loc[rows.offer==1,'stockout_rate'].mean()
-    worked += len(rows)/len(s) * reduction
-assert np.isclose(worked, lesson_result(8)['standardized'])
-
-# Keep within-stratum differences fixed and change target weights.
-strata = lesson_result(8)['strata']
-adopters = sum(g['offered'] for g in strata)
-nonadopters = sum(g['control'] for g in strata)
-ate = sum(g['reduction']*g['n']/50 for g in strata)
-att = sum(g['reduction']*g['offered']/adopters for g in strata)
-atu = sum(g['reduction']*g['control']/nonadopters for g in strata)
-assert np.isclose(ate,lesson_result(8)['depth']['ate'])
-assert np.isclose(att,lesson_result(8)['depth']['att'])
-assert np.isclose(atu,lesson_result(8)['depth']['atu'])
+# D-separation by ancestral moralization: parents become neighbors.
+def l8_separated(edges, a, b, conditioned):
+    edges = set(edges); z = set(conditioned); ancestors = {a,b} | z
+    while True:
+        expanded = ancestors | {u for u,v in edges if v in ancestors}
+        if expanded == ancestors: break
+        ancestors = expanded
+    adjacent = {u:set() for u in ancestors}
+    for child in ancestors:
+        parents = {u for u,v in edges if v == child}
+        for parent in parents:
+            adjacent[parent].add(child); adjacent[child].add(parent)
+            adjacent[parent].update(parents-{parent})
+    reached = set(); frontier = [a]
+    while frontier:
+        node = frontier.pop()
+        if node in reached or node in z: continue
+        reached.add(node); frontier.extend(adjacent[node]-reached-z)
+    return b not in reached
+# The graph supplies assumptions; these checks do not learn arrows from data.
+l8_queries = [
+    ([('X','M'),('M','Y')], 'X','Y', [], False),
+    ([('X','M'),('M','Y')], 'X','Y', ['M'], True),
+    ([('X','Y'),('X','Z')], 'Y','Z', ['X'], True),
+    ([('B','A'),('C','A'),('A','R')], 'B','C', [], True),
+    ([('B','A'),('C','A'),('A','R')], 'B','C', ['R'], False),
+    ([('C','A'),('C','B'),('B','E'),('D','E')], 'A','D', ['E'], False),
+    ([('C','A'),('C','B'),('B','E'),('D','E')], 'A','D', ['E','C'], True),
+]
+assert all(l8_separated(e,a,b,z)==answer for e,a,b,z,answer in l8_queries)
+# A deterministic population covariance calculation verifies sign reversal.
+l8_var_t = .5**2+1; l8_sorting = .5/l8_var_t
+l8_short = 1-5*l8_sorting
+assert np.isclose(l8_short,-1)
+# Y=2T+e, C=5T+Y+v, Var(e)=Var(v)=.04, independent disturbances.
+l8_collider_slope = 2-7*(.04/(.04+.04))
+assert np.isclose(l8_collider_slope,-1.5)
+# Homoskedastic linear-model variance factors, relative to no extra control.
+l8_outcome_only_factor = 1/(2**2+1)
+l8_treatment_only_factor = (2**2+1)/1
+assert np.allclose([l8_outcome_only_factor,l8_treatment_only_factor],[.2,5])
+# One post-period mean per store in the voluntary-adoption cohort.
+l8_panel = world()['panel']
+l8_rows = l8_panel.query("cohort=='Voluntary' and 17<=week<=24")
+l8_stores = l8_rows.groupby(['store_id','offer','risk_group']).stockout_rate.mean().reset_index()
+l8_strata = []
+for name, rows in l8_stores.groupby('risk_group'):
+    contrast = rows.loc[rows.offer==0,'stockout_rate'].mean()-rows.loc[rows.offer==1,'stockout_rate'].mean()
+    l8_strata.append(dict(group=name,n=len(rows),n1=int(rows.offer.sum()),n0=int((1-rows.offer).sum()),reduction=float(contrast)))
+l8_estimates = {target:sum(g['reduction']*g[count]/sum(h[count] for h in l8_strata) for g in l8_strata)
+                for target,count in [('ate','n'),('att','n1'),('atu','n0')]}
+l8_saved = lesson_result(8)
+for target in l8_estimates:
+    assert np.isclose(l8_estimates[target],l8_saved['depth'][target])
+assert np.isclose(l8_estimates['ate'],26/50*l8_estimates['att']+24/50*l8_estimates['atu'])
+# The existing separate mechanism experiments are reproducible in the shared source.
+for experiment in l8_saved['depth']['simulations']:
+    assert experiment['total_reduction'] == 3 and np.isfinite(experiment['adjusted'])
 
 print(json.dumps(lesson_result(8), indent=2, allow_nan=False))

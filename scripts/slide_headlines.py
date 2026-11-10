@@ -296,6 +296,11 @@ APPENDIX[7].pop('potential-outcomes')
 APPENDIX[7]['causal-details'] = CAUSAL_DETAIL_TITLES
 APPENDIX[7]['calculation'] = ['Trace the teaching examples and the randomized pilot calculation'] + CAUSAL_CODE_TITLES
 
+from lesson8_depth import DETAIL_TITLES as GRAPH_DETAIL_TITLES, CODE_TITLES as GRAPH_CODE_TITLES
+APPENDIX[8].pop('graph-details')
+APPENDIX[8]['graph-worked'] = GRAPH_DETAIL_TITLES
+APPENDIX[8]['calculation'] = ['Trace the graph checks and the observed retail comparisons'] + GRAPH_CODE_TITLES
+
 for titles in APPENDIX.values():
     titles['generation'] = [
         'One shared retail world generates all three policy studies',
