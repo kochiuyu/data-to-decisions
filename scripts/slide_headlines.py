@@ -258,6 +258,21 @@ APPENDIX[3]['calculation'] = [
 ]
 
 
+from lesson4_depth import DETAIL_TITLES as REGRESSION_DETAIL_TITLES
+APPENDIX[4]['regression-details'] = ['Derive OLS geometry and reconstruct the same model comparisons'] + REGRESSION_DETAIL_TITLES
+APPENDIX[4]['calculation'] = [
+ 'Reproduce the fitted line and each curve from the shared records',
+ 'Fit the delivery line and recover its residuals',
+ 'Partition variation and estimate the log-outcome equation',
+ 'Verify residual balance and reconstruct the slope',
+ 'Return all four specifications to the same outcome scale',
+ 'Rescale continuous demand and fit polynomial columns',
+ 'Build the demand spline with one continuous hinge',
+ 'Fit a weighted local line at each demand target',
+ 'Compare smoothing neighborhoods and leave-one-store-out slopes',
+ 'Verify that a delivery cubic reproduces the four group means',
+]
+
 for titles in APPENDIX.values():
     titles['generation'] = [
         'One shared retail world generates all three policy studies',

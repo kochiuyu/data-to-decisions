@@ -94,7 +94,70 @@ assert np.isclose(1-sse/sst, lesson_result(4)['depth']['r_squared'])
 log_beta, _, log_residual = fit_ols(X, np.log(y))
 smearing = np.exp(log_residual).mean()
 rate_predictions = np.exp(X@log_beta) * smearing
-assert np.isclose(smearing, lesson_result(4)['depth']['forms'][1]['smearing'])''',
+assert np.isclose(smearing, lesson_result(4)['depth']['forms'][1]['smearing'])
+# OLS identities use an intercept and the same estimation sample.
+fitted = X @ beta
+assert np.isclose(residual.sum(), 0, atol=1e-9)
+assert np.isclose(fitted.mean(), y.mean())
+assert np.isclose(np.dot(fitted-y.mean(), residual), 0, atol=1e-9)
+assert np.isclose(1-sse/sst, np.corrcoef(x,y)[0,1]**2)
+slope_manual = np.cov(x,y,ddof=1)[0,1] / np.var(x,ddof=1)
+assert np.isclose(beta[1], slope_manual)
+# Four equations; log outcomes return to the same rate scale.
+form_fits = []
+for xx, yy, logged in [(x,y,False),(x,np.log(y),True),
+                       (np.log(x),y,False),(np.log(x),np.log(y),True)]:
+    design = np.column_stack([np.ones(len(x)), xx])
+    coef = np.linalg.lstsq(design,yy,rcond=None)[0]
+    err = yy-design@coef
+    smear = np.exp(err).mean() if logged else 1.
+    pred = np.exp(design@coef)*smear if logged else design@coef
+    form_fits.append((coef,smear,np.sqrt(np.mean((y-pred)**2))))
+assert np.allclose([v[2] for v in form_fits],
+                  [v['rmse_original'] for v in lesson_result(4)['depth']['forms']])
+# The nonlinear comparison uses continuous demand in these same stores.
+dx = stores.baseline_demand.to_numpy()
+z = (dx-100)/10  # one unit is ten demand-index points
+grid = np.linspace(dx.min(), dx.max(), 121)
+zg = (grid-100)/10
+curve_fits = {}
+for degree in [1,2,3]:
+    design = np.column_stack([z**k for k in range(degree+1)])
+    coef = np.linalg.lstsq(design,y,rcond=None)[0]
+    pred = design@coef
+    line = np.column_stack([zg**k for k in range(degree+1)])@coef
+    curve_fits[degree] = (coef,pred,line,np.sqrt(np.mean((y-pred)**2)))
+# A continuous hinge changes the slope after demand index 110 (z=1).
+design = np.column_stack([np.ones(len(z)),z,np.maximum(z-1,0)])
+spline_coef = np.linalg.lstsq(design,y,rcond=None)[0]
+spline_pred = design@spline_coef
+spline_line = np.column_stack([np.ones(len(zg)),zg,np.maximum(zg-1,0)])@spline_coef
+assert np.isclose(spline_coef[0]+spline_coef[1],
+                  spline_coef[0]-spline_coef[2]+sum(spline_coef[1:]))
+# Local linear fits: closest fraction, tricube weights, no robust iterations.
+def local_fit(at, fraction):
+    values = []
+    for point in at:
+        distance = abs(dx-point)
+        width = np.sort(distance)[int(np.ceil(fraction*len(dx)))-1]
+        weight = np.maximum(1-(distance/width)**3,0)**3
+        local_x = np.column_stack([np.ones(len(dx)),dx-point])
+        coef = np.linalg.lstsq(local_x*np.sqrt(weight[:,None]),
+                               y*np.sqrt(weight),rcond=None)[0]
+        values.append(coef[0])
+    return np.array(values)
+smooth35, smooth65 = local_fit(grid,.35), local_fit(grid,.65)
+assert np.isfinite([smooth35,smooth65]).all()
+# A leave-one-store-out calculation measures influence on the delivery slope.
+leave_slopes = []
+for i in range(len(x)):
+    keep = np.arange(len(x)) != i
+    leave_slopes.append(np.linalg.lstsq(X[keep],y[keep],rcond=None)[0][1])
+influential = int(np.argmax(abs(np.array(leave_slopes)-beta[1])))
+# A cubic on four distinct delivery values reproduces their group means.
+cubic = np.linalg.lstsq(np.column_stack([x**k for k in range(4)]),y,rcond=None)[0]
+assert np.allclose(np.column_stack([np.arange(2,6)**k for k in range(4)])@cubic,
+                   stores.groupby('lead_days').baseline_rate.mean())''',
 5:'''# Verify the omitted-variable identity on a fixed sample.
 stores = world()['stores']
 x = stores.lead_days.to_numpy()

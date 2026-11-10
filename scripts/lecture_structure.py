@@ -177,4 +177,7 @@ def reorganize(n,c):
     if n == 3:
         from lesson3_depth import restore
         c = restore(c)
+    if n == 4:
+        from lesson4_depth import restore
+        c = restore(c)
     return c

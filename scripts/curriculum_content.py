@@ -211,11 +211,6 @@ def add_later_lessons(n,c,r):
             'Below 3.5 days the slope is b; above it the slope is b+c. The curve stays continuous at the knot. The knot is a modelling choice between the observed three- and four-day groups, not evidence that a physical discontinuity occurs there.')+
           teach('A local smoother can reveal shape without one global line',table(['Baseline demand index','Locally fitted rate (%)'],[[f(x['demand']),f(x['rate'])] for x in d['local']],'Local linear smoothing across the demand range'),
             'For each displayed demand value, fit a small weighted line using nearby stores, with closer observations receiving more weight. This LOWESS-style demonstration uses a 60% neighborhood and no robustness iterations. The bandwidth controls smoothness. It is an exploratory description of the same stores; the lab exposes its weighting rule.')))
-        c['appendix_extra']=section_html('regression-details','Derive and reproduce the model comparisons',
-          formula('b = Σ(xᵢ − x̄)(yᵢ − ȳ) / Σ(xᵢ − x̄)²; a = ȳ − bx̄')+
-          formula('Quadratic marginal association = b₁ + 2b₂X; cubic adds 3b₃X²')+
-          p('The variation identity applies to in-sample OLS with an intercept. The local smoother uses a tricube distance weight inside each neighborhood. Log predictions are retransformed using exp(predicted log outcome) multiplied by the mean of exp(training residual). This separates prediction on a log scale from prediction of the arithmetic mean.')+
-          code("stores = world()['stores']\nx = stores.lead_days.to_numpy()\ny = stores.baseline_rate.to_numpy()\nX = np.column_stack([np.ones(len(x)), x])\nbeta, covariance, residual = fit_ols(X, y)\nsst = ((y - y.mean()) ** 2).sum()\nsse = (residual ** 2).sum()\nr_squared = 1 - sse / sst"))
     if n==5:
         before(c,'read-data',section('regression-uncertainty','Ask how precisely the fitted relationships are known',
           teach('A coefficient estimate comes with sampling uncertainty',table(['Term','Estimate','Robust SE','95% interval'],[[x['term'],f(x['value']),f(x['se']),f(x['low'])+' to '+f(x['high'])] for x in d['coefficients']],'Multiple-regression coefficient report'),
