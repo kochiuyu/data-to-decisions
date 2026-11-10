@@ -474,23 +474,61 @@ def expanded_results(w,core):
         controlled=dict(value=float(-bc[1]),low=float(-bc[1]-1.96*standard),high=float(-bc[1]+1.96*standard)),subgroups=subgroups,priority_weighted=weighted)
     return out
 
-p = world()['panel']
-pilot = p[(p.cohort == 'Pilot') & p.week.between(17,24)]
-s = pilot.groupby(['store_id','offer']).stockout_rate.mean().reset_index()
-worked = difference(s.loc[s.offer==0,'stockout_rate'], s.loc[s.offer==1,'stockout_rate'])
-assert np.isclose(worked['value'], lesson_result(7)['effect']['value'])
-net_saving = 8.4 * worked['value'] - 20
-assert np.isclose(net_saving, lesson_result(7)['savings']['value'])
-
-# Teaching reveal: recover the potential-outcome targets.
-potential = world()['panel'].query("cohort=='Pilot' and 17<=week<=24")
-potential = potential.groupby(['store_id','offer'])[['y0','y1']].mean().reset_index()
+# Four hypothetical units: outcomes under control and treatment.
+from itertools import combinations
+from scipy.stats import norm, t
+y0 = np.array([5.,6.,7.,8.]); y1 = np.array([4.,6.,8.,7.])
+D = np.array([0,0,1,1], dtype=bool)
+observed = np.where(D,y1,y0); individual = y1-y0
+ate = individual.mean(); att = individual[D].mean(); atu = individual[~D].mean()
+gap = observed[D].mean()-observed[~D].mean()
+selection = y0[D].mean()-y0[~D].mean()
+assert np.allclose([ate,att,atu,gap,selection],[-.25,0,-.5,2,2])
+assert np.isclose(gap,att+selection)
+assignments = []
+for pair in combinations(range(4),2):
+    assigned = np.zeros(4,dtype=bool); assigned[list(pair)] = True
+    factual = np.where(assigned,y1,y0)
+    assignments.append((pair,float(factual[assigned].mean()-factual[~assigned].mean())))
+assert np.isclose(np.mean([v for _,v in assignments]),ate)
+# The retail experiment has 50 assigned units, not 400 independent assignments.
+panel = world()['panel'].query("cohort=='Pilot' and 17<=week<=24")
+stores = panel.groupby(['store_id','offer']).stockout_rate.mean().reset_index()
+control = stores.loc[stores.offer==0,'stockout_rate'].to_numpy()
+offered = stores.loc[stores.offer==1,'stockout_rate'].to_numpy()
+v0 = control.var(ddof=1); v1 = offered.var(ddof=1)
+se = np.sqrt(v0/25+v1/25)
+df = (v0/25+v1/25)**2/((v0/25)**2/24+(v1/25)**2/24)
+critical = t.ppf(.975,df); reduction = control.mean()-offered.mean()
+pilot_interval = np.array([reduction-critical*se,reduction+critical*se])
+result = lesson_result(7)
+assert np.isclose(reduction,result['effect']['value'])
+assert np.allclose(pilot_interval,[result['effect']['low'],result['effect']['high']])
+# OLS reproduces the contrast; HC2 reproduces its Welch standard error.
+X = np.column_stack([np.ones(50),stores.offer]); y = stores.stockout_rate.to_numpy()
+beta = np.linalg.lstsq(X,y,rcond=None)[0]; residual = y-X@beta
+bread = np.linalg.inv(X.T@X); leverage = np.sum((X@bread)*X,axis=1)
+hc2 = bread@(X.T@((residual**2/(1-leverage))[:,None]*X))@bread
+assert np.isclose(beta[1],-reduction) and np.isclose(np.sqrt(hc2[1,1]),se)
+assert np.allclose(8.4*pilot_interval-20,[result['savings']['low'],result['savings']['high']])
+# Optional transfer example: original advertising summary counts.
+advertising = []
+for name,a,b in [('Clicks',3323,3128),('Actions',32,21)]:
+    n = 1_000_000; pa = a/n; pb = b/n; binary_gap = pa-pb
+    binary_se = np.sqrt(pa*(1-pa)/n+pb*(1-pb)/n)
+    advertising.append(dict(name=name,a=a,b=b,pa=pa,pb=pb,gap=binary_gap,
+        se=binary_se,pvalue=2*norm.sf(abs(binary_gap/binary_se)),
+        low=binary_gap-1.96*binary_se,high=binary_gap+1.96*binary_se))
+assert np.allclose([r['pvalue'] for r in advertising],[.015025064693,.130791741],atol=1e-9)
+assert 3323+3128 == 6451 and np.isclose(1000/32,31.25)
+# Reveal the pilot's potential paths only after the observed-data decision.
+potential = panel.groupby(['store_id','offer'])[['y0','y1']].mean().reset_index()
 potential['reduction'] = 100*(potential.y0-potential.y1)/140
-share = potential.offer.mean()
-att = potential.loc[potential.offer==1,'reduction'].mean()
-atu = potential.loc[potential.offer==0,'reduction'].mean()
-ate = potential.reduction.mean()
-assert np.isclose(ate,share*att+(1-share)*atu)
-assert np.isclose(ate,lesson_result(7)['depth']['ate'])
+treated = potential.offer==1
+pilot_att = potential.loc[treated,'reduction'].mean()
+pilot_atu = potential.loc[~treated,'reduction'].mean()
+pilot_selection = 100*(potential.loc[~treated,'y0'].mean()-potential.loc[treated,'y0'].mean())/140
+assert np.isclose(reduction,pilot_att+pilot_selection)
+assert np.isclose(potential.reduction.mean(),.5*pilot_att+.5*pilot_atu)
 
 print(json.dumps(lesson_result(7), indent=2, allow_nan=False))

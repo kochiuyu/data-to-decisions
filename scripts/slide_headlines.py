@@ -291,6 +291,11 @@ from lesson6_depth import DETAIL_TITLES as PREDICTION_DETAIL_TITLES, CODE_TITLES
 APPENDIX[6]['prediction-details'] = ['Reconstruct loss, likelihood, and the complete forecasting procedure'] + PREDICTION_DETAIL_TITLES
 APPENDIX[6]['calculation'] = ['Trace the selection process from dated inputs to final predictions'] + PREDICTION_CODE_TITLES
 
+from lesson7_depth import DETAIL_TITLES as CAUSAL_DETAIL_TITLES, CODE_TITLES as CAUSAL_CODE_TITLES
+APPENDIX[7].pop('potential-outcomes')
+APPENDIX[7]['causal-details'] = CAUSAL_DETAIL_TITLES
+APPENDIX[7]['calculation'] = ['Trace the teaching examples and the randomized pilot calculation'] + CAUSAL_CODE_TITLES
+
 for titles in APPENDIX.values():
     titles['generation'] = [
         'One shared retail world generates all three policy studies',
