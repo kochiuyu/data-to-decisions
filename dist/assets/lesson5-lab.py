@@ -423,15 +423,76 @@ rural_slope = beta[1]
 urban_slope = beta[1] + beta[5]
 assert np.isclose(urban_slope, lesson_result(5)['urban_slope'])
 
-# Verify the omitted-variable identity on a fixed sample.
+# Fit the same baseline stores; HC1 is the course robust covariance.
+from scipy.stats import norm, t, f as f_dist, chi2
 stores = world()['stores']
-x = stores.lead_days.to_numpy()
-y = stores.baseline_rate.to_numpy()
-short_X = np.column_stack([np.ones(len(x)), x])
-long_X = np.column_stack([np.ones(len(x)), x, stores.urban])
-short, _, _ = fit_ols(short_X, y)
-long, _, _ = fit_ols(long_X, y)
-sorting, _, _ = fit_ols(short_X, stores.urban)
-assert np.isclose(short[1], long[1]+long[2]*sorting[1])
+x = stores.lead_days.to_numpy(); y = stores.baseline_rate.to_numpy()
+u = stores.urban.to_numpy(); demand = stores.baseline_demand.to_numpy()-100
+promo = stores.promotion_share.to_numpy(); n = len(y)
+X = np.column_stack([np.ones(n),x,u,demand,promo,x*u])
+b, V, residual = fit_ols(X,y); fitted = X@b
+p = X.shape[1]; B = np.linalg.inv(X.T@X)
+sigma2_full = residual@residual/(n-p)
+classical_se = np.sqrt(np.diag(sigma2_full*B))
+robust_se = np.sqrt(np.diag(V)); z_score = b/robust_se
+p_value = 2*norm.sf(np.abs(z_score))
+ci95 = np.column_stack([b-1.96*robust_se,b+1.96*robust_se])
+ci99 = np.column_stack([b-norm.ppf(.995)*robust_se,b+norm.ppf(.995)*robust_se])
+# Simple-model pointwise bands use a classical future-variance model.
+S = np.column_stack([np.ones(n),x]); bs, Vs, es = fit_ols(S,y)
+s2 = es@es/(n-2); bread = np.linalg.inv(S.T@S)
+grid = np.linspace(2,5,101); G = np.column_stack([np.ones(len(grid)),grid])
+mean = G@bs; mean_se = np.sqrt(s2*np.einsum('ij,jk,ik->i',G,bread,G))
+prediction_se = np.sqrt(s2+mean_se**2); critical = t.ppf(.975,n-2)
+mean_band = np.column_stack([mean-critical*mean_se,mean+critical*mean_se])
+prediction_band = np.column_stack([mean-critical*prediction_se,mean+critical*prediction_se])
+row4 = np.array([1,4]); mean4 = row4@bs
+mean_se4 = np.sqrt(s2*(row4@bread@row4)); prediction_se4 = np.sqrt(s2+mean_se4**2)
+# Recover the omitted-variable identity without changing the sample.
+L = np.column_stack([np.ones(n),x,u]); bl, Vl, el = fit_ols(L,y)
+sorting, _, _ = fit_ols(S,u); ovb_product = bl[2]*sorting[1]
+assert np.isclose(bs[1],bl[1]+ovb_product)
+# Centering delivery changes the reference, not fitted values.
+C = np.column_stack([np.ones(n),x-3,u,demand,promo,(x-3)*u])
+bc, Vc, ec = fit_ols(C,y)
+assert np.allclose(C@bc,fitted)
+contrasts = []
+for lead in [2,3,4,5]:
+    c = np.array([0,0,1,0,0,lead]); value = c@b; se = np.sqrt(c@V@c)
+    contrasts.append([lead,value,se,value-1.96*se,value+1.96*se])
+urban_slope_row = np.array([0,1,0,0,0,1])
+urban_slope_se = np.sqrt(urban_slope_row@V@urban_slope_row)
+# A two-restriction test asks whether the group lines coincide.
+R = np.eye(p)[[2,5]]; restrictions = R@b; RV = R@V@R.T
+wald = restrictions@np.linalg.solve(RV,restrictions); wald_p = chi2.sf(wald,2)
+A = np.column_stack([np.ones(n),x,demand,promo]); ba, Va, ea = fit_ols(A,y)
+F = ((ea@ea-residual@residual)/2)/(residual@residual/(n-p))
+F_p = f_dist.sf(F,2,n-p)
+# Add centered curvature on the same rows and inspect nested training fit.
+Q = np.column_stack([X,(demand/10)**2]); bq,Vq,eq = fit_ols(Q,y)
+P = X[:,:5]; bp,Vp,ep = fit_ols(P,y)
+sst = np.sum((y-y.mean())**2); fit_rows = []
+for label,design,error in [('Lead only',S,es),('Add urban',L,el),('Add demand / promo',P,ep),('Group slopes',X,residual),('Add demand squared',Q,eq)]:
+    count = design.shape[1]; sse = error@error
+    fit_rows.append([label,count,1-sse/sst,1-(sse/(n-count))/(sst/(n-1)),np.sqrt(sse/n)])
+def vif_values(design):
+    values = []
+    for j in range(1,design.shape[1]):
+        other = np.delete(design,j,axis=1); target = design[:,j]
+        error = target-other@np.linalg.lstsq(other,target,rcond=None)[0]
+        values.append(np.sum((target-target.mean())**2)/(error@error))
+    return np.array(values)
+raw_vif = vif_values(X); centered_vif = vif_values(C)
+# Predictions keep the full profile visible.
+profiles = []
+for group in [0,1]:
+    for lead in [2,3,4,5]:
+        row = np.array([1,lead,group,0,.25,lead*group])
+        profiles.append([group,lead,row@b])
+assert np.all(prediction_band[:,1]-prediction_band[:,0] > mean_band[:,1]-mean_band[:,0])
+assert np.allclose(b[[1,5]],[1.53089239224744,.22833509751825537])
+assert np.isclose(bc[2],contrasts[1][1])
+assert np.allclose(X.T@residual,0,atol=1e-8)
+
 
 print(json.dumps(lesson_result(5), indent=2, allow_nan=False))

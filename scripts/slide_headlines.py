@@ -273,6 +273,20 @@ APPENDIX[4]['calculation'] = [
  'Verify that a delivery cubic reproduces the four group means',
 ]
 
+from lesson5_depth import DETAIL_TITLES as MULTIPLE_DETAIL_TITLES
+APPENDIX[5]['multiple-regression-details'] = ['Reconstruct covariance, contrasts, and joint comparisons'] + MULTIPLE_DETAIL_TITLES
+APPENDIX[5]['calculation'] = [
+ 'Reproduce inference and contrasts on the same baseline stores',
+ 'Fit the complete design and retain the shared analysis rows',
+ 'Calculate robust coefficient uncertainty and classical mean uncertainty',
+ 'Construct mean and individual bands on the same prediction grid',
+ 'Verify the omitted-variable identity and recenter delivery time',
+ 'Calculate profile contrasts and test the group terms jointly',
+ 'Compare nested fits and compute variance inflation',
+ 'Build full profiles and verify uncertainty targets',
+ 'Check centered comparisons and OLS residual identities',
+]
+
 for titles in APPENDIX.values():
     titles['generation'] = [
         'One shared retail world generates all three policy studies',

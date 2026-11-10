@@ -23,6 +23,9 @@ def publish_lesson(n,result):
     c=reorganize(n,enrich(n,lesson(n,result),result)); sections=c['sections']
     main_points,appendix_points=lesson_points(n,result)
     main_points['brief']=c['motivation'];main_points['big-picture']=c['transfer_points']
+    if c.get('authored_sections'):
+        for item in sections: main_points.pop(item['id'],None)
+    main_points.update(c.get('presentation_points',{}))
     roadmap=''.join(f'<li><a href="#{s["id"]}">{esc(s["title"])}</a></li>' for s in sections)
     body=f'<main id="main"><div class="hero wrap" data-teaching-phase="Business motivation"><p class="eyebrow">Lesson {n} · {esc(MAP[n-1][2])}</p><h1>{esc(c["title"])}</h1><p class="lead">{esc(c["inherited"])}</p><p class="stage-note">Business question → General theory → Worked application → Synthesis</p><p>First learn the definitions, notation, and logic of the method. Then use the shared case to work through the calculation and its interpretation.</p><div class="brief" id="decision-brief" data-teaching-phase="Business motivation"><h2>The motivating question</h2>{p(c["brief"])}</div></div>'
     body=body.replace('<div class="brief"',presentation_launch()+'<div class="brief"',1)

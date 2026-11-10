@@ -242,3 +242,6 @@ beta, _, _ = fit_ols(X,periods.stockout_rate)
 reduction = -beta[3]
 assert np.isclose(reduction,lesson_result(10)['effect']['value'])'''
 }
+
+from lesson5_depth import CALCULATIONS
+WORKED[5] = CALCULATIONS
