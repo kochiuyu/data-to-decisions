@@ -160,6 +160,97 @@ def preparation_examples():
         transfers=records(transfers),perspectives=records(perspectives[['transfer_id','week','store_id','direction','signed_units']]),
         reports=records(reports),summary=records(summary),eligible=records(summary.query('weeks>=6')))
 
+
+FORECAST_FEATURES = ['lag_rate','lead_days','urban','demand_forecast','promotion_plan']
+FORECAST_FOLDS = [(7,8,9),(9,10,11),(11,12,13)]
+
+def forecast_basis(values):
+    """Five main terms, three continuous squares, ten pairwise products."""
+    polynomial = PolynomialFeatures(2, include_bias=False)
+    matrix = polynomial.fit_transform(np.asarray(values))
+    keep = (polynomial.powers_[:,2] < 2) & (polynomial.powers_[:,4] < 2)
+    return matrix[:,keep]
+
+def forecast_feature_names():
+    polynomial = PolynomialFeatures(2, include_bias=False).fit(np.zeros((1,5)))
+    keep = (polynomial.powers_[:,2] < 2) & (polynomial.powers_[:,4] < 2)
+    return polynomial.get_feature_names_out(FORECAST_FEATURES)[keep]
+
+def fit_forecast(training, kind, alpha=.01):
+    """Learn the entire procedure on this training window only."""
+    assert kind in ['Mean','Linear regression','Quadratic','Log-linear','LASSO']
+    from sklearn.preprocessing import FunctionTransformer
+    from sklearn.dummy import DummyRegressor
+    target = training.stockout_rate.to_numpy()
+    if kind == 'Mean':
+        model = DummyRegressor(strategy='mean')
+    elif kind in ['Quadratic','LASSO']:
+        estimator = Lasso(alpha=alpha,max_iter=50000,tol=1e-8) if kind=='LASSO' else LinearRegression()
+        model = make_pipeline(FunctionTransformer(forecast_basis),StandardScaler(),estimator)
+    else:
+        model = make_pipeline(StandardScaler(),LinearRegression())
+    outcome = np.log1p(target) if kind == 'Log-linear' else target
+    model.fit(training[FORECAST_FEATURES],outcome)
+    smear = float(np.mean(np.exp(outcome-model.predict(training[FORECAST_FEATURES])))) if kind=='Log-linear' else 1.
+    return model,kind,smear
+
+def predict_forecast(fitted, rows):
+    model,kind,smear = fitted
+    predicted = model.predict(rows[FORECAST_FEATURES])
+    return np.exp(predicted)*smear-1 if kind=='Log-linear' else predicted
+
+@lru_cache(maxsize=1)
+def prediction_analysis():
+    data = world()['panel'].query('3<=week<=16').copy()
+    development = data.query('week<=13'); final = data.query('week>=14')
+    def validate(kind,alpha=.01):
+        errors=[]; train_errors=[]; fold_scores=[]
+        for end,start,stop in FORECAST_FOLDS:
+            training=development[development.week<=end]
+            validation=development[development.week.between(start,stop)]
+            fitted=fit_forecast(training,kind,alpha)
+            error=validation.stockout_rate.to_numpy()-predict_forecast(fitted,validation)
+            train_error=training.stockout_rate.to_numpy()-predict_forecast(fitted,training)
+            errors.extend(error);train_errors.extend(train_error)
+            fold_scores.append(float(np.sqrt(np.mean(error**2))))
+        return dict(rmse=float(np.sqrt(np.mean(np.square(errors)))),fold_rmse=fold_scores,
+                    training_rmse=float(np.sqrt(np.mean(np.square(train_errors)))))
+    tuning=[dict(alpha=a,**validate('LASSO',a)) for a in [.001,.01,.1,1.]]
+    best=min(tuning,key=lambda x:x['rmse'])['alpha']
+    scores=[dict(model=kind,**validate(kind)) for kind in ['Mean','Linear regression','Quadratic','Log-linear']]
+    scores.append(dict(model='LASSO',**validate('LASSO',best)))
+    selected=min(scores,key=lambda x:x['rmse'])['model']
+    fitted=fit_forecast(development,selected,best)
+    prediction=predict_forecast(fitted,final);errors=final.stockout_rate.to_numpy()-prediction
+    baseline=float(development.stockout_rate.mean())
+    ex=final[['store_id','week','stockout_rate']+FORECAST_FEATURES].copy()
+    ex['prediction']=prediction;ex['error']=errors;ex['squared_error']=errors**2
+    core=dict(features=FORECAST_FEATURES,train_n=len(development.query('week<=7')),validation_n=len(development.query('week>=8')),test_n=len(final),
+      scores=scores,selected=selected,baseline=baseline,
+      baseline_rmse=float(np.sqrt(np.mean((final.stockout_rate-baseline)**2))),
+      rmse=float(np.sqrt(np.mean(errors**2))),mae=float(np.mean(abs(errors))),
+      sample=records(ex.head(5)),watchlist=records(ex.query('week==16').nlargest(5,'prediction')),
+      windows=dict(training=[3,7],validation=[8,13],test=[14,16]))
+    tuned=fit_forecast(development,'LASSO',best);lp=predict_forecast(tuned,final)
+    names=forecast_feature_names();coef=tuned[0][-1].coef_
+    terms=sorted([dict(feature=str(name),coefficient=float(v)) for name,v in zip(names,coef) if abs(v)>1e-8],key=lambda x:abs(x['coefficient']),reverse=True)
+    criteria=[]
+    for degree,kind in [(1,'Linear regression'),(2,'Quadratic')]:
+        fit=fit_forecast(development,kind);residual=development.stockout_rate-predict_forecast(fit,development)
+        design=development[FORECAST_FEATURES].to_numpy() if degree==1 else forecast_basis(development[FORECAST_FEATURES])
+        rank=int(np.linalg.matrix_rank(np.column_stack([np.ones(len(design)),design])))
+        assert rank==design.shape[1]+1
+        rss=float(np.sum(residual**2));nn=len(development);k=rank+1
+        negative2log=nn*(np.log(2*np.pi)+1+np.log(rss/nn))
+        criteria.append(dict(degree=degree,parameters=k,mean_parameters=rank,training_rmse=float(np.sqrt(rss/nn)),
+                             rss=rss,negative2log=negative2log,aic=negative2log+2*k,bic=negative2log+k*np.log(nn)))
+    depth=dict(folds=[dict(train_end=a,validation_start=b,validation_end=c) for a,b,c in FORECAST_FOLDS],
+      tuning=tuning,alpha=best,retained=len(terms),candidate_features=len(names),largest=terms[:6],terms=terms,
+      test_rmse=float(np.sqrt(np.mean((final.stockout_rate-lp)**2))),test_mae=float(np.mean(abs(final.stockout_rate-lp))),
+      criteria=criteria,
+      log_example=dict(naive=10.,smearing=float(np.mean(np.exp([-.2,.2]))),mean=float(10*np.mean(np.exp([-.2,.2])))))
+    return core,depth
+
 @lru_cache(maxsize=1)
 def all_results():
     w=world(); p=w['panel']; stores=w['stores']; out={}
@@ -192,19 +283,7 @@ def all_results():
             row=np.array([1,lead,urban,0,.25,lead*urban]); profiles.append(dict(urban=urban,lead=lead,demand=100,promotion_share=.25,predicted=float(row@coef5)))
     out[5]=dict(n=len(b),coefficients=dict(zip(['Intercept','Lead days','Urban','Demand above 100','Promotion share','Lead × urban'],map(float,coef5))),
         profiles=profiles,short_slope=float(coef[1]),rural_slope=float(coef5[1]),urban_slope=float(coef5[1]+coef5[5]),rmse=float(np.sqrt(np.mean(res5**2))))
-    features=['lag_rate','lead_days','urban','demand_forecast','promotion_plan']
-    forecast=p.query('3<=week<=16').copy(); train=forecast.query('week<=10'); val=forecast.query('11<=week<=13'); test=forecast.query('week>=14')
-    candidates={'Linear regression':LinearRegression(),'Small tree':DecisionTreeRegressor(max_depth=3,min_samples_leaf=30,random_state=SEED)}
-    scores=[]
-    for name,model in candidates.items():
-        model.fit(train[features],train.stockout_rate); pred=model.predict(val[features]); scores.append(dict(model=name,rmse=float(np.sqrt(np.mean((val.stockout_rate-pred)**2)))))
-    choice=min(scores,key=lambda z:z['rmse'])['model']; model=candidates[choice]; dev=forecast.query('week<=13'); model.fit(dev[features],dev.stockout_rate)
-    predicted=model.predict(test[features]); baseline=float(dev.stockout_rate.mean()); errors=test.stockout_rate.to_numpy()-predicted
-    ex=test[['store_id','week','stockout_rate']].copy();ex['prediction']=predicted;ex['error']=errors;ex['squared_error']=errors**2
-    watch=ex.query('week==16').nlargest(5,'prediction')
-    out[6]=dict(features=features,train_n=len(train),validation_n=len(val),test_n=len(test),scores=scores,selected=choice,
-        baseline=baseline,baseline_rmse=float(np.sqrt(np.mean((test.stockout_rate-baseline)**2))),rmse=float(np.sqrt(np.mean(errors**2))),mae=float(np.mean(np.abs(errors))),
-        sample=records(ex.head(5)),watchlist=records(watch),windows=dict(training=[3,10],validation=[11,13],test=[14,16]))
+    out[6]=dict(prediction_analysis()[0])
     post=p.query('17<=week<=24').groupby(['store_id','cohort','offer']).agg(rate=('stockout_rate','mean'),cost=('operating_cost','mean'),
         truth_effect=('effect_pp','mean'),realized_effect=('y0',lambda x:0)).reset_index()
     post=post.drop(columns='realized_effect').merge(stores[['store_id','lead_days','urban','baseline_rate','risk_group']],on='store_id',validate='one_to_one')
@@ -322,29 +401,8 @@ def expanded_results(w,core):
     residuals=s[['store_id','baseline_rate']].assign(predicted=X5@b5,residual=e5).nlargest(5,'residual')
     out[5]=dict(coefficients=coefficients,intervals=intervals,ovb=dict(short=float(b[1]),long=float(bf[1]),omitted_effect=float(bf[2]),sorting=float(aux[1]),product=float(bf[2]*aux[1])),
         residuals=records(residuals),r_squared=float(1-np.sum(e5**2)/sst),adjusted_r_squared=float(1-(np.sum(e5**2)/(n-X5.shape[1]))/(sst/(n-1))))
-    # Lesson 6: rolling validation and scaling confined to each training fold.
-    features=core[6]['features']; data=p.query('3<=week<=16').copy(); dev=data.query('week<=13'); test=data.query('week>=14')
-    folds=[(7,8,9),(9,10,11),(11,12,13)]; alphas=[.001,.01,.1,1.]; tuning=[]
-    for alpha in alphas:
-        errors=[]; fold_scores=[]
-        for end,start,stop in folds:
-            tr=dev[dev.week<=end]; va=dev[dev.week.between(start,stop)]
-            model=make_pipeline(PolynomialFeatures(2,include_bias=False),StandardScaler(),Lasso(alpha=alpha,max_iter=10000))
-            model.fit(tr[features],tr.stockout_rate); error=va.stockout_rate.to_numpy()-model.predict(va[features]); errors.extend(error)
-            fold_scores.append(float(np.sqrt(np.mean(error**2))))
-        tuning.append(dict(alpha=alpha,rmse=float(np.sqrt(np.mean(np.square(errors)))),fold_rmse=fold_scores))
-    best=min(tuning,key=lambda row:row['rmse'])['alpha']
-    tuned=make_pipeline(PolynomialFeatures(2,include_bias=False),StandardScaler(),Lasso(alpha=best,max_iter=10000));tuned.fit(dev[features],dev.stockout_rate)
-    prediction=tuned.predict(test[features]); errors=test.stockout_rate.to_numpy()-prediction
-    names=tuned[0].get_feature_names_out(features); terms=sorted([dict(feature=str(name),coefficient=float(coef)) for name,coef in zip(names,tuned[-1].coef_) if abs(coef)>1e-10],key=lambda d:abs(d['coefficient']),reverse=True)
-    criteria=[]
-    for degree in [1,2]:
-        model=make_pipeline(PolynomialFeatures(degree,include_bias=False),LinearRegression());model.fit(dev[features],dev.stockout_rate)
-        error=dev.stockout_rate-model.predict(dev[features]); rss=float(np.sum(error**2)); k=int(model[0].n_output_features_+1); nn=len(dev)
-        criteria.append(dict(degree=degree,parameters=k,training_rmse=float(np.sqrt(rss/nn)),aic=nn*np.log(rss/nn)+2*k,bic=nn*np.log(rss/nn)+k*np.log(nn)))
-    out[6]=dict(folds=[dict(train_end=a,validation_start=b,validation_end=c) for a,b,c in folds],tuning=tuning,alpha=best,
-        retained=len(terms),candidate_features=len(names),largest=terms[:6],test_rmse=float(np.sqrt(np.mean(errors**2))),test_mae=float(np.mean(abs(errors))),criteria=criteria,
-        log_example=dict(naive=10.,smearing=float(np.mean(np.exp([-.2,.2]))),mean=float(10*np.mean(np.exp([-.2,.2])))))
+    # Lesson 6 uses one chronological comparison for all candidate procedures.
+    out[6]=dict(prediction_analysis()[1])
     # Lesson 7: reveal both potential paths only in a known-answer exercise.
     pilot=p.query("cohort=='Pilot' and 17<=week<=24").groupby(['store_id','offer']).agg(y0=('y0','mean'),y1=('y1','mean')).reset_index()
     pilot['y0']=100*pilot.y0/140;pilot['y1']=100*pilot.y1/140;pilot['reduction']=pilot.y0-pilot.y1
@@ -416,45 +474,62 @@ def expanded_results(w,core):
         controlled=dict(value=float(-bc[1]),low=float(-bc[1]-1.96*standard),high=float(-bc[1]+1.96*standard)),subgroups=subgroups,priority_weighted=weighted)
     return out
 
-data = world()['panel'].query('3 <= week <= 16')
-features = ['lag_rate','lead_days','urban','demand_forecast','promotion_plan']
-train = data.query('week <= 10')
-valid = data.query('11 <= week <= 13')
-test = data.query('week >= 14')
-models = {'Linear regression': LinearRegression(),
-          'Small tree': DecisionTreeRegressor(max_depth=3,min_samples_leaf=30,random_state=SEED)}
-scores = {}
-for name, model in models.items():
-    model.fit(train[features], train.stockout_rate)
-    scores[name] = np.sqrt(np.mean((valid.stockout_rate-model.predict(valid[features]))**2))
-chosen = min(scores, key=scores.get)
-development = data.query('week <= 13')
-model = models[chosen].fit(development[features], development.stockout_rate)
-worked_rmse = np.sqrt(np.mean((test.stockout_rate-model.predict(test[features]))**2))
-assert np.isclose(worked_rmse, lesson_result(6)['rmse'])
-
-# Tune LASSO in expanding time windows; preprocessing stays inside each fit.
+# Use one validation design for every forecasting procedure.
 data = world()['panel'].query('3<=week<=16')
 development = data.query('week<=13')
 final_test = data.query('week>=14')
-features = lesson_result(6)['features']
-scores = []
-for alpha in [.001, .01, .1, 1.]:
-    errors = []
-    for train_end, start, stop in [(7,8,9),(9,10,11),(11,12,13)]:
-        training = development[development.week<=train_end]
-        validation = development[development.week.between(start,stop)]
-        candidate = make_pipeline(PolynomialFeatures(2,include_bias=False),
-            StandardScaler(), Lasso(alpha=alpha,max_iter=10000))
-        candidate.fit(training[features], training.stockout_rate)
-        errors.extend(validation.stockout_rate-candidate.predict(validation[features]))
-    scores.append((np.sqrt(np.mean(np.square(errors))),alpha))
-chosen_alpha = min(scores)[1]
-assert chosen_alpha == lesson_result(6)['depth']['alpha']
-final_model = make_pipeline(PolynomialFeatures(2,include_bias=False),
-    StandardScaler(), Lasso(alpha=chosen_alpha,max_iter=10000))
-final_model.fit(development[features],development.stockout_rate)
-final_errors = final_test.stockout_rate-final_model.predict(final_test[features])
-assert np.isclose(np.sqrt(np.mean(final_errors**2)),lesson_result(6)['depth']['test_rmse'])
+features = FORECAST_FEATURES
+training = development.query('week<=7')
+validation = development.query('8<=week<=9')
+first_fit = fit_forecast(training,'Linear regression')
+first_predictions = predict_forecast(first_fit,validation)
+first_errors = validation.stockout_rate.to_numpy()-first_predictions
+result, depth = prediction_analysis()
+pooled_mse = sum(300*v*v for v in result['scores'][1]['fold_rmse'])/900
+assert np.isclose(np.sqrt(pooled_mse),result['scores'][1]['rmse'])
+assert np.isclose(np.sqrt(np.mean(first_errors**2)),result['scores'][1]['fold_rmse'][0])
+# Inspect the complete input record before scoring its target week.
+frozen = fit_forecast(development,result['selected'],depth['alpha'])
+final_predictions = predict_forecast(frozen,final_test)
+assert np.isclose(np.sqrt(np.mean((final_test.stockout_rate-final_predictions)**2)),result['rmse'])
+clean_basis = forecast_basis(development[features])
+assert clean_basis.shape == (1650,18)
+assert np.linalg.matrix_rank(np.column_stack([np.ones(1650),clean_basis])) == 19
+# A labelled missing-input exercise uses a copy of the first fold.
+quality_train = training.copy(); quality_valid = validation.copy()
+quality_train.loc[quality_train.store_id.isin(['S001','S002']), 'demand_forecast'] = np.nan
+quality_valid.loc[quality_valid.store_id=='S001','demand_forecast'] = np.nan
+median = quality_train.demand_forecast.median()
+for frame in [quality_train,quality_valid]:
+    frame['demand_missing'] = frame.demand_forecast.isna().astype(int)
+    frame['demand_filled'] = frame.demand_forecast.fillna(median)
+scale_mean = quality_train.demand_filled.mean()
+scale_sd = quality_train.demand_filled.std(ddof=0)
+quality_valid['demand_z'] = (quality_valid.demand_filled-scale_mean)/scale_sd
+assert quality_valid.loc[quality_valid.demand_missing==1,'demand_filled'].eq(median).all()
+# The log1p procedure learns its smearing factor on training residuals.
+log_fit = fit_forecast(training,'Log-linear')
+log_naive = np.expm1(log_fit[0].predict(validation[features]))
+log_adjusted = predict_forecast(log_fit,validation)
+assert np.allclose(log_adjusted,(log_naive+1)*log_fit[2]-1)
+# Build coefficient paths on development data; alpha selection uses validation.
+path_alphas = np.logspace(-3,1,25)
+path_coefs = np.array([fit_forecast(development,'LASSO',a)[0][-1].coef_ for a in path_alphas])
+selected_lasso = fit_forecast(development,'LASSO',depth['alpha'])
+lasso_coefficients = selected_lasso[0][-1].coef_
+assert np.count_nonzero(abs(lasso_coefficients)>1e-8) == depth['retained']
+# One standardized predictor: exact soft-threshold solution.
+z = np.array([-1.,-1.,1.,1.]); centered_y = 2*z
+soft_coefficients = []
+for alpha in [0.,.5,1.,2.,3.]:
+    covariance = np.mean(z*centered_y)
+    soft_coefficients.append(np.sign(covariance)*max(abs(covariance)-alpha,0))
+assert soft_coefficients == [2.,1.5,1.,0.,0.]
+# Verify the full Gaussian criteria and the Bernoulli illustration.
+for row in depth['criteria']:
+    assert np.isclose(row['aic'],row['negative2log']+2*row['parameters'])
+    assert np.isclose(row['bic'],row['negative2log']+row['parameters']*np.log(1650))
+bernoulli_likelihood = [p**3*(1-p)**2 for p in [.2,.4,.6,.8]]
+assert [.2,.4,.6,.8][np.argmax(bernoulli_likelihood)] == .6
 
 print(json.dumps(lesson_result(6), indent=2, allow_nan=False))

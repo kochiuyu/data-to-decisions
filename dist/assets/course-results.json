@@ -1630,17 +1630,59 @@
       "demand_forecast",
       "promotion_plan"
     ],
-    "train_n": 1200,
-    "validation_n": 450,
+    "train_n": 750,
+    "validation_n": 900,
     "test_n": 450,
     "scores": [
       {
-        "model": "Linear regression",
-        "rmse": 2.782359868156325
+        "model": "Mean",
+        "rmse": 3.682982098129762,
+        "fold_rmse": [
+          3.6202660856092117,
+          3.687364122496289,
+          3.740332966855738
+        ],
+        "training_rmse": 3.6537635347647095
       },
       {
-        "model": "Small tree",
-        "rmse": 3.046326521668562
+        "model": "Linear regression",
+        "rmse": 2.779800170732406,
+        "fold_rmse": [
+          2.742980065701644,
+          2.902466351877485,
+          2.6895383252510356
+        ],
+        "training_rmse": 2.790465483433662
+      },
+      {
+        "model": "Quadratic",
+        "rmse": 2.79974072623324,
+        "fold_rmse": [
+          2.7976878527821083,
+          2.900299533042,
+          2.697563659938146
+        ],
+        "training_rmse": 2.755711235533054
+      },
+      {
+        "model": "Log-linear",
+        "rmse": 2.7837924546286277,
+        "fold_rmse": [
+          2.703402434645144,
+          2.922124188890248,
+          2.720534284363838
+        ],
+        "training_rmse": 2.7930487738213525
+      },
+      {
+        "model": "LASSO",
+        "rmse": 2.7818923288233037,
+        "fold_rmse": [
+          2.748642525802072,
+          2.9007211970801343,
+          2.6921284496955615
+        ],
+        "training_rmse": 2.7655218207336403
       }
     ],
     "selected": "Linear regression",
@@ -1653,6 +1695,11 @@
         "store_id": "S001",
         "week": 14,
         "stockout_rate": 12.857142857143,
+        "lag_rate": 8.571428571429,
+        "lead_days": 4,
+        "urban": 0,
+        "demand_forecast": 90.523839795382,
+        "promotion_plan": 1,
         "prediction": 13.031711726306,
         "error": -0.174568869164,
         "squared_error": 0.030474290081
@@ -1661,6 +1708,11 @@
         "store_id": "S001",
         "week": 15,
         "stockout_rate": 12.142857142857,
+        "lag_rate": 12.857142857143,
+        "lead_days": 4,
+        "urban": 0,
+        "demand_forecast": 82.873993007556,
+        "promotion_plan": 0,
         "prediction": 10.64997770569,
         "error": 1.492879437167,
         "squared_error": 2.228689013917
@@ -1669,6 +1721,11 @@
         "store_id": "S001",
         "week": 16,
         "stockout_rate": 12.142857142857,
+        "lag_rate": 12.142857142857,
+        "lead_days": 4,
+        "urban": 0,
+        "demand_forecast": 83.751967423033,
+        "promotion_plan": 0,
         "prediction": 10.64830430337,
         "error": 1.494552839487,
         "squared_error": 2.23368819002
@@ -1677,6 +1734,11 @@
         "store_id": "S002",
         "week": 14,
         "stockout_rate": 6.428571428571,
+        "lag_rate": 7.857142857143,
+        "lead_days": 3,
+        "urban": 0,
+        "demand_forecast": 94.324720909039,
+        "promotion_plan": 1,
         "prediction": 11.702785868732,
         "error": -5.274214440161,
         "squared_error": 27.817337960799
@@ -1685,6 +1747,11 @@
         "store_id": "S002",
         "week": 15,
         "stockout_rate": 5.714285714286,
+        "lag_rate": 6.428571428571,
+        "lead_days": 3,
+        "urban": 0,
+        "demand_forecast": 86.674874121213,
+        "promotion_plan": 0,
         "prediction": 8.936733401551,
         "error": -3.222447687265,
         "squared_error": 10.384169097159
@@ -1695,6 +1762,11 @@
         "store_id": "S118",
         "week": 16,
         "stockout_rate": 14.285714285714,
+        "lag_rate": 15.0,
+        "lead_days": 5,
+        "urban": 1,
+        "demand_forecast": 114.333742895693,
+        "promotion_plan": 1,
         "prediction": 17.993141063258,
         "error": -3.707426777544,
         "squared_error": 13.74501331085
@@ -1703,6 +1775,11 @@
         "store_id": "S131",
         "week": 16,
         "stockout_rate": 16.428571428571,
+        "lag_rate": 20.0,
+        "lead_days": 5,
+        "urban": 1,
+        "demand_forecast": 104.863816427587,
+        "promotion_plan": 1,
         "prediction": 17.829306689319,
         "error": -1.400735260747,
         "squared_error": 1.962059270701
@@ -1711,6 +1788,11 @@
         "store_id": "S038",
         "week": 16,
         "stockout_rate": 18.571428571429,
+        "lag_rate": 13.571428571429,
+        "lead_days": 5,
+        "urban": 1,
+        "demand_forecast": 108.240724378227,
+        "promotion_plan": 1,
         "prediction": 17.575285155935,
         "error": 0.996143415494,
         "squared_error": 0.992301704232
@@ -1719,6 +1801,11 @@
         "store_id": "S010",
         "week": 16,
         "stockout_rate": 15.0,
+        "lag_rate": 17.857142857143,
+        "lead_days": 5,
+        "urban": 1,
+        "demand_forecast": 101.976672690582,
+        "promotion_plan": 1,
         "prediction": 17.53271532152,
         "error": -2.53271532152,
         "squared_error": 6.414646899863
@@ -1727,6 +1814,11 @@
         "store_id": "S039",
         "week": 16,
         "stockout_rate": 26.428571428571,
+        "lag_rate": 14.285714285714,
+        "lead_days": 5,
+        "urban": 1,
+        "demand_forecast": 103.811063290961,
+        "promotion_plan": 1,
         "prediction": 17.3893916606,
         "error": 9.039179767971,
         "squared_error": 81.706770877702
@@ -1735,10 +1827,10 @@
     "windows": {
       "training": [
         3,
-        10
+        7
       ],
       "validation": [
-        11,
+        8,
         13
       ],
       "test": [
@@ -1767,86 +1859,138 @@
       "tuning": [
         {
           "alpha": 0.001,
-          "rmse": 2.7961126781704757,
+          "rmse": 2.796087914260179,
           "fold_rmse": [
-            2.790863270041244,
-            2.8979743898980312,
-            2.6958421635004592
-          ]
+            2.790914392812614,
+            2.897955865812763,
+            2.695732094368489
+          ],
+          "training_rmse": 2.7564501926029417
         },
         {
           "alpha": 0.01,
-          "rmse": 2.7818135228297782,
+          "rmse": 2.7818923288233037,
           "fold_rmse": [
-            2.748718709230204,
-            2.9006186051060423,
-            2.6919168992813254
-          ]
+            2.748642525802072,
+            2.9007211970801343,
+            2.6921284496955615
+          ],
+          "training_rmse": 2.7655218207336403
         },
         {
           "alpha": 0.1,
-          "rmse": 2.7870055331833083,
+          "rmse": 2.787068125633922,
           "fold_rmse": [
-            2.719067317871142,
-            2.910274655170408,
-            2.727484899745722
-          ]
+            2.719165327992632,
+            2.910278531448577,
+            2.727574930080929
+          ],
+          "training_rmse": 2.7809422839652824
         },
         {
           "alpha": 1.0,
-          "rmse": 3.208351461024278,
+          "rmse": 3.208351243111577,
           "fold_rmse": [
-            3.161302023390088,
-            3.2335231679348824,
-            3.2297143421219072
-          ]
+            3.1613015304846153,
+            3.2335232237023668,
+            3.22971411933934
+          ],
+          "training_rmse": 3.1793569186126254
         }
       ],
       "alpha": 0.01,
-      "retained": 11,
-      "candidate_features": 20,
+      "retained": 10,
+      "candidate_features": 18,
       "largest": [
         {
           "feature": "lead_days urban",
-          "coefficient": 1.1582579634451258
+          "coefficient": 1.159168259073729
         },
         {
           "feature": "lead_days",
-          "coefficient": 0.9972936017844186
+          "coefficient": 0.9992826043819274
         },
         {
           "feature": "promotion_plan",
-          "coefficient": 0.7110233036137535
+          "coefficient": 0.7112559663008181
         },
         {
           "feature": "lag_rate urban",
-          "coefficient": -0.6771403789013346
+          "coefficient": -0.6789784080414927
         },
         {
           "feature": "demand_forecast",
-          "coefficient": 0.5802575418479767
+          "coefficient": 0.5792447685030792
         },
         {
           "feature": "lag_rate lead_days",
-          "coefficient": 0.46112403000628016
+          "coefficient": 0.45743464644787446
         }
       ],
-      "test_rmse": 2.9683637822318327,
-      "test_mae": 2.37692807727757,
+      "terms": [
+        {
+          "feature": "lead_days urban",
+          "coefficient": 1.159168259073729
+        },
+        {
+          "feature": "lead_days",
+          "coefficient": 0.9992826043819274
+        },
+        {
+          "feature": "promotion_plan",
+          "coefficient": 0.7112559663008181
+        },
+        {
+          "feature": "lag_rate urban",
+          "coefficient": -0.6789784080414927
+        },
+        {
+          "feature": "demand_forecast",
+          "coefficient": 0.5792447685030792
+        },
+        {
+          "feature": "lag_rate lead_days",
+          "coefficient": 0.45743464644787446
+        },
+        {
+          "feature": "urban",
+          "coefficient": 0.39942041599859646
+        },
+        {
+          "feature": "lead_days promotion_plan",
+          "coefficient": 0.24604079908822477
+        },
+        {
+          "feature": "lag_rate demand_forecast",
+          "coefficient": 0.14604978403969066
+        },
+        {
+          "feature": "urban promotion_plan",
+          "coefficient": -0.007820474092933261
+        }
+      ],
+      "test_rmse": 2.9683676537564607,
+      "test_mae": 2.376941048177614,
       "criteria": [
         {
           "degree": 1,
-          "parameters": 6,
+          "parameters": 7,
+          "mean_parameters": 6,
           "training_rmse": 2.778068460389901,
-          "aic": 3383.7944297312956,
-          "bic": 3416.2456131326635
+          "rss": 12734.146211511641,
+          "negative2log": 8054.291589306715,
+          "aic": 8068.291589306715,
+          "bic": 8106.151303274977
         },
         {
           "degree": 2,
-          "parameters": 21,
+          "parameters": 20,
+          "mean_parameters": 19,
           "training_rmse": 2.748071026558746,
-          "aic": 3377.9674281885027,
-          "bic": 3491.54657009329
+          "rss": 12460.625705569202,
+          "negative2log": 8018.464587763922,
+          "aic": 8058.464587763922,
+          "bic": 8166.635199101815
         }
       ],
       "log_example": {

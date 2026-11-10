@@ -287,6 +287,10 @@ APPENDIX[5]['calculation'] = [
  'Check centered comparisons and OLS residual identities',
 ]
 
+from lesson6_depth import DETAIL_TITLES as PREDICTION_DETAIL_TITLES, CODE_TITLES as PREDICTION_CODE_TITLES
+APPENDIX[6]['prediction-details'] = ['Reconstruct loss, likelihood, and the complete forecasting procedure'] + PREDICTION_DETAIL_TITLES
+APPENDIX[6]['calculation'] = ['Trace the selection process from dated inputs to final predictions'] + PREDICTION_CODE_TITLES
+
 for titles in APPENDIX.values():
     titles['generation'] = [
         'One shared retail world generates all three policy studies',

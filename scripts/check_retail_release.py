@@ -56,7 +56,10 @@ def check_science():
     assert math.isclose(r[1]['rate'],r[2]['mean'])
     assert (r[1]['raw'],r[1]['duplicates'],r[1]['flagged'],r[1]['clean'])==(1212,12,12,1200)
     assert r[3]['n']==30 and w['audit'].store_id.is_unique
-    assert r[6]['windows']==dict(training=[3,10],validation=[11,13],test=[14,16])
+    assert r[6]['windows']==dict(training=[3,7],validation=[8,13],test=[14,16])
+    assert r[6]['selected']==min(r[6]['scores'],key=lambda v:v['rmse'])['model']
+    assert r[6]['depth']['candidate_features']==18
+    assert [v['mean_parameters'] for v in r[6]['depth']['criteria']]==[6,19]
     assert not {'stockout_rate','demand_index','offer','active','operating_cost'} & set(r[6]['features'])
     assert r[6]['test_n']==450
     assert np.isclose(r[7]['savings']['value'],8.4*r[7]['effect']['value']-20)
