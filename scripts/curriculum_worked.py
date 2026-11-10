@@ -8,7 +8,32 @@ assert counts.sum() == 150
 sample_sd = rates.std(ddof=1)
 correlation = np.corrcoef(stores.baseline_demand, rates)[0,1]
 assert np.isclose(sample_sd, lesson_result(2)['depth']['sd'])
-assert np.isclose(correlation, lesson_result(2)['depth']['correlation'])''',
+assert np.isclose(correlation, lesson_result(2)['depth']['correlation'])
+x = stores.baseline_demand.to_numpy()
+products = (x-x.mean()) * (rates-rates.mean())
+covariance = products.sum() / (len(x)-1)
+assert np.isclose(covariance, np.cov(x,rates,ddof=1)[0,1])
+assert np.isclose(correlation, covariance/(x.std(ddof=1)*sample_sd))
+# Recalculate distributions and association within each group.
+group_checks = {}
+for name, g in stores.groupby('risk_group'):
+    q = g.baseline_rate.quantile([.25,.5,.75])
+    corr = g.baseline_demand.corr(g.baseline_rate)
+    group_checks[name] = dict(n=len(g),quartiles=q.to_list(),r=corr)
+    bands = pd.cut(g.baseline_rate, [-np.inf,10,15,np.inf])
+    shares = bands.value_counts(sort=False) / len(g)
+    assert np.isclose(shares.sum(), 1)
+assert sum(g['n'] for g in group_checks.values()) == 150
+# Verify normalization and the relation between raw and binned views.
+for width in [2,4]:
+    edges = np.arange(4,24+width,width)
+    counts, _ = np.histogram(rates, edges)
+    density = counts / (len(rates)*width)
+    assert counts.sum() == len(rates)
+    assert np.isclose((density*np.diff(edges)).sum(), 1)
+binned = stores.assign(bin=pd.qcut(stores.baseline_demand,5))
+bin_means = binned.groupby('bin',observed=True).baseline_rate.mean()
+assert np.isclose(bin_means.mean(), rates.mean())''',
 3:'''# Bootstrap sampled stores, then test the specified target.
 audit = world()['audit'].stockout_rate.to_numpy()
 rng = np.random.default_rng(SEED + 303)

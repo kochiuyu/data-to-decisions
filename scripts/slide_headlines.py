@@ -235,6 +235,16 @@ did-details: First differences preserve the two-period policy comparison | Regre
 known-answer: Compare the rollout estimate with the same adopters' known effect
 ''')}
 
+from lesson2_depth import PROBABILITY_TITLES
+APPENDIX[2]['probability'] = ['Probability connects event definitions with weighted numerical summaries'] + PROBABILITY_TITLES
+APPENDIX[2]['calculation'] = [
+    "Use each group's store count in its summaries",
+    'Calculate group rates, threshold shares, and histogram counts',
+    'Centered products reproduce covariance and standardized correlation',
+    'Recalculate quartiles, correlations, and category shares within delivery groups',
+    'Check density normalization and the equal-count bin averages',
+]
+
 for titles in APPENDIX.values():
     titles['generation'] = [
         'One shared retail world generates all three policy studies',

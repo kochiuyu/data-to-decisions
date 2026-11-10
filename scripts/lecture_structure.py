@@ -171,4 +171,7 @@ def reorganize(n,c):
     headlines['big-picture'][0]=TRANSFER[n][0]
     headlines.update(theory_titles)
     c['headlines']=headlines
+    if n == 2:
+        from lesson2_depth import restore
+        c = restore(c)
     return c
