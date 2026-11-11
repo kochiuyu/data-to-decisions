@@ -308,6 +308,21 @@ APPENDIX[9]['calculation'] = ['Trace each regression prediction and each matched
 APPENDIX[9]['data'] = ['Four hundred post-period records become fifty complete store outcomes']
 APPENDIX[9]['extension'] = ['A revised matching rule must demonstrate balance before interpreting outcomes']
 
+from lesson10_depth import DETAIL_TITLES as DID_DETAIL_TITLES, CODE_TITLES as DID_CODE_TITLES
+APPENDIX[10].pop('did-details')
+APPENDIX[10]['did-worked'] = DID_DETAIL_TITLES
+APPENDIX[10]['calculation'] = ['Trace the complete rollout panel and every fitted comparison'] + DID_CODE_TITLES
+APPENDIX[10]['data'] = ['Eight hundred weekly records become fifty paired store changes']
+APPENDIX[10]['extension'] = ['A declared differential shock changes the policy attribution and spending conclusion']
+APPENDIX[10]['weekly-values'] = [
+ 'Weeks one through six establish the early observed group paths',
+ 'Weeks seven through twelve extend the pre-rollout operating history',
+ 'Weeks thirteen through eighteen lead into the chosen baseline window',
+ 'Weeks nineteen through twenty-four complete the before-period observations',
+ 'Weeks twenty-five through thirty show outcomes after rollout begins',
+ 'Weeks thirty-one and thirty-two complete the follow-up window',
+]
+
 for titles in APPENDIX.values():
     titles['generation'] = [
         'One shared retail world generates all three policy studies',

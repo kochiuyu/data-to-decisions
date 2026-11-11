@@ -189,7 +189,26 @@ COVERAGE={
  (91,91,'Coarsened exact matching and the retained target population','exact-matching','main'),
  (92,92,'Propensity matching, overlap and balance diagnostics','propensity-matching','main'),
  (93,93,'Propensity-score theory and reproducible matching detail','matching-worked','appendix')],
-10:[(1,14,'Two-by-two DiD, counterfactual trend, and ATT','panel-design','main'),(15,21,'Natural-experiment reasoning and regression representation','did-regression','main'),(22,44,'Panel construction, IDs, aggregation, exposure, and balance','panel-design','main'),(45,57,'Group changes, weighting, regression, and subgroup comparisons','did-regression','main'),(58,70,'Pre-trend diagnostics and pre-treatment controls','did-regression','main'),(71,75,'Interaction regression, continuous exposure, and decision checklist','did-details','appendix')]
+10:[
+ (1,9,'Two-group, two-period design and the difference in changes','did-theory','main'),
+ (10,11,'Cancellation of persistent levels and a common time change','did-theory','main'),
+ (12,14,'Potential outcomes, ATT and the untreated-trend bias decomposition','identify-att','main'),
+ (15,18,'Four-cell reasoning with explicit subtraction signs in the retail case','calculate','main'),
+ (19,21,'First differences and the missing untreated counterfactual','regression-theory','main'),
+ (22,28,'Dated intervention, cohort eligibility and the analysis row count','read-data','main'),
+ (29,34,'Aggregation, identifiers and equal-exposure rates','read-data','main'),
+ (35,41,'Fixed treatment groups, balanced pairs and baseline weights','did-worked','appendix'),
+ (42,44,'Positive log outcomes, date order and complete-pair samples','did-worked','appendix'),
+ (45,47,'Four means and an explicit weighted comparison','weighted-comparison','main'),
+ (48,49,'First-difference regression and weighted least squares','weighted-comparison','main'),
+ (50,55,'Fitted coefficients, subgroup comparisons and uncertainty','did-regression','main'),
+ (56,57,'Exact log conversion and proportional rather than point effects','did-worked','appendix'),
+ (58,58,'Parallel trends identifies the effect on treated units','identify-att','main'),
+ (59,61,'Observed pre-period paths and a placebo diagnostic','diagnostics','main'),
+ (62,69,'Baseline control selection and adjusted change regressions','diagnostics','main'),
+ (70,71,'Causal interpretation and reconstruction of the interaction model','did-regression','main'),
+ (72,73,'Fixed continuous exposure versus change in exposure','did-worked','appendix'),
+ (74,75,'Decision checklist, differential shocks and staged expansion','sensitivity','main')]
 }
 
 def coverage_html(n):

@@ -474,23 +474,83 @@ def expanded_results(w,core):
         controlled=dict(value=float(-bc[1]),low=float(-bc[1]-1.96*standard),high=float(-bc[1]+1.96*standard)),subgroups=subgroups,priority_weighted=weighted)
     return out
 
-p = world()['panel']
-r = p[p.cohort == 'Rollout']
-pre = r[r.week.between(17,24)].groupby(['store_id','offer']).stockout_rate.mean().rename('pre')
-post = r[r.week.between(25,32)].groupby(['store_id','offer']).stockout_rate.mean().rename('post')
-changes = pd.concat([pre,post],axis=1).reset_index()
-changes['change'] = changes['post'] - changes['pre']
-worked = difference(changes.loc[changes.offer==0,'change'], changes.loc[changes.offer==1,'change'])
-assert np.isclose(worked['value'], lesson_result(10)['effect']['value'])
-
-# Verify that the interaction regression reproduces the four-mean contrast.
-panel = world()['panel'].query("cohort=='Rollout' and 17<=week<=32")
-periods = panel.assign(after=(panel.week>=25).astype(int))
-periods = periods.groupby(['store_id','offer','after']).stockout_rate.mean().reset_index()
-X = np.column_stack([np.ones(len(periods)),periods.offer,
-    periods.after,periods.offer*periods.after])
-beta, _, _ = fit_ols(X,periods.stockout_rate)
-reduction = -beta[3]
-assert np.isclose(reduction,lesson_result(10)['effect']['value'])
+# Build one before and one after outcome for each rollout store.
+l10_w = world()
+l10_rows = l10_w['panel'].query("cohort=='Rollout' and 17<=week<=32").copy()
+assert len(l10_rows)==800 and not l10_rows.duplicated(['store_id','week']).any()
+assert l10_rows.groupby('store_id').offer.nunique().eq(1).all()
+l10_rows['after'] = (l10_rows.week>=25).astype(int)
+assert (l10_rows.active==l10_rows.offer*l10_rows.after).all()
+assert l10_rows.groupby(['store_id','after']).size().eq(8).all()
+l10_periods = l10_rows.groupby(['store_id','offer','after']).stockout_rate.mean().reset_index()
+assert len(l10_periods)==100 and not l10_periods.duplicated(['store_id','after']).any()
+l10_v = l10_periods.pivot(index=['store_id','offer'],columns='after',values='stockout_rate')
+l10_v = l10_v.rename(columns={0:'pre',1:'post'}).reset_index().sort_values('store_id')
+assert len(l10_v)==50 and not l10_v.isna().any().any()
+l10_v['change'] = l10_v['post']-l10_v['pre']
+l10_v = l10_v.merge(l10_w['stores'][['store_id','lead_days','urban','baseline_rate']],on='store_id',validate='one_to_one')
+l10_a = l10_v[l10_v.offer==1]; l10_c = l10_v[l10_v.offer==0]
+assert len(l10_a)==len(l10_c)==25
+l10_effect = difference(l10_c.change,l10_a.change)
+l10_counterfactual = l10_a.pre.mean()+l10_c.change.mean()
+l10_saved = lesson_result(10)
+# The saturated interaction model reconstructs all four means.
+l10_X = np.column_stack([np.ones(100),l10_periods.offer,l10_periods.after,l10_periods.offer*l10_periods.after])
+l10_beta = np.linalg.lstsq(l10_X,l10_periods.stockout_rate,rcond=None)[0]
+l10_F = np.column_stack([np.ones(50),l10_v.offer])
+l10_fd,l10_Vfd,_ = fit_ols(l10_F,l10_v.change)
+l10_cells = np.array([[1,0,0,0],[1,1,0,0],[1,0,1,0],[1,1,1,1]])
+l10_predictions = l10_cells@l10_beta
+assert np.allclose(l10_predictions,[l10_c.pre.mean(),l10_a.pre.mean(),l10_c.post.mean(),l10_a.post.mean()])
+assert np.isclose(-l10_beta[3],l10_effect['value']) and np.isclose(-l10_fd[1],l10_effect['value'])
+assert np.isclose(l10_effect['value'],l10_saved['effect']['value'])
+# Independent store changes supply Welch uncertainty.
+l10_variances = [l10_c.change.var(ddof=1),l10_a.change.var(ddof=1)]
+l10_parts = np.array(l10_variances)/25
+l10_se = np.sqrt(l10_parts.sum())
+l10_df = l10_parts.sum()**2/np.sum(l10_parts**2/24)
+l10_critical = t.ppf(.975,l10_df)
+l10_ci = l10_effect['value']+np.array([-1,1])*l10_critical*l10_se
+assert np.allclose(l10_ci,[l10_saved['effect']['low'],l10_saved['effect']['high']])
+# Cluster the two period rows of each store; retain the finite-sample correction.
+l10_resid = l10_periods.stockout_rate.to_numpy()-l10_X@l10_beta
+l10_bread = np.linalg.inv(l10_X.T@l10_X); l10_meat = np.zeros((4,4))
+for _,l10_g in l10_periods.groupby('store_id'):
+    l10_idx = l10_g.index; l10_score = l10_X[l10_idx].T@l10_resid[l10_idx]
+    l10_meat += np.outer(l10_score,l10_score)
+l10_cluster = (50/49)*(99/96)*l10_bread@l10_meat@l10_bread
+l10_C = np.column_stack([np.ones(50),l10_v.offer,l10_v.lead_days,l10_v.urban,l10_v.baseline_rate])
+l10_controlled,l10_Vc,_ = fit_ols(l10_C,l10_v.change)
+assert np.isclose(-l10_controlled[1],l10_saved['depth']['controlled']['value'])
+# Fixed baseline priority weights define a new weighted comparison.
+l10_weights = np.where(l10_v.lead_days>=4,2.,1.)
+l10_group_weights = [float(l10_weights[l10_v.offer==j].sum()) for j in [0,1]]
+l10_weighted_changes = [float(np.average(l10_v.loc[l10_v.offer==j,'change'],weights=l10_weights[l10_v.offer==j])) for j in [0,1]]
+l10_weighted_sums = [a*b for a,b in zip(l10_group_weights,l10_weighted_changes)]
+l10_wls = np.linalg.lstsq(l10_F*np.sqrt(l10_weights[:,None]),l10_v.change*np.sqrt(l10_weights),rcond=None)[0]
+assert np.isclose(-l10_wls[1],l10_weighted_changes[0]-l10_weighted_changes[1])
+assert np.isclose(-l10_wls[1],l10_saved['depth']['priority_weighted'])
+# A pre-period placebo compares weeks 17-20 with weeks 21-24.
+l10_early = l10_rows[l10_rows.week<=24].assign(later=lambda x:(x.week>=21).astype(int))
+l10_early = l10_early.groupby(['store_id','offer','later']).stockout_rate.mean().unstack('later').reset_index()
+l10_early['change'] = l10_early[1]-l10_early[0]
+l10_placebo = difference(l10_early[l10_early.offer==0].change,l10_early[l10_early.offer==1].change)
+assert np.isclose(l10_placebo['value'],l10_saved['depth']['placebo']['value'])
+l10_subgroups = []
+for l10_u,l10_g in l10_v.groupby('urban'):
+    l10_est = difference(l10_g[l10_g.offer==0].change,l10_g[l10_g.offer==1].change)
+    l10_subgroups.append(dict(urban=int(l10_u),**l10_est))
+l10_threshold = 20/(140*.01*6)
+l10_shock = l10_effect['value']-l10_threshold
+l10_saving = 8.4*l10_effect['value']-20
+assert np.isclose(l10_saving,l10_saved['savings']['value'])
+# Log extension uses the same positive store-period outcomes and equal weights.
+assert (l10_v[['pre','post']]>0).all().all()
+l10_log_change = np.log(l10_v['post'])-np.log(l10_v['pre'])
+l10_log_beta = np.linalg.lstsq(l10_F,l10_log_change,rcond=None)[0]
+l10_log_ratio = np.exp(l10_log_beta[1])
+l10_geometric_ratios = [float(np.exp(l10_log_change[l10_v.offer==j].mean())) for j in [0,1]]
+assert np.isclose(l10_log_ratio,l10_geometric_ratios[1]/l10_geometric_ratios[0])
+assert np.isclose(100*np.expm1(-.179),-16.38941006029645)
 
 print(json.dumps(lesson_result(10), indent=2, allow_nan=False))
