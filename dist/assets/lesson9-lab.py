@@ -52,9 +52,9 @@ def fit_ols(X,y):
     return b,covariance,residual
 
 def nearest_score_match(controls,target):
-    """Nearest logit; scores within 1e-10 of the minimum tie by store ID."""
+    """Nearest logit; distances within 1e-8 tie by ID, stable to CSV rounding."""
     distance=(controls.logit-target).abs()
-    tied=controls.loc[np.isclose(distance,distance.min(),rtol=0,atol=1e-10)]
+    tied=controls.loc[np.isclose(distance,distance.min(),rtol=0,atol=1e-8)]
     return tied.sort_values('store_id').index[0]
 
 @lru_cache(maxsize=1)
@@ -474,38 +474,85 @@ def expanded_results(w,core):
         controlled=dict(value=float(-bc[1]),low=float(-bc[1]-1.96*standard),high=float(-bc[1]+1.96*standard)),subgroups=subgroups,priority_weighted=weighted)
     return out
 
-w = world()
-post = w['panel'].query('cohort == \"Voluntary\" and 17 <= week <= 24')
-v = post.groupby('store_id').agg(rate=('stockout_rate','mean')).reset_index()
-v = v.merge(w['stores'][['store_id','offer','lead_days','urban','baseline_rate']], on='store_id')
-X = voluntary_design(v, v.offer.to_numpy())
-beta, covariance, residual = fit_ols(X, v.rate)
-X0 = voluntary_design(v, np.zeros(len(v)))
-X1 = voluntary_design(v, np.ones(len(v)))
-paired_reductions = (X0-X1) @ beta
-worked_effect = paired_reductions.mean()
-assert np.isclose(worked_effect, lesson_result(9)['estimate'])
-
-# Estimate adoption propensities using only starting conditions.
-w = world()
-voluntary = w['panel'].query("cohort=='Voluntary' and 17<=week<=24")
-v = voluntary.groupby(['store_id','offer']).stockout_rate.mean().reset_index()
-v = v.merge(w['stores'][['store_id','lead_days','urban','baseline_rate']],
-    on='store_id',validate='one_to_one')
-covariates = ['lead_days','urban','baseline_rate']
-model = make_pipeline(StandardScaler(),LogisticRegression(C=1.,max_iter=1000))
-model.fit(v[covariates],v.offer)
-propensity = model.predict_proba(v[covariates])[:,1]
-v['logit'] = np.log(propensity/(1-propensity))
-caliper = .2*v.logit.std(ddof=1)
-controls = v[v.offer==0]
-matched_effects = []
-for adopter in v[v.offer==1].itertuples():
-    # Numerically tied distances use the lowest store ID.
-    closest = nearest_score_match(controls,adopter.logit)
-    comparison = controls.loc[closest]
-    if abs(comparison.logit-adopter.logit)<=caliper:
-        matched_effects.append(comparison.stockout_rate-adopter.stockout_rate)
-assert np.isclose(np.mean(matched_effects),lesson_result(9)['depth']['matching'][2]['estimate'])
+# One outcome per store; every input precedes week-17 adoption.
+l9_w = world()
+l9_post = l9_w['panel'].query("cohort=='Voluntary' and 17<=week<=24")
+assert len(l9_post)==400 and l9_post.groupby('store_id').size().eq(8).all()
+l9_v = l9_post.groupby(['store_id','offer']).stockout_rate.mean().reset_index()
+l9_vars = ['lead_days','urban','baseline_rate']
+l9_v = l9_v.merge(l9_w['stores'][['store_id']+l9_vars],on='store_id',validate='one_to_one')
+assert len(l9_v)==50 and l9_v.offer.sum()==26 and not l9_v.isna().any().any()
+l9_D = l9_v.offer.to_numpy(); l9_y = l9_v.stockout_rate.to_numpy()
+l9_X = voluntary_design(l9_v,l9_D)
+# Fit the observed outcomes, then change treatment and its interactions together.
+l9_beta,l9_V,l9_residual = fit_ols(l9_X,l9_y)
+l9_X0 = voluntary_design(l9_v,np.zeros(50))
+l9_X1 = voluntary_design(l9_v,np.ones(50))
+l9_C = l9_X0-l9_X1; l9_effect = l9_C@l9_beta
+l9_v['pred0'] = l9_X0@l9_beta; l9_v['pred1'] = l9_X1@l9_beta
+l9_v['reduction'] = l9_effect
+l9_c = l9_C.mean(axis=0); l9_se = float(np.sqrt(l9_c@l9_V@l9_c))
+l9_targets = [float(l9_effect.mean()),float(l9_effect[l9_D==1].mean()),float(l9_effect[l9_D==0].mean())]
+l9_saved = lesson_result(9)
+# Nearest neighbors use covariates only; outcomes enter after choosing matches.
+l9_tr = l9_v[l9_v.offer==1]; l9_ct = l9_v[l9_v.offer==0]
+l9_scale = l9_v[l9_vars].std(ddof=0).to_numpy()
+l9_dist = (((l9_tr[l9_vars].to_numpy()[:,None,:]-l9_ct[l9_vars].to_numpy()[None,:,:])/l9_scale)**2).sum(axis=2)
+l9_nearest = l9_dist.argmin(axis=1)  # store-ID order breaks exact ties
+l9_pairs = [(int(i),int(l9_ct.index[j])) for i,j in zip(l9_tr.index,l9_nearest)]
+l9_nn = float(np.mean([l9_y[j]-l9_y[i] for i,j in l9_pairs]))
+l9_candidate = l9_ct[['store_id']+l9_vars].copy()
+l9_candidate['distance'] = l9_dist[0]
+l9_candidate = l9_candidate.sort_values(['distance','store_id']).head(4)
+# Exact strata and coarsened strata keep only cells with both options.
+l9_groups = []; l9_comparisons = []
+l9_frame = l9_v.assign(band=np.floor(l9_v.baseline_rate/5).astype(int))
+for l9_cols in [['lead_days','urban'],['lead_days','urban','band']]:
+    l9_kept = []; l9_gains = []; l9_cells = []
+    for l9_key,l9_g in l9_frame.groupby(l9_cols):
+        l9_a = l9_g[l9_g.offer==1]; l9_b = l9_g[l9_g.offer==0]
+        l9_cells.append(dict(key=l9_key,n1=len(l9_a),n0=len(l9_b),ids=l9_g.store_id.tolist(),control_mean=float(l9_b.stockout_rate.mean())))
+        if len(l9_a) and len(l9_b):
+            l9_kept.extend(l9_a.index); l9_gains.extend(l9_b.stockout_rate.mean()-l9_a.stockout_rate)
+    l9_groups.append(l9_cells)
+    l9_comparisons.append(dict(n=len(l9_kept),match=float(np.mean(l9_gains)),model=float(l9_effect[l9_kept].mean()),kept=l9_kept))
+# Fit a regularized logistic score using only the recorded starting variables.
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+l9_score_model = make_pipeline(StandardScaler(),LogisticRegression(C=1.,max_iter=1000))
+l9_score_model.fit(l9_v[l9_vars],l9_D)
+l9_score = l9_score_model.predict_proba(l9_v[l9_vars])[:,1]
+l9_v['score'] = l9_score; l9_v['logit'] = np.log(l9_score/(1-l9_score))
+l9_caliper = .2*l9_v.logit.std(ddof=1); l9_ps_pairs = []
+# A fixed logit caliper rejects distant candidates; controls may be reused.
+l9_controls = l9_v[l9_v.offer==0]
+for l9_a in l9_v[l9_v.offer==1].itertuples():
+    l9_j = nearest_score_match(l9_controls,l9_a.logit)
+    if abs(l9_controls.loc[l9_j,'logit']-l9_a.logit)<=l9_caliper:
+        l9_ps_pairs.append((int(l9_a.Index),int(l9_j)))
+l9_kept = [i for i,j in l9_ps_pairs]; l9_used = [j for i,j in l9_ps_pairs]
+l9_ps = float(np.mean([l9_y[j]-l9_y[i] for i,j in l9_ps_pairs]))
+l9_comparisons.append(dict(n=len(l9_kept),match=l9_ps,model=float(l9_effect[l9_kept].mean()),kept=l9_kept))
+l9_balance = []
+# Keep the original pooled standard deviation fixed; count reused controls again.
+for l9_col in l9_vars:
+    l9_denom = np.sqrt((l9_tr[l9_col].var(ddof=1)+l9_ct[l9_col].var(ddof=1))/2)
+    l9_before = (l9_tr[l9_col].mean()-l9_ct[l9_col].mean())/l9_denom
+    l9_after = (l9_v.loc[l9_kept,l9_col].mean()-l9_v.loc[l9_used,l9_col].mean())/l9_denom
+    l9_balance.append(dict(variable=l9_col,before=float(l9_before),after=float(l9_after)))
+l9_urban_counts = [int(l9_v.loc[l9_kept,'urban'].sum()),int(l9_v.loc[l9_used,'urban'].sum())]
+l9_example = l9_v.iloc[0].to_dict()
+l9_nn_unique = len(set(j for i,j in l9_pairs))
+l9_ps_unique = len(set(l9_used))
+# Verify published results without changing the shared generator or estimates.
+assert np.allclose(l9_targets[:2],[l9_saved['estimate'],l9_saved['att']])
+assert np.isclose(l9_se,l9_saved['se']) and np.isclose(l9_nn,l9_saved['matching_att'])
+assert np.allclose(l9_beta,l9_saved['coefficients'])
+for l9_actual,l9_expected in zip(l9_comparisons,l9_saved['depth']['matching']):
+    assert l9_actual['n']==l9_expected['matched_adopters'] and np.isclose(l9_actual['match'],l9_expected['estimate'])
+for l9_actual,l9_expected in zip(l9_balance,l9_saved['depth']['balance']):
+    assert np.allclose([l9_actual['before'],l9_actual['after']],[l9_expected['before'],l9_expected['after']])
+assert l9_ps_unique==10 and l9_urban_counts==[11,16]
 
 print(json.dumps(lesson_result(9), indent=2, allow_nan=False))

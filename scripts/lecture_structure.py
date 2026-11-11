@@ -192,4 +192,7 @@ def reorganize(n,c):
     if n == 8:
         from lesson8_depth import restore
         c = restore(c)
+    if n == 9:
+        from lesson9_depth import restore
+        c = restore(c)
     return c

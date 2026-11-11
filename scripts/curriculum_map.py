@@ -170,7 +170,25 @@ COVERAGE={
  (130,135,'Numerical all-store, adopter, and nonadopter weighting','target-weights','main'),
  (136,136,'Selected graphical-identification reading and reproducible checks','graph-worked','appendix'),
  (137,137,'Human responsibility for causal assumptions and the analysis design','act','main')],
-9:[(1,24,'Assignment mechanisms, endogeneity, controls, and validity','ideal-experiment','main'),(25,33,'Build an adjustment strategy from the substantive causal model','ideal-experiment','main'),(34,41,'Target-trial workflow and observational methods','ideal-experiment','main'),(42,79,'Treatment coding, analytical sample, and baseline comparison','read-data','main'),(80,88,'Progressively richer regression specifications','matching-options','main'),(89,93,'Exact, coarsened exact, and propensity-score matching','matching-options','main')],
+9:[
+ (1,6,'Observational evaluation goals and the target comparison','ideal-experiment','main'),
+ (7,13,'Assignment mechanisms, controlled and natural experiments','ideal-experiment','main'),
+ (14,24,'Endogeneity, dated reverse causation, controls, and validity','ideal-experiment','main'),
+ (25,33,'Use substantive causal knowledge to select an adjustment set','ideal-experiment','main'),
+ (34,38,'Target-trial workflow and observational estimation strategies','ideal-experiment','main'),
+ (39,41,'Conditional outcome regression and target standardization','regression-theory','main'),
+ (42,53,'Treatment coding, sample counts, and verified binary labels','read-data','main'),
+ (54,60,'Pre-treatment controls and the dated adoption story','read-data','main'),
+ (61,73,'Transformations, missing codes, categories and reference groups','matching-worked','appendix'),
+ (74,76,'Complete analysis rows and logically correct eligibility filters','matching-worked','appendix'),
+ (77,79,'Observed group differences and a fixed analytical sample','population-effects','main'),
+ (80,83,'Adjusted regression, fitted coefficients and paired predictions','calculate','main'),
+ (84,84,'Distinguish control interactions from treatment-effect heterogeneity','regression-theory','main'),
+ (85,88,'Compare regression specifications on the same sample','population-effects','main'),
+ (89,90,'Regression and exact matching construct alternative comparisons','exact-matching','main'),
+ (91,91,'Coarsened exact matching and the retained target population','exact-matching','main'),
+ (92,92,'Propensity matching, overlap and balance diagnostics','propensity-matching','main'),
+ (93,93,'Propensity-score theory and reproducible matching detail','matching-worked','appendix')],
 10:[(1,14,'Two-by-two DiD, counterfactual trend, and ATT','panel-design','main'),(15,21,'Natural-experiment reasoning and regression representation','did-regression','main'),(22,44,'Panel construction, IDs, aggregation, exposure, and balance','panel-design','main'),(45,57,'Group changes, weighting, regression, and subgroup comparisons','did-regression','main'),(58,70,'Pre-trend diagnostics and pre-treatment controls','did-regression','main'),(71,75,'Interaction regression, continuous exposure, and decision checklist','did-details','appendix')]
 }
 

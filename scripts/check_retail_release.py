@@ -37,10 +37,11 @@ def equivalent(a,b):
 
 def check_science():
     controls=pd.DataFrame({'store_id':['S002','S001','S003'],'logit':[1.,-1.,4.]},index=[20,10,30])
-    for perturbation in [-1e-14,0,1e-14]:
+    for perturbation in [-4e-9,-1e-14,0,1e-14,4e-9]:
         assert nearest_score_match(controls,perturbation)==10
         assert nearest_score_match(controls.iloc[::-1],perturbation)==10
     assert nearest_score_match(controls,.01)==20
+    assert nearest_score_match(controls,1e-7)==20
     w=world();p=w['panel'];s=w['stores'];r=all_results()
     assert len(s)==150 and s.store_id.is_unique
     assert len(p)==150*32 and not p.duplicated(['store_id','week']).any()

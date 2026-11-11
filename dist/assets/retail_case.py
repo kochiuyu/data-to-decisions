@@ -52,9 +52,9 @@ def fit_ols(X,y):
     return b,covariance,residual
 
 def nearest_score_match(controls,target):
-    """Nearest logit; scores within 1e-10 of the minimum tie by store ID."""
+    """Nearest logit; distances within 1e-8 tie by ID, stable to CSV rounding."""
     distance=(controls.logit-target).abs()
-    tied=controls.loc[np.isclose(distance,distance.min(),rtol=0,atol=1e-10)]
+    tied=controls.loc[np.isclose(distance,distance.min(),rtol=0,atol=1e-8)]
     return tied.sort_values('store_id').index[0]
 
 @lru_cache(maxsize=1)

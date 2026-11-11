@@ -301,6 +301,13 @@ APPENDIX[8].pop('graph-details')
 APPENDIX[8]['graph-worked'] = GRAPH_DETAIL_TITLES
 APPENDIX[8]['calculation'] = ['Trace the graph checks and the observed retail comparisons'] + GRAPH_CODE_TITLES
 
+from lesson9_depth import DETAIL_TITLES as MATCH_DETAIL_TITLES, CODE_TITLES as MATCH_CODE_TITLES
+APPENDIX[9].pop('matching-details')
+APPENDIX[9]['matching-worked'] = MATCH_DETAIL_TITLES[:3] + ['Treatment interactions add the remaining profile-specific coefficients'] + MATCH_DETAIL_TITLES[3:]
+APPENDIX[9]['calculation'] = ['Trace each regression prediction and each matched comparison'] + MATCH_CODE_TITLES
+APPENDIX[9]['data'] = ['Four hundred post-period records become fifty complete store outcomes']
+APPENDIX[9]['extension'] = ['A revised matching rule must demonstrate balance before interpreting outcomes']
+
 for titles in APPENDIX.values():
     titles['generation'] = [
         'One shared retail world generates all three policy studies',
