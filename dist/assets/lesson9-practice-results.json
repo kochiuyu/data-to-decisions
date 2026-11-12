@@ -1,0 +1,27 @@
+{
+  "retained": 18,
+  "excluded": 8,
+  "unique_controls": 10,
+  "balance": [
+    {
+      "variable": "lead_days",
+      "smd": 0.0
+    },
+    {
+      "variable": "urban",
+      "smd": 0.0
+    },
+    {
+      "variable": "baseline_rate",
+      "smd": -0.07937156447894038
+    }
+  ],
+  "matched": 2.668650793650793,
+  "adjusted": 2.979684777058669,
+  "se": 0.31389954646189183,
+  "low": 2.364441665993361,
+  "high": 3.5949278881239772,
+  "effective_controls": 8.526315789473685,
+  "max_reuse": 3,
+  "caliper": 0.1733319313344941
+}

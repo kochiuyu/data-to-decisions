@@ -1,0 +1,12 @@
+{
+  "complete_case_reduction": 3.0,
+  "bounds": [
+    -14.600000000000001,
+    5.4
+  ],
+  "sensitivity": [
+    1.4000000000000004,
+    3.0
+  ],
+  "observed_fraction": 0.8
+}

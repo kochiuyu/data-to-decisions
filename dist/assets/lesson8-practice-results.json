@@ -1,0 +1,14 @@
+{
+  "story_a_open": [],
+  "story_b_open": [
+    [
+      "D",
+      "U",
+      "Y"
+    ]
+  ],
+  "identified_from_W_alone": [
+    true,
+    false
+  ]
+}

@@ -198,4 +198,5 @@ def reorganize(n,c):
     if n == 10:
         from lesson10_depth import restore
         c = restore(c)
-    return c
+    from course_bridges import revise
+    return revise(n,c)

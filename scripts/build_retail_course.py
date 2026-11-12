@@ -9,12 +9,13 @@ from curriculum_content import enrich
 from presentation_content import outline,annotate_sections,lesson_points,EXTRA_POINTS,GENERATION_REVEAL
 from slide_titles import apply_titles
 from lecture_structure import reorganize
+from practice_notebooks import worked_cells,publish_practice
 
 ROOT=Path(__file__).resolve().parents[1];DIST=ROOT/'dist';ASSETS=DIST/'assets'
 def write(name,text):
     target=DIST/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_text(text,encoding='utf-8',newline='\n')
 def downloads(n):
-    return f'<div class="downloads"><a class="button" href="assets/lesson{n}-lab.ipynb" download>Work through the notebook</a><a href="assets/lesson{n}-lab.py" download>Standalone Python lab</a><a href="assets/lesson{n}-results.json">Calculated results</a></div>'
+    return f'<div class="downloads"><a class="button" href="assets/lesson{n}-practice.ipynb" download>Try the student exercises</a><a href="assets/lesson{n}-practice-solutions.ipynb" download>Practice solutions</a><a href="assets/lesson{n}-lab.ipynb" download>Worked reference notebook</a><a href="assets/lesson{n}-lab.py" download>Standalone Python lab</a><a href="assets/lesson{n}-results.json">Calculated results</a></div>'
 def navigation(n):
     before=f'<a href="lesson-{n-1}.html">← Lesson {n-1}</a>' if n>1 else '<a href="index.html">← Course questions</a>'
     after=f'<a href="lesson-{n+1}.html">Lesson {n+1} →</a>' if n<10 else '<a href="synthesis.html">Complete the recommendation →</a>'
@@ -32,6 +33,9 @@ def publish_lesson(n,result):
     body+=f'<div class="lesson-layout wrap"><aside class="roadmap"><details open><summary>Follow the analysis</summary><ol>{roadmap}<li><a href="#memo">Update the decision memo</a></li><li><a href="#big-picture">The bigger picture</a></li></ol></details></aside><article>'
     for s in sections:
         body+=f'<section class="lesson-step" data-present-source data-teaching-phase="{s["phase"]}" id="{s["id"]}"><h2>{esc(s["title"])}</h2><p class="lecture-phase">{s["phase"]}</p>{s["body"]}</section>'
+    body+=f'<aside class="notice"><h2>After your attempt: check the reasoning</h2><details><summary>Open the assessment criteria</summary>{p(c["practice_criteria"])}</details>{downloads(n)}</aside>'
+    if n==9:
+        body+='<aside class="notice"><h2>Further reading for the implementation</h2><p>The score uses the documented inverse penalty setting in <a href="https://scikit-learn.org/1.8/modules/generated/sklearn.linear_model.LogisticRegression.html">scikit-learn LogisticRegression</a>. For why ordinary bootstrap inference can fail for fixed-neighbor matching, see <a href="https://www.nber.org/papers/t0325">Abadie and Imbens, On the Failure of the Bootstrap for Matching Estimators</a>.</p></aside>'
     body+=f'<section class="lesson-step" id="memo"><h2>Update the decision memo</h2><div class="memo">{p(c["memo"])}</div><aside class="check"><h3>Make the call</h3>{p(c["question"])}<details><summary>Compare your reasoning</summary><div>{p(c["answer"])}</div></details></aside></section>'
     body+=f'<section class="lesson-step" id="big-picture"><h2>The bigger picture</h2>{p(c["bigger"])}<details><summary>After your decision: open the known answer</summary><div>{p(c["truth"])}</div></details><p><a href="lesson-{n}-appendix.html">Continue the same analysis in the technical appendix →</a></p>{downloads(n)}</section>{navigation(n)}</article></div></main>'
     body=body.replace('class="lesson-step" id="memo"','class="lesson-step" data-present-source data-teaching-phase="Decision and synthesis" id="memo"').replace('class="lesson-step" id="big-picture"','class="lesson-step" data-present-source data-teaching-phase="Synthesis" id="big-picture"')
@@ -62,16 +66,15 @@ def publish_lesson(n,result):
     write(f'lesson-{n}-appendix.html',shell(c['title']+' — technical continuation',app+presentation_dialog()))
     source=(ROOT/'scripts/retail_case.py').read_text(encoding='utf-8')
     tail=c['code']+f'\nprint(json.dumps(lesson_result({n}), indent=2, allow_nan=False))\n'
-    namespace=dict(retail_case.__dict__);captured=io.StringIO()
-    with contextlib.redirect_stdout(captured): exec(compile(tail,f'lesson{n}-worked-step','exec'),namespace)
-    output=captured.getvalue();assert json.loads(output)==result
+    namespace=dict(retail_case.__dict__)
+    cells=worked_cells(source,tail,n,technical[0],namespace)
+    output=''.join(''.join(o['text']) for cell in cells for o in cell.get('outputs',[]))
+    assert json.loads(output)==result
     write(f'assets/lesson{n}-lab.py',source+'\n'+tail)
     write(f'assets/lesson{n}-results.json',output)
-    notebook=dict(cells=[dict(cell_type='markdown',id=f'intro-{n}',metadata={},source=[f'# Lesson {n}: {c["title"]}\n',c['brief']+'\n','Run the shared setup, then trace the worked calculation. The same seed and stores are used in every lesson.\n']),
-        dict(cell_type='code',id=f'setup-{n}',metadata={'jupyter':{'source_hidden':True}},execution_count=1,source=(source+'\n').splitlines(keepends=True),outputs=[]),
-        dict(cell_type='markdown',id=f'worked-note-{n}',metadata={},source=['## Work through this lesson\n',technical[0]+'\n']),
-        dict(cell_type='code',id=f'worked-{n}',metadata={},execution_count=2,source=tail.splitlines(keepends=True),outputs=[dict(output_type='stream',name='stdout',text=output.splitlines(keepends=True))])],metadata={'kernelspec':{'display_name':'Python 3','language':'python','name':'python3'},'language_info':{'name':'python','version':sys.version.split()[0]}},nbformat=4,nbformat_minor=5)
+    notebook=dict(cells=cells,metadata={'kernelspec':{'display_name':'Python 3','language':'python','name':'python3'},'language_info':{'name':'python','version':sys.version.split()[0]}},nbformat=4,nbformat_minor=5)
     write(f'assets/lesson{n}-lab.ipynb',json.dumps(notebook,indent=2,ensure_ascii=False)+'\n')
+    publish_practice(write,n,source,notebook['metadata'])
     return c
 
 def publish_data():
