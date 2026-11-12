@@ -1,0 +1,716 @@
+{
+  "Pooled rate = Σ countᵢ / Σ exposureᵢ = Σ weightᵢ × rateᵢ": [
+    "\\text{Pooled rate}=\\frac{\\sum_i\\text{count}_i}{\\sum_i\\text{exposure}_i}=\\sum_i w_i\\,\\text{rate}_i"
+  ],
+  "For S001, week 1: 18 ÷ 140 × 100 = 12.86%": [
+    "\\text{S001, week 1:}\\quad \\frac{18}{140}\\times100=12.86\\%"
+  ],
+  "24 candidate pairs → 16 valid store-week assignments": [
+    "24\\text{ candidate pairs}\\longrightarrow16\\text{ valid store-week assignments}"
+  ],
+  "A and C with C=8: pooled = 18/140 = 12.86%; equal-store mean = (10%+20%)/2 = 15%": [
+    "\\text{A and C, with C}=8:\\quad\\text{pooled}=\\frac{18}{140}=12.86\\%",
+    "\\text{Equal-store mean}=\\frac{10\\%+20\\%}{2}=15\\%"
+  ],
+  "p0 = 0.055 + 0.014 × lead + 0.0005 × (demand − 100) + 0.018 × urban + 0.003 × (lead − 3) × urban + 0.020 × promotion + store effect + 0.006 × sin(week / 4)": [
+    "p_0=0.055+0.014\\,\\text{lead}+0.0005(\\text{demand}-100)",
+    "{}+0.018\\,\\text{urban}+0.003(\\text{lead}-3)\\,\\text{urban}",
+    "{}+0.020\\,\\text{promotion}+\\text{store effect}+0.006\\sin\\left(\\frac{\\text{week}}4\\right)"
+  ],
+  "Expected reduction = 0.006 + 0.008 × lead + 0.004 × urban; p1 = p0 − reduction": [
+    "\\text{Expected reduction}=0.006+0.008\\,\\text{lead}+0.004\\,\\text{urban}",
+    "p_1=p_0-\\text{reduction}"
+  ],
+  "Y = 1 for stockout, 0 otherwise; E[Y] = 0×0.82 + 1×0.18 = 0.18": [
+    "Y=\\begin{cases}1&\\text{stockout}\\\\0&\\text{otherwise}\\end{cases}",
+    "\\mathbb E[Y]=0\\times0.82+1\\times0.18=0.18"
+  ],
+  "E[Y|short]=0.10; E[Y|long]=0.30; E[Y]=0.60×0.10+0.40×0.30=0.18": [
+    "\\mathbb E[Y\\mid\\text{short}]=0.10;\\quad\\mathbb E[Y\\mid\\text{long}]=0.30",
+    "\\mathbb E[Y]=0.60\\times0.10+0.40\\times0.30=0.18"
+  ],
+  "x̄ = Σxᵢ / n; s² = Σ(xᵢ − x̄)² / (n − 1)": [
+    "\\bar x=\\frac{\\sum_i x_i}{n};\\qquad s^2=\\frac{\\sum_i(x_i-\\bar x)^2}{n-1}"
+  ],
+  "Count = nⱼ; share = nⱼ/n; density = nⱼ/(n × bin width)": [
+    "\\text{Count}=n_j;\\quad\\text{share}=\\frac{n_j}{n}",
+    "\\text{density}=\\frac{n_j}{n\\times\\text{bin width}}"
+  ],
+  "E[Y | X = x] = the expected outcome at a specified value of X": [
+    "\\mathbb E[Y\\mid X=x]=\\text{expected outcome at the specified }x"
+  ],
+  "Correlation(X,Y) = Cov(X,Y) / [SD(X) × SD(Y)]": [
+    "\\operatorname{Corr}(X,Y)=\\frac{\\operatorname{Cov}(X,Y)}{\\operatorname{SD}(X)\\operatorname{SD}(Y)}"
+  ],
+  "sₓᵧ = Σ(xᵢ − x̄)(yᵢ − ȳ)/(n − 1); r = sₓᵧ/(sₓsᵧ)": [
+    "s_{xy}=\\frac{\\sum_i(x_i-\\bar x)(y_i-\\bar y)}{n-1};\\qquad r=\\frac{s_{xy}}{s_xs_y}"
+  ],
+  "Mean = Σxᵢ / n; sample variance = Σ(xᵢ − mean)² / (n − 1)": [
+    "\\text{Mean}=\\frac{\\sum_i x_i}{n}",
+    "\\text{Sample variance}=\\frac{\\sum_i(x_i-\\text{mean})^2}{n-1}"
+  ],
+  "Standard deviation = √variance; IQR = Q₃ − Q₁": [
+    "\\text{Standard deviation}=\\sqrt{\\text{variance}};\\quad\\operatorname{IQR}=Q_3-Q_1"
+  ],
+  "Long lead (4–5 days): 78 ÷ 79 × 100 = 98.73% above target": [
+    "\\text{Long lead (4–5 days):}\\quad\\frac{78}{79}\\times100=98.73\\%\\text{ above target}"
+  ],
+  "Correlation = covariance(X,Y) / [SD(X) × SD(Y)]": [
+    "\\text{Correlation}=\\frac{\\operatorname{Cov}(X,Y)}{\\operatorname{SD}(X)\\operatorname{SD}(Y)}"
+  ],
+  "Covariance = 1439.952 / 149 = 9.664; r = 9.664 / (11.414 × 2.395) = 0.354": [
+    "\\text{Covariance}=\\frac{1439.952}{149}=9.664",
+    "r=\\frac{9.664}{11.414\\times2.395}=0.354"
+  ],
+  "P(A ∪ B) = P(A) + P(B) − P(A ∩ B)": [
+    "P(A\\cup B)=P(A)+P(B)-P(A\\cap B)"
+  ],
+  "P(A | B) = P(A ∩ B)/P(B); independence: P(A ∩ B) = P(A)P(B)": [
+    "P(A\\mid B)=\\frac{P(A\\cap B)}{P(B)}",
+    "\\text{Independence:}\\quad P(A\\cap B)=P(A)P(B)"
+  ],
+  "P(A | B) = P(B | A)P(A) / [P(B | A)P(A) + P(B | Aᶜ)P(Aᶜ)]": [
+    "P(A\\mid B)=\\frac{P(B\\mid A)P(A)}{P(B\\mid A)P(A)+P(B\\mid A^c)P(A^c)}"
+  ],
+  "μ = E[X] = Σₓ x p(x); Var(X) = Σₓ (x − μ)²p(x); SD(X) = √Var(X)": [
+    "\\mu=\\mathbb E[X]=\\sum_x x\\,p(x)",
+    "\\operatorname{Var}(X)=\\sum_x(x-\\mu)^2p(x);\\quad\\operatorname{SD}(X)=\\sqrt{\\operatorname{Var}(X)}"
+  ],
+  "E[Y | X=x] = Σᵧ y p(y | x); Cov(X,Y) = ΣₓΣᵧ (x−μₓ)(y−μᵧ)p(x,y)": [
+    "\\mathbb E[Y\\mid X=x]=\\sum_y y\\,p(y\\mid x)",
+    "\\operatorname{Cov}(X,Y)=\\sum_x\\sum_y(x-\\mu_x)(y-\\mu_y)p(x,y)"
+  ],
+  "zᵢⱼ = (proxyᵢⱼ − meanⱼ)/SDⱼ; compositeᵢ = Σⱼ wⱼzᵢⱼ, with Σⱼwⱼ = 1": [
+    "z_{ij}=\\frac{\\text{proxy}_{ij}-\\text{mean}_j}{\\operatorname{SD}_j}",
+    "\\text{composite}_i=\\sum_j w_jz_{ij},\\qquad\\sum_jw_j=1"
+  ],
+  "SE(x̄) = s / √n, for independent observations": [
+    "\\operatorname{SE}(\\bar x)=\\frac{s}{\\sqrt n}",
+    "\\text{for independent observations}"
+  ],
+  "95% mean interval = x̄ ± t₀.₉₇₅,ₙ₋₁ × SE(x̄)": [
+    "95\\%\\text{ mean interval}=\\bar x\\pm t_{0.975,n-1}\\operatorname{SE}(\\bar x)"
+  ],
+  "p̂ = successes / n; estimated SE(p̂) = √[p̂(1 − p̂) / n]": [
+    "\\hat p=\\frac{\\text{successes}}n;\\qquad\\widehat{\\operatorname{SE}}(\\hat p)=\\sqrt{\\frac{\\hat p(1-\\hat p)}n}"
+  ],
+  "Approximate 95% margin m = 1.96σ/√n; choose n ≥ (1.96σ/m)²": [
+    "\\text{Approximate 95% margin:}",
+    "m=\\frac{1.96\\sigma}{\\sqrt n}",
+    "\\text{Choose }n\\geq\\left(\\frac{1.96\\sigma}{m}\\right)^2"
+  ],
+  "t = (estimate − null value) / estimated standard error": [
+    "t=\\frac{\\text{estimate}-\\text{null value}}{\\text{estimated standard error}}"
+  ],
+  "Standard error = 3.44 ÷ √30 = 0.63 percentage points": [
+    "\\text{Standard error}=\\frac{3.44}{\\sqrt{30}}=0.63\\text{ percentage points}"
+  ],
+  "95% interval = 11.50 ± 2.05 × 0.63 = 10.22% to 12.78%": [
+    "95\\%\\text{ interval}=11.50\\pm2.05\\times0.63",
+    "{}=[10.22\\%,12.78\\%]"
+  ],
+  "H₀: mean stockout rate ≤ 10%; H₁: mean stockout rate > 10%": [
+    "H_0:\\mu\\leq10\\%;\\qquad H_1:\\mu>10\\%",
+    "\\mu=\\text{mean stockout rate}"
+  ],
+  "t = (11.50 − 10) / 0.63 = 2.39": [
+    "t=\\frac{11.50-10}{0.63}=2.39"
+  ],
+  "SE = 3.273/√30 = 0.598; t = 0.262/0.598 = 0.438": [
+    "\\operatorname{SE}=\\frac{3.273}{\\sqrt{30}}=0.598;\\qquad t=\\frac{0.262}{0.598}=0.438"
+  ],
+  "Difference = 1.762; SE = 1.234; t = 1.427; df ≈ 26.94": [
+    "\\text{Difference}=1.762;\\quad\\operatorname{SE}=1.234",
+    "t=1.427;\\quad\\operatorname{df}\\approx26.94"
+  ],
+  "20 independent true-null tests at 5%: P(any false rejection) = 1 − 0.95²⁰ ≈ 64.2%": [
+    "\\text{20 independent true-null tests at 5%:}",
+    "P(\\text{any false rejection})=1-0.95^{20}\\approx64.2\\%"
+  ],
+  "Unbiased: E[θ̂ₙ] = θ; consistent: θ̂ₙ → θ in probability; root-n: error scale ∝ n⁻¹ᐟ²": [
+    "\\text{Unbiased:}\\quad\\mathbb E[\\hat\\theta_n]=\\theta",
+    "\\text{Consistent:}\\quad\\hat\\theta_n\\xrightarrow{p}\\theta",
+    "\\text{Root-}n:\\quad\\text{error scale}\\propto n^{-1/2}"
+  ],
+  "For iid observations with 0 < σ² < ∞: √n(x̄ − μ)/σ → Normal(0,1) in distribution": [
+    "\\text{For iid observations with }0<\\sigma^2<\\infty:",
+    "\\frac{\\sqrt n(\\bar x-\\mu)}\\sigma\\xrightarrow{d}\\mathcal N(0,1)"
+  ],
+  "Wilson centre = (p̂ + z²/(2n))/(1+z²/n); half-width = z√[p̂(1−p̂)/n + z²/(4n²)]/(1+z²/n)": [
+    "\\text{Wilson centre}=\\frac{\\hat p+z^2/(2n)}{1+z^2/n}",
+    "\\text{Half-width}=\\frac{z\\sqrt{\\hat p(1-\\hat p)/n+z^2/(4n^2)}}{1+z^2/n}"
+  ],
+  "dᵢ = auditᵢ − systemᵢ; SE(d̄) = s_d/√n; t = (d̄ − δ₀)/(s_d/√n), df = n−1": [
+    "d_i=\\text{audit}_i-\\text{system}_i;\\quad\\operatorname{SE}(\\bar d)=\\frac{s_d}{\\sqrt n}",
+    "t=\\frac{\\bar d-\\delta_0}{s_d/\\sqrt n};\\quad\\operatorname{df}=n-1"
+  ],
+  "v₁=s₁²/n₁; v₀=s₀²/n₀; SE=√(v₁+v₀); df≈(v₁+v₀)²/[v₁²/(n₁−1)+v₀²/(n₀−1)]": [
+    "v_1=\\frac{s_1^2}{n_1};\\quad v_0=\\frac{s_0^2}{n_0};\\quad\\operatorname{SE}=\\sqrt{v_1+v_0}",
+    "\\operatorname{df}\\approx\\frac{(v_1+v_0)^2}{v_1^2/(n_1-1)+v_0^2/(n_0-1)}"
+  ],
+  "Yᵢ = α + βXᵢ + uᵢ; fitted value Ŷᵢ = a + bXᵢ": [
+    "Y_i=\\alpha+\\beta X_i+u_i;\\qquad\\hat Y_i=a+bX_i"
+  ],
+  "Choose a and b to minimize Σ[Yᵢ − (a + bXᵢ)]²": [
+    "\\min_{a,b}\\sum_i\\left[Y_i-(a+bX_i)\\right]^2"
+  ],
+  "b = Cov(X,Y) / Var(X); a = Ȳ − bX̄": [
+    "b=\\frac{\\operatorname{Cov}(X,Y)}{\\operatorname{Var}(X)};\\qquad a=\\bar Y-b\\bar X"
+  ],
+  "Σeᵢ = 0; mean(Ŷ) = Ȳ; a + bX̄ = Ȳ": [
+    "\\sum_i e_i=0;\\qquad\\overline{\\hat Y}=\\bar Y;\\qquad a+b\\bar X=\\bar Y"
+  ],
+  "eᵢ = Yᵢ − Ŷᵢ; RMSE = √[Σeᵢ² / n]": [
+    "e_i=Y_i-\\hat Y_i;\\qquad\\operatorname{RMSE}=\\sqrt{\\frac{\\sum_i e_i^2}{n}}"
+  ],
+  "SST = SSR + SSE; R² = 1 − SSE / SST": [
+    "\\operatorname{SST}=\\operatorname{SSR}+\\operatorname{SSE};\\quad R^2=1-\\frac{\\operatorname{SSE}}{\\operatorname{SST}}"
+  ],
+  "Ŷ = a + b₁X + b₂X²; slope at X = b₁ + 2b₂X": [
+    "\\hat Y=a+b_1X+b_2X^2;\\qquad\\frac{d\\hat Y}{dX}=b_1+2b_2X"
+  ],
+  "Linear spline: Ŷ = a + bX + c × max(X − knot, 0)": [
+    "\\text{Linear spline:}\\quad\\hat Y=a+bX+c\\max(X-\\text{knot},0)"
+  ],
+  "Predicted baseline rate (%) = 6.96 + 1.62 × delivery days": [
+    "\\widehat{\\text{baseline rate}}\\,(\\%)=6.96+1.62\\times\\text{delivery days}"
+  ],
+  "For a four-day delivery cycle: 6.95803 + 1.61872 × 4 ≈ 13.43292%": [
+    "\\text{Four-day delivery:}\\quad6.95803+1.61872\\times4\\approx13.43292\\%"
+  ],
+  "Total = explained + residual; R² = 1 − residual / total": [
+    "\\text{Total}=\\text{explained}+\\text{residual};\\quad R^2=1-\\frac{\\text{residual}}{\\text{total}}"
+  ],
+  "MSE = SSE / n = 2.58; RMSE = √MSE = 1.60 points": [
+    "\\operatorname{MSE}=\\frac{\\operatorname{SSE}}n=2.58;\\quad\\operatorname{RMSE}=\\sqrt{\\operatorname{MSE}}=1.60\\text{ points}"
+  ],
+  "Ŷ = 12.416 + 0.988z − 0.168z²; z = (demand − 100)/10": [
+    "\\hat Y=12.416+0.988z-0.168z^2;\\quad z=\\frac{\\text{demand}-100}{10}"
+  ],
+  "∂SSE/∂a = −2Σeᵢ = 0; ∂SSE/∂b = −2ΣXᵢeᵢ = 0": [
+    "\\frac{\\partial\\operatorname{SSE}}{\\partial a}=-2\\sum_i e_i=0;\\quad\\frac{\\partial\\operatorname{SSE}}{\\partial b}=-2\\sum_i X_ie_i=0"
+  ],
+  "Σ(Y−Ȳ)² = Σ(Ŷ−Ȳ)² + Σe² + 2Σ(Ŷ−Ȳ)e": [
+    "\\sum_i(Y_i-\\bar Y)^2=\\sum_i(\\hat Y_i-\\bar Y)^2+\\sum_i e_i^2",
+    "{}+2\\sum_i(\\hat Y_i-\\bar Y)e_i"
+  ],
+  "R² = b²Sxx/Syy = Sxy²/(Sxx Syy) = rXY²": [
+    "R^2=\\frac{b^2S_{xx}}{S_{yy}}=\\frac{S_{xy}^2}{S_{xx}S_{yy}}=r_{XY}^2"
+  ],
+  "If ln Y = m(X)+u: E[Y|X] = exp(m(X)) E[exp(u)|X]": [
+    "\\ln Y=m(X)+u\\quad\\Longrightarrow",
+    "\\mathbb E[Y\\mid X]=\\exp(m(X))\\,\\mathbb E[\\exp(u)\\mid X]"
+  ],
+  "z=(D−100)/10; dŶ/dD=(b₁+2b₂z+3b₃z²)/10": [
+    "z=\\frac{D-100}{10};\\qquad\\frac{d\\hat Y}{dD}=\\frac{b_1+2b_2z+3b_3z^2}{10}"
+  ],
+  "a+bz+c max(z−k,0) = a+bz below k; (a−ck)+(b+c)z above k": [
+    "a+bz+c\\max(z-k,0)=\\begin{cases}a+bz&z\\leq k\\\\(a-ck)+(b+c)z&z>k\\end{cases}"
+  ],
+  "wᵢ = [max{1−(|Dᵢ−d|/h)³,0}]³; fit Yᵢ ≈ a_d+b_d(Dᵢ−d)": [
+    "w_i=\\left[\\max\\left\\{1-\\left(\\frac{|D_i-d|}{h}\\right)^3,0\\right\\}\\right]^3",
+    "\\text{Fit }Y_i\\approx a_d+b_d(D_i-d)"
+  ],
+  "Delivery-slope sensitivityᵢ = b(without store i) − b(full sample)": [
+    "\\text{Delivery-slope sensitivity}_i=b_{\\text{without store }i}-b_{\\text{full sample}}"
+  ],
+  "Y = β₀ + β₁X₁ + … + βₖXₖ + u": [
+    "Y=\\beta_0+\\beta_1X_1+\\cdots+\\beta_kX_k+u"
+  ],
+  "b short = b long + γ × δ": [
+    "b_{\\text{short}}=b_{\\text{long}}+\\gamma\\delta"
+  ],
+  "Statistic = (b − β₀) / SE(b); interval = b ± critical value × SE(b)": [
+    "\\text{Statistic}=\\frac{b-\\beta_0}{\\operatorname{SE}(b)}",
+    "\\text{Interval}=b\\pm\\text{critical value}\\times\\operatorname{SE}(b)"
+  ],
+  "SE(mean at x) = s √[1/n + (x−X̄)²/Sxx]": [
+    "\\operatorname{SE}(\\text{mean at }x)=s\\sqrt{\\frac1n+\\frac{(x-\\bar X)^2}{S_{xx}}}"
+  ],
+  "Rate = b₀ + b₁lead + b₂urban + b₃(demand−100) + b₄promotion + b₅lead×urban": [
+    "\\text{Rate}=b_0+b_1\\text{lead}+b_2\\text{urban}+b_3(\\text{demand}-100)",
+    "{}+b_4\\text{promotion}+b_5\\text{lead}\\times\\text{urban}"
+  ],
+  "1.61872 ≈ 1.68487 + (1.92295 × -0.03440)": [
+    "1.61872\\approx1.68487+1.92295\\times(-0.03440)"
+  ],
+  "Robust joint Wald χ²(2) = 118.33; p < 0.001": [
+    "\\text{Robust joint Wald }\\chi^2(2)=118.33;\\quad p<0.001"
+  ],
+  "z = 0.228/0.161 = 1.418; two-sided p = 0.156": [
+    "z=\\frac{0.228}{0.161}=1.418;\\qquad p_{\\text{two-sided}}=0.156"
+  ],
+  "Adjusted R² = 1 − [SSE/(n−p)] / [SST/(n−1)]": [
+    "\\bar R^2=1-\\frac{\\operatorname{SSE}/(n-p)}{\\operatorname{SST}/(n-1)}"
+  ],
+  "Added term: -0.0857 × [(demand−100)/10]²": [
+    "\\text{Added term:}\\quad-0.0857\\left(\\frac{\\text{demand}-100}{10}\\right)^2"
+  ],
+  "b = (XᵀX)⁻¹Xᵀy; classical Var(b) = s²(XᵀX)⁻¹": [
+    "\\mathbf b=(\\mathbf X^{\\mathsf T}\\mathbf X)^{-1}\\mathbf X^{\\mathsf T}\\mathbf y",
+    "\\operatorname{Var}_{\\text{classical}}(\\mathbf b)=s^2(\\mathbf X^{\\mathsf T}\\mathbf X)^{-1}"
+  ],
+  "SE(slope)=s/√Sxx; SE(intercept)=s√[1/n+X̄²/Sxx]": [
+    "\\operatorname{SE}(\\text{slope})=\\frac{s}{\\sqrt{S_{xx}}};\\quad\\operatorname{SE}(\\text{intercept})=s\\sqrt{\\frac1n+\\frac{\\bar X^2}{S_{xx}}}"
+  ],
+  "HC1 = [n/(n−p)] B Xᵀdiag(e²)XB; B=(XᵀX)⁻¹": [
+    "\\mathbf V_{\\mathrm{HC1}}=\\frac{n}{n-p}\\mathbf B\\mathbf X^{\\mathsf T}\\operatorname{diag}(e_i^2)\\mathbf X\\mathbf B",
+    "\\mathbf B=(\\mathbf X^{\\mathsf T}\\mathbf X)^{-1}"
+  ],
+  "Var(mean at x₀)=x₀ᵀVar(b)x₀; classical prediction variance=s²+x₀ᵀs²Bx₀": [
+    "\\operatorname{Var}(\\text{mean at }\\mathbf x_0)=\\mathbf x_0^{\\mathsf T}\\operatorname{Var}(\\mathbf b)\\mathbf x_0",
+    "\\text{Classical prediction variance}=s^2+\\mathbf x_0^{\\mathsf T}s^2\\mathbf B\\mathbf x_0"
+  ],
+  "Estimate=cᵀb; SE=√(cᵀVc)": [
+    "\\text{Estimate}=\\mathbf c^{\\mathsf T}\\mathbf b;\\quad\\operatorname{SE}=\\sqrt{\\mathbf c^{\\mathsf T}\\mathbf V\\mathbf c}"
+  ],
+  "W = (Rb−r)ᵀ(RVRᵀ)⁻¹(Rb−r) → χ²(q)": [
+    "W=(\\mathbf R\\mathbf b-\\mathbf r)^{\\mathsf T}(\\mathbf R\\mathbf V\\mathbf R^{\\mathsf T})^{-1}(\\mathbf R\\mathbf b-\\mathbf r)\\xrightarrow{d}\\chi^2(q)"
+  ],
+  "F = [(SSE restricted−SSE full)/q] / [SSE full/(n−p)]": [
+    "F=\\frac{(\\operatorname{SSE}_{\\text{restricted}}-\\operatorname{SSE}_{\\text{full}})/q}{\\operatorname{SSE}_{\\text{full}}/(n-p)}"
+  ],
+  "Current model: group-specific intercept and lead slope; shared demand and promotion slopes": [
+    "\\text{Group-specific intercept and delivery slope}",
+    "\\text{Shared demand and promotion slopes}"
+  ],
+  "Expected squared error = bias² + prediction variance + noise variance": [
+    "\\text{Expected squared error}=\\text{bias}^2+\\text{prediction variance}+\\text{noise variance}"
+  ],
+  "Pooled RMSE = √[Σ n_f × RMSE_f² / Σ n_f]": [
+    "\\operatorname{RMSE}_{\\text{pooled}}=\\sqrt{\\frac{\\sum_f n_f\\operatorname{RMSE}_f^2}{\\sum_f n_f}}"
+  ],
+  "AIC = −2 log L + 2k; BIC = −2 log L + k log n": [
+    "\\operatorname{AIC}=-2\\log L+2k;\\quad\\operatorname{BIC}=-2\\log L+k\\log n"
+  ],
+  "Minimize RSS/(2n) + α Σ|b_j|; leave the intercept unpenalized": [
+    "\\min\\left[\\frac{\\operatorname{RSS}}{2n}+\\alpha\\sum_j|b_j|\\right]",
+    "\\text{Leave the intercept unpenalized}"
+  ],
+  "z_j = (x_j − training mean_j) / training SD_j": [
+    "z_j=\\frac{x_j-\\text{training mean}_j}{\\text{training SD}_j}"
+  ],
+  "For log(1+Y): predicted Y = exp(fitted log value) × smearing factor − 1": [
+    "\\text{For }\\log(1+Y):",
+    "\\hat Y=\\exp(\\text{fitted log value})\\times\\text{smearing factor}-1"
+  ],
+  "√[(2.74298² + 2.90247² + 2.68954²)/3] = 2.77980": [
+    "\\sqrt{\\frac{2.74298^2+2.90247^2+2.68954^2}{3}}=2.77980"
+  ],
+  "z = (106.835 − 107.173) / 11.244 = -0.030": [
+    "z=\\frac{106.835-107.173}{11.244}=-0.030"
+  ],
+  "L(θ;y) = probability or density of the observed y at parameter θ": [
+    "L(\\theta;y)=\\text{probability or density of observed }y\\text{ at }\\theta"
+  ],
+  "ℓ(b,σ²) = −n log(2π)/2 − n log(σ²)/2 − RSS(b)/(2σ²)": [
+    "\\ell(\\mathbf b,\\sigma^2)=-\\frac n2\\log(2\\pi)-\\frac n2\\log(\\sigma^2)-\\frac{\\operatorname{RSS}(\\mathbf b)}{2\\sigma^2}"
+  ],
+  "Deviance = 2[ℓ(saturated model) − ℓ(fitted model)]": [
+    "\\text{Deviance}=2\\left[\\ell(\\text{saturated model})-\\ell(\\text{fitted model})\\right]"
+  ],
+  "E[(Ynew−f̂D(x))² | x] = [E_D f̂D(x)−f(x)]² + Var_D[f̂D(x)] + σ²(x)": [
+    "\\mathbb E[(Y_{\\mathrm{new}}-\\hat f_D(x))^2\\mid x]",
+    "{}=[\\mathbb E_D\\hat f_D(x)-f(x)]^2+\\operatorname{Var}_D[\\hat f_D(x)]+\\sigma^2(x)"
+  ],
+  "For centered y,z with mean(z²)=1: b = sign(c) max(|c|−α,0), c=mean(zy)": [
+    "\\text{Centered }y,z;\\quad\\operatorname{mean}(z^2)=1",
+    "b=\\operatorname{sign}(c)\\max(|c|-\\alpha,0);\\quad c=\\operatorname{mean}(zy)"
+  ],
+  "Σ errors² = Σ_f n_f RMSE_f²; pooled RMSE = √(Σ errors² / Σ_f n_f)": [
+    "\\sum\\text{errors}^2=\\sum_f n_f\\operatorname{RMSE}_f^2",
+    "\\operatorname{RMSE}_{\\text{pooled}}=\\sqrt{\\frac{\\sum\\text{errors}^2}{\\sum_f n_f}}"
+  ],
+  "S_train = mean[exp(log(1+y_train)−f̂(x_train))]; ŷ = exp(f̂(x))S_train−1": [
+    "S_{\\text{train}}=\\operatorname{mean}\\left[\\exp\\left(\\log(1+y_{\\text{train}})-\\hat f(x_{\\text{train}})\\right)\\right]",
+    "\\hat y=\\exp(\\hat f(x))S_{\\text{train}}-1"
+  ],
+  "τᵢ = Yᵢ(1) − Yᵢ(0); Yᵢ = DᵢYᵢ(1) + (1−Dᵢ)Yᵢ(0)": [
+    "\\tau_i=Y_i(1)-Y_i(0);\\quad Y_i=D_iY_i(1)+(1-D_i)Y_i(0)"
+  ],
+  "ATE = E[τ] = E[Y(1)] − E[Y(0)] = (−1 + 0 + 1 − 1)/4 = −0.25": [
+    "\\operatorname{ATE}=\\mathbb E[\\tau]=\\mathbb E[Y(1)]-\\mathbb E[Y(0)]",
+    "{}=\\frac{-1+0+1-1}{4}=-0.25"
+  ],
+  "ATE = P(D=1) ATT + P(D=0) ATU = 0.5 × 0 + 0.5 × (−0.5) = −0.25": [
+    "\\operatorname{ATE}=P(D=1)\\operatorname{ATT}+P(D=0)\\operatorname{ATU}",
+    "{}=0.5\\times0+0.5\\times(-0.5)=-0.25"
+  ],
+  "Observed difference = (8 + 7)/2 − (5 + 6)/2 = 7.5 − 5.5 = 2": [
+    "\\text{Observed difference}=\\frac{8+7}{2}-\\frac{5+6}{2}=7.5-5.5=2"
+  ],
+  "E[Y|D=1] − E[Y|D=0]\n= {E[Y(1)|D=1] − E[Y(0)|D=1]}\n+ {E[Y(0)|D=1] − E[Y(0)|D=0]}": [
+    "\\mathbb E[Y\\mid D=1]-\\mathbb E[Y\\mid D=0]",
+    "{}=\\{\\mathbb E[Y(1)\\mid D=1]-\\mathbb E[Y(0)\\mid D=1]\\}",
+    "{}+\\{\\mathbb E[Y(0)\\mid D=1]-\\mathbb E[Y(0)\\mid D=0]\\}"
+  ],
+  "Selection = (7 + 8)/2 − (5 + 6)/2 = 2\nObserved difference = ATT + selection = 0 + 2": [
+    "\\text{Selection}=\\frac{7+8}{2}-\\frac{5+6}{2}=2",
+    "\\text{Observed difference}=\\operatorname{ATT}+\\text{selection}=0+2"
+  ],
+  "(Y(0), Y(1)) ⟂ D\nE[Y(j)|D=1] = E[Y(j)|D=0] = E[Y(j)], j ∈ {0,1}": [
+    "(Y(0),Y(1))\\perp D",
+    "\\mathbb E[Y(j)\\mid D=1]=\\mathbb E[Y(j)\\mid D=0]=\\mathbb E[Y(j)],\\quad j\\in\\{0,1\\}"
+  ],
+  "E_assignment[estimated effect] = (−2.5 − 1 − 1 + 0.5 + 0.5 + 2)/6 = −0.25": [
+    "\\mathbb E_{\\text{assignment}}[\\text{estimated effect}]",
+    "{}=\\frac{-2.5-1-1+0.5+0.5+2}{6}=-0.25"
+  ],
+  "Effect estimate = Ȳ₁ − Ȳ₀\nSE = √(s₁²/n₁ + s₀²/n₀)\nInterval = estimate ± critical value × SE": [
+    "\\widehat{\\text{effect}}=\\bar Y_1-\\bar Y_0;\\quad\\operatorname{SE}=\\sqrt{\\frac{s_1^2}{n_1}+\\frac{s_0^2}{n_0}}",
+    "\\text{Interval}=\\text{estimate}\\pm\\text{critical value}\\times\\operatorname{SE}"
+  ],
+  "Y ∈ {0,1}: p̂₁ = successes₁/n₁; p̂₀ = successes₀/n₀\nRate difference = p̂₁ − p̂₀": [
+    "Y\\in\\{0,1\\}:\\quad\\hat p_1=\\frac{\\text{successes}_1}{n_1};\\quad\\hat p_0=\\frac{\\text{successes}_0}{n_0}",
+    "\\text{Rate difference}=\\hat p_1-\\hat p_0"
+  ],
+  "Yᵢ = a + bDᵢ + eᵢ\nâ = Ȳ₀; â + b̂ = Ȳ₁; b̂ = Ȳ₁ − Ȳ₀": [
+    "Y_i=a+bD_i+e_i",
+    "\\hat a=\\bar Y_0;\\quad\\hat a+\\hat b=\\bar Y_1;\\quad\\hat b=\\bar Y_1-\\bar Y_0"
+  ],
+  "n per arm ≈ 2(1.96+0.84)²×4²/2² → round upward to 63": [
+    "n_{\\text{per arm}}\\approx\\frac{2(1.96+0.84)^2\\times4^2}{2^2}\\longrightarrow63\\text{ rounded upward}"
+  ],
+  "SE = √(2.0521²/25 + 1.9212²/25) = 0.5622\n95% interval = 3.4857 ± 2.0109 × 0.5622 = [2.3552, 4.6162]": [
+    "\\operatorname{SE}=\\sqrt{\\frac{2.0521^2}{25}+\\frac{1.9212^2}{25}}=0.5622",
+    "95\\%\\text{ interval}=3.4857\\pm2.0109\\times0.5622=[2.3552,4.6162]"
+  ],
+  "1 point = 140 × 0.01 = 1.4 product-days\nValue per point = 1.4 × 6 = 8.40 CU\nBreak-even reduction = (12 + 8)/8.40 = 2.38 points": [
+    "1\\text{ point}=140\\times0.01=1.4\\text{ product-days}",
+    "\\text{Value per point}=1.4\\times6=8.40\\text{ CU}",
+    "\\text{Break-even reduction}=\\frac{12+8}{8.40}=2.38\\text{ points}"
+  ],
+  "Saving = 8.40 × 3.4857 − 20 = 9.28 CU per store-week\n95% interval = 8.40 × [2.3552, 4.6162] − 20 = [−0.22, 18.78]": [
+    "\\text{Saving}=8.40\\times3.4857-20=9.28\\text{ CU/store-week}",
+    "95\\%\\text{ interval}=8.40\\times[2.3552,4.6162]-20=[-0.22,18.78]"
+  ],
+  "Observed reduction = ATT reduction + untreated-path difference\n3.4857 = 3.6071 + (−0.1214)": [
+    "\\text{Observed reduction}=\\text{ATT reduction}+\\text{untreated-path difference}",
+    "3.4857=3.6071+(-0.1214)"
+  ],
+  "Δobs = E[Y(1)|D=1] − E[Y(0)|D=0]\nAdd 0 = −E[Y(0)|D=1] + E[Y(0)|D=1]\nΔobs = ATT + {E[Y(0)|D=1] − E[Y(0)|D=0]}": [
+    "\\Delta_{\\mathrm{obs}}=\\mathbb E[Y(1)\\mid D=1]-\\mathbb E[Y(0)\\mid D=0]",
+    "\\text{Add }0=-\\mathbb E[Y(0)\\mid D=1]+\\mathbb E[Y(0)\\mid D=1]",
+    "\\Delta_{\\mathrm{obs}}=\\operatorname{ATT}+\\{\\mathbb E[Y(0)\\mid D=1]-\\mathbb E[Y(0)\\mid D=0]\\}"
+  ],
+  "E_D[Ȳ₁] = (1/N)ΣYᵢ(1); E_D[Ȳ₀] = (1/N)ΣYᵢ(0)\nE_D[Ȳ₁−Ȳ₀] = (1/N)Στᵢ": [
+    "\\mathbb E_D[\\bar Y_1]=\\frac1N\\sum_iY_i(1);\\quad\\mathbb E_D[\\bar Y_0]=\\frac1N\\sum_iY_i(0)",
+    "\\mathbb E_D[\\bar Y_1-\\bar Y_0]=\\frac1N\\sum_i\\tau_i"
+  ],
+  "ν = (s₁²/n₁+s₀²/n₀)² / {(s₁²/n₁)²/(n₁−1)+(s₀²/n₀)²/(n₀−1)}": [
+    "\\nu=\\frac{(s_1^2/n_1+s_0^2/n_0)^2}{(s_1^2/n_1)^2/(n_1-1)+(s_0^2/n_0)^2/(n_0-1)}"
+  ],
+  "V_HC2 = (X′X)⁻¹ X′ diag[eᵢ²/(1−hᵢ)] X (X′X)⁻¹": [
+    "\\mathbf V_{\\mathrm{HC2}}=(\\mathbf X'\\mathbf X)^{-1}\\mathbf X'\\operatorname{diag}\\left[\\frac{e_i^2}{1-h_i}\\right]\\mathbf X(\\mathbf X'\\mathbf X)^{-1}"
+  ],
+  "Δp = p̂A−p̂B\nSE_large = √[p̂A(1−p̂A)/nA + p̂B(1−p̂B)/nB]": [
+    "\\Delta p=\\hat p_A-\\hat p_B",
+    "\\operatorname{SE}_{\\text{large}}=\\sqrt{\\frac{\\hat p_A(1-\\hat p_A)}{n_A}+\\frac{\\hat p_B(1-\\hat p_B)}{n_B}}"
+  ],
+  "(Y(0), Y(1)) ⟂ D | X\n0 < P(D=1 | X=x) < 1": [
+    "(Y(0),Y(1))\\perp D\\mid X",
+    "0<P(D=1\\mid X=x)<1"
+  ],
+  "Short slope = causal slope + omitted effect × sorting slope\n−1 = +1 + (−5) × 0.4": [
+    "\\text{Short slope}=\\text{causal slope}+\\text{omitted effect}\\times\\text{sorting slope}",
+    "-1=+1+(-5)\\times0.4"
+  ],
+  "Y = 2T + e; C = 5T + Y + v\nSlope of Y on T: +2\nSlope of Y on T and C: −1.5": [
+    "Y=2T+e;\\quad C=5T+Y+v",
+    "\\text{Slope of }Y\\text{ on }T:\\quad+2",
+    "\\text{Slope of }Y\\text{ on }T,C:\\quad-1.5"
+  ],
+  "τ(x) = E[Y(1) − Y(0) | X=x]\n= E[Y(1)|D=1,X=x] − E[Y(0)|D=0,X=x]\n= E[Y|D=1,X=x] − E[Y|D=0,X=x]": [
+    "\\tau(x)=\\mathbb E[Y(1)-Y(0)\\mid X=x]",
+    "{}=\\mathbb E[Y(1)\\mid D=1,X=x]-\\mathbb E[Y(0)\\mid D=0,X=x]",
+    "{}=\\mathbb E[Y\\mid D=1,X=x]-\\mathbb E[Y\\mid D=0,X=x]"
+  ],
+  "ATE = Σₓ τ(x)P(X=x)\nATT = Σₓ τ(x)P(X=x | D=1)\nATU = Σₓ τ(x)P(X=x | D=0)": [
+    "\\operatorname{ATE}=\\sum_x\\tau(x)P(X=x)",
+    "\\operatorname{ATT}=\\sum_x\\tau(x)P(X=x\\mid D=1)",
+    "\\operatorname{ATU}=\\sum_x\\tau(x)P(X=x\\mid D=0)"
+  ],
+  "All-store reduction = (18/50) × 3.31101 + (32/50) × 2.06278\n= 1.19196 + 1.32018 = 2.51215 points": [
+    "\\text{All-store reduction}=\\frac{18}{50}\\times3.31101+\\frac{32}{50}\\times2.06278",
+    "{}=1.19196+1.32018=2.51215\\text{ points}"
+  ],
+  "Adopters: (12/26) × 3.31101 + (14/26) × 2.06278 = 2.63889\nNonadopters: (6/24) × 3.31101 + (18/24) × 2.06278 = 2.37484\nAll stores: (26/50) × 2.63889 + (24/50) × 2.37484 = 2.51215": [
+    "\\text{Adopters:}\\quad\\frac{12}{26}\\times3.31101+\\frac{14}{26}\\times2.06278=2.63889",
+    "\\text{Nonadopters:}\\quad\\frac6{24}\\times3.31101+\\frac{18}{24}\\times2.06278=2.37484",
+    "\\text{All stores:}\\quad\\frac{26}{50}\\times2.63889+\\frac{24}{50}\\times2.37484=2.51215"
+  ],
+  "Chain: M=1.5D+u; Y=20−2M+e\nFork: D=1[0.8X+u>0]; Y=12+2X−3D+e\nCollider: Y=12−3D+e; C=0.8D+0.8Y+v": [
+    "\\text{Chain:}\\quad M=1.5D+u;\\quad Y=20-2M+e",
+    "\\text{Fork:}\\quad D=\\mathbf1\\{0.8X+u>0\\};\\quad Y=12+2X-3D+e",
+    "\\text{Collider:}\\quad Y=12-3D+e;\\quad C=0.8D+0.8Y+v"
+  ],
+  "T=0.5X+u; Var(X)=Var(u)=1\nSlope(X on T)=Cov(X,T)/Var(T)=0.5/1.25=0.4\nY=T−5X+e ⇒ short slope=1−5(0.4)=−1": [
+    "T=0.5X+u;\\quad\\operatorname{Var}(X)=\\operatorname{Var}(u)=1",
+    "\\text{Slope}(X\\text{ on }T)=\\frac{\\operatorname{Cov}(X,T)}{\\operatorname{Var}(T)}=\\frac{0.5}{1.25}=0.4",
+    "Y=T-5X+e\\quad\\Longrightarrow\\quad b_{\\text{short}}=1-5(0.4)=-1"
+  ],
+  "C=5T+Y+v=7T+e+v\nCoefficient on C given T=Var(e)/[Var(e)+Var(v)]=0.5\nCoefficient on T given C=2−7(0.5)=−1.5": [
+    "C=5T+Y+v=7T+e+v",
+    "\\text{Coefficient on }C\\text{ given }T=\\frac{\\operatorname{Var}(e)}{\\operatorname{Var}(e)+\\operatorname{Var}(v)}=0.5",
+    "\\text{Coefficient on }T\\text{ given }C=2-7(0.5)=-1.5"
+  ],
+  "Large-sample Var(β̂_D) ≈ σ² / [n Var(D residualized on X)]\nOutcome-only example: variance ratio = 1/5\nTreatment-only example: variance ratio = 5": [
+    "\\operatorname{Var}(\\hat\\beta_D)\\approx\\frac{\\sigma^2}{n\\operatorname{Var}(D\\text{ residualized on }X)}",
+    "\\text{Outcome-only example: variance ratio}=\\frac15",
+    "\\text{Treatment-only example: variance ratio}=5"
+  ],
+  "E[Y(j)|X=x]=E[Y(j)|D=j,X=x]=E[Y|D=j,X=x]\nτ(x)=m₁(x)−m₀(x); ATE=Σₓ τ(x)P(X=x)": [
+    "\\mathbb E[Y(j)\\mid X=x]=\\mathbb E[Y(j)\\mid D=j,X=x]=\\mathbb E[Y\\mid D=j,X=x]",
+    "\\tau(x)=m_1(x)-m_0(x);\\quad\\operatorname{ATE}=\\sum_x\\tau(x)P(X=x)"
+  ],
+  "w_ATE,x=n_x/n; w_ATT,x=n_1x/n_1; w_ATU,x=n_0x/n_0\nReduction_target=Σₓ w_target,x(ȳ₀x−ȳ₁x)": [
+    "w_{\\mathrm{ATE},x}=\\frac{n_x}n;\\quad w_{\\mathrm{ATT},x}=\\frac{n_{1x}}{n_1};\\quad w_{\\mathrm{ATU},x}=\\frac{n_{0x}}{n_0}",
+    "\\text{Reduction}_{\\text{target}}=\\sum_x w_{\\text{target},x}(\\bar y_{0x}-\\bar y_{1x})"
+  ],
+  "(Y(0), Y(1)) ⟂ D | X\n0 < P(D=1|X=x) < 1\nmⱼ(x) = E[Y|D=j,X=x]": [
+    "(Y(0),Y(1))\\perp D\\mid X;\\qquad0<P(D=1\\mid X=x)<1",
+    "m_j(x)=\\mathbb E[Y\\mid D=j,X=x]"
+  ],
+  "Fit m̂₀(x) and m̂₁(x) using observed outcomes\nτ̂ᵢ = m̂₁(xᵢ) − m̂₀(xᵢ)\nATE estimate = (1/n) Σᵢ τ̂ᵢ": [
+    "\\text{Fit }\\hat m_0(x),\\hat m_1(x)\\text{ using observed outcomes}",
+    "\\hat\\tau_i=\\hat m_1(x_i)-\\hat m_0(x_i);\\qquad\\widehat{\\operatorname{ATE}}=\\frac1n\\sum_i\\hat\\tau_i"
+  ],
+  "m̂(D,X) = β̂₀ + β̂D D + β̂X X + γ̂ DX\nτ̂(x) = β̂D + γ̂x": [
+    "\\hat m(D,X)=\\hat\\beta_0+\\hat\\beta_DD+\\hat\\beta_XX+\\hat\\gamma DX",
+    "\\hat\\tau(x)=\\hat\\beta_D+\\hat\\gamma x"
+  ],
+  "e(X)=P(D=1|X); odds=e/(1−e); logit(e)=log[e/(1−e)]": [
+    "e(X)=P(D=1\\mid X);\\quad\\text{odds}=\\frac e{1-e}",
+    "\\operatorname{logit}(e)=\\log\\left(\\frac e{1-e}\\right)"
+  ],
+  "For treated unit i, choose controls using X\nτ̂ᵢ = Yᵢ − Σⱼ wᵢⱼYⱼ, with Σⱼ wᵢⱼ = 1\nAverage over the retained treated units": [
+    "\\text{For treated }i\\text{, choose controls using }X",
+    "\\hat\\tau_i=Y_i-\\sum_jw_{ij}Y_j,\\qquad\\sum_jw_{ij}=1",
+    "\\text{Average over the retained treated units}"
+  ],
+  "Standardized mean difference =\n(treated mean − weighted control mean) / original pooled SD": [
+    "\\text{Standardized mean difference}=\\frac{\\text{treated mean}-\\text{weighted control mean}}{\\text{original pooled SD}}"
+  ],
+  "Signed effect = alert rate − usual-operation rate\nReported reduction = usual-operation rate − alert rate": [
+    "\\text{Signed effect}=\\text{alert rate}-\\text{usual-operation rate}",
+    "\\text{Reported reduction}=\\text{usual-operation rate}-\\text{alert rate}"
+  ],
+  "m̂(D,L,U,B) = m̂₀(L,U,B) + D × â(L,U)\nm̂₀ = 7.110 + 1.137(L−3.5) + 1.707U + 0.296B\nâ = −3.188 − 0.957(L−3.5) − 0.294U": [
+    "\\hat m(D,L,U,B)=\\hat m_0(L,U,B)+D\\hat a(L,U)",
+    "\\hat m_0=7.110+1.137(L-3.5)+1.707U+0.296B",
+    "\\hat a=-3.188-0.957(L-3.5)-0.294U"
+  ],
+  "S051: L=3, U=1, B=11.517857\nm̂₀ = 7.110133 + 1.137155(−0.5)\n       + 1.707366 + 0.295988(11.517857)\n     = 11.658070%": [
+    "\\text{S051: }L=3,\\ U=1,\\ B=11.517857",
+    "\\hat m_0=7.110133+1.137155(-0.5)",
+    "{}+1.707366+0.295988(11.517857)=11.658070\\%"
+  ],
+  "â = −3.188210 − 0.956853(−0.5) − 0.294452\n   = −3.004235 points\nm̂₁ = 11.658070 − 3.004235 = 8.653835%\nReduction = 11.658070 − 8.653835 = 3.004235": [
+    "\\hat a=-3.188210-0.956853(-0.5)-0.294452=-3.004235\\text{ points}",
+    "\\hat m_1=11.658070-3.004235=8.653835\\%",
+    "\\text{Reduction}=11.658070-8.653835=3.004235"
+  ],
+  "Average usual prediction = 11.22195%\nAverage alert prediction = 8.21332%\nAverage paired reduction = 11.22195 − 8.21332 = 3.00864 points": [
+    "\\text{Average usual prediction}=11.22195\\%",
+    "\\text{Average alert prediction}=8.21332\\%",
+    "\\text{Average paired reduction}=11.22195-8.21332=3.00864\\text{ points}"
+  ],
+  "SE = 0.31489 points\n95% interval = 3.00864 ± 1.96 × 0.31489\n= [2.39145, 3.62583] points": [
+    "\\operatorname{SE}=0.31489\\text{ points}",
+    "95\\%\\text{ interval}=3.00864\\pm1.96\\times0.31489",
+    "{}=[2.39145,3.62583]\\text{ points}"
+  ],
+  "Distance²(i,j) = Σₖ [(Xᵢₖ−Xⱼₖ)/sₖ]²\ns = (1.020 delivery days, 0.496 urban, 2.458 baseline points)": [
+    "d^2(i,j)=\\sum_k\\left(\\frac{X_{ik}-X_{jk}}{s_k}\\right)^2",
+    "\\mathbf s=(1.020\\text{ days},\\ 0.496\\text{ urban},\\ 2.458\\text{ baseline points})"
+  ],
+  "S052 usual-operation outcome: 14.37500%\nS053 alert outcome: 10.44643%\nMatched reduction: 14.37500 − 10.44643 = 3.92857 points": [
+    "\\text{S052 usual-operation outcome}=14.37500\\%",
+    "\\text{S053 alert outcome}=10.44643\\%",
+    "\\text{Matched reduction}=14.37500-10.44643=3.92857\\text{ points}"
+  ],
+  "Delivery 3 days, urban 1: 7 adopters and 4 controls\nControl-cell mean = 11.51786%\nS054 reduction = 11.51786 − 8.30357\n= 3.21429 points": [
+    "\\text{Delivery 3 days, urban 1: 7 adopters and 4 controls}",
+    "\\text{Control-cell mean}=11.51786\\%",
+    "\\text{S054 reduction}=11.51786-8.30357=3.21429\\text{ points}"
+  ],
+  "Baseline band = floor(B / 5)\nBand 2: 10% ≤ B < 15%\nMatch on delivery days, urban status and baseline band\nRetained: 13/26 adopters; reduction: 2.79567 points": [
+    "\\text{Baseline band}=\\left\\lfloor\\frac B5\\right\\rfloor;\\quad\\text{band 2: }10\\%\\leq B<15\\%",
+    "\\text{Match on delivery, urban status and baseline band}",
+    "\\text{Retained}=\\frac{13}{26}\\text{ adopters};\\quad\\text{reduction}=2.79567\\text{ points}"
+  ],
+  "e(X) = P(D=1|X)\nFit logistic adoption on standardized L, U and B\nMatch on logit(ê) = log[ê/(1−ê)]": [
+    "e(X)=P(D=1\\mid X)",
+    "\\text{Fit logistic adoption on standardized }L,U,B",
+    "\\text{Match on }\\operatorname{logit}(\\hat e)=\\log\\left(\\frac{\\hat e}{1-\\hat e}\\right)"
+  ],
+  "Caliper = 0.2 × SD(logit(ê)) = 0.17333\nKeep nearest candidate only when distance ≤ caliper\n19 adopters retained; 7 excluded; 10 unique controls": [
+    "\\text{Caliper}=0.2\\operatorname{SD}(\\operatorname{logit}(\\hat e))=0.17333",
+    "\\text{Keep nearest candidate only if distance}\\leq\\text{caliper}",
+    "\\text{19 adopters retained; 7 excluded; 10 unique controls}"
+  ],
+  "Matched adopter urban share = 11/19 = 57.9%\nWeighted control urban share = 16/19 = 84.2%\nDifference = −26.3 percentage points\nStandardized difference = −0.52": [
+    "\\text{Matched adopter urban share}=\\frac{11}{19}=57.9\\%",
+    "\\text{Weighted control urban share}=\\frac{16}{19}=84.2\\%",
+    "\\text{Difference}=-26.3\\text{ points};\\quad\\operatorname{SMD}=-0.52"
+  ],
+  "One-point reduction saves 140 × 0.01 × 6 = 8.4 CU/week\nAll-store model saving = 8.4 × 3.00864 − 20\n= 5.27 CU per store-week": [
+    "\\text{Value per point}=140\\times0.01\\times6=8.4\\text{ CU/week}",
+    "\\text{All-store model saving}=8.4\\times3.00864-20=5.27\\text{ CU/store-week}"
+  ],
+  "Control effective count = (Σw)²/Σw² = 8.53; unique controls = 10": [
+    "\\text{Effective control count}=\\frac{(\\sum_j w_j)^2}{\\sum_j w_j^2}=8.53",
+    "\\text{Unique controls}=10"
+  ],
+  "Inclusive eligibility: (size ≥ 50) AND (size ≤ 5000)\nA retained value must satisfy both limits\nUnordered categories use indicators with named reference levels": [
+    "50\\leq\\text{size}\\leq5000",
+    "\\text{A retained value must satisfy both limits}",
+    "\\text{Unordered categories use indicators with named reference levels}"
+  ],
+  "D×(L−3.5): −0.956853; D×U: −0.294452": [
+    "D(L-3.5):\\ -0.956853;\\qquad DU:\\ -0.294452"
+  ],
+  "Cᵢ = X₀ᵢ − X₁ᵢ; c = mean(Cᵢ)\nc = [0, −1, 0, 0, 0, 0.36, −0.56]\nV = (X′X)⁻¹ X′diag(e²)X (X′X)⁻¹ × 50/43\nSE(cβ̂) = √(cVc′) = 0.31489": [
+    "\\mathbf C_i=\\mathbf X_{0i}-\\mathbf X_{1i};\\quad\\mathbf c=\\operatorname{mean}(\\mathbf C_i)",
+    "\\mathbf c=[0,-1,0,0,0,0.36,-0.56]",
+    "\\mathbf V=(\\mathbf X'\\mathbf X)^{-1}\\mathbf X'\\operatorname{diag}(e_i^2)\\mathbf X(\\mathbf X'\\mathbf X)^{-1}\\frac{50}{43}",
+    "\\operatorname{SE}(\\mathbf c\\hat{\\boldsymbol\\beta})=\\sqrt{\\mathbf c\\mathbf V\\mathbf c'}=0.31489"
+  ],
+  "For each eligible cell g: Δg = mean(Y₀|g) − mean(Y₁|g)\nReduction = Σg (n₁g / Σh n₁h) Δg\nOnly cells with n₁g>0 and n₀g>0 contribute": [
+    "\\Delta_g=\\operatorname{mean}(Y_0\\mid g)-\\operatorname{mean}(Y_1\\mid g)",
+    "\\text{Reduction}=\\sum_g\\frac{n_{1g}}{\\sum_h n_{1h}}\\Delta_g",
+    "\\text{Only cells with }n_{1g}>0\\text{ and }n_{0g}>0\\text{ contribute}"
+  ],
+  "sₖ² = (1/50) Σᵢ(Xᵢₖ−X̄ₖ)²\nd²(i,j) = Σₖ[(Xᵢₖ−Xⱼₖ)/sₖ]²\nOne nearest control per adopter, with replacement": [
+    "s_k^2=\\frac1{50}\\sum_i(X_{ik}-\\bar X_k)^2",
+    "d^2(i,j)=\\sum_k\\left(\\frac{X_{ik}-X_{jk}}{s_k}\\right)^2",
+    "\\text{One nearest control per adopter, with replacement}"
+  ],
+  "True score: e(X)=P(D=1|X)\nBalancing property: D ⟂ X | e(X)\nEstimated score here: standardized logistic regression, C=1\nCaliper: 0.2 × sample SD of all fifty fitted logits": [
+    "e(X)=P(D=1\\mid X);\\qquad D\\perp X\\mid e(X)",
+    "\\text{Estimated score: standardized logistic regression, }C=1",
+    "\\text{Caliper}=0.2\\times\\text{sample SD of all fifty fitted logits}"
+  ],
+  "sₚ = √[(s₁²+s₀²)/2], measured before matching\nSMDafter = (X̄treated, retained − X̄control, weighted)/sₚ\nUrban: (11/19 − 16/19)/sₚ = −0.52007": [
+    "s_p=\\sqrt{\\frac{s_1^2+s_0^2}{2}}\\quad\\text{before matching}",
+    "\\operatorname{SMD}_{\\text{after}}=\\frac{\\bar X_{\\text{treated, retained}}-\\bar X_{\\text{control, weighted}}}{s_p}",
+    "\\text{Urban: }\\frac{11/19-16/19}{s_p}=-0.52007"
+  ],
+  "DiD = (Ȳ₁,after − Ȳ₁,before) − (Ȳ₀,after − Ȳ₀,before)": [
+    "\\operatorname{DiD}=(\\bar Y_{1,\\text{after}}-\\bar Y_{1,\\text{before}})-(\\bar Y_{0,\\text{after}}-\\bar Y_{0,\\text{before}})"
+  ],
+  "ATT = E[Yafter(1) − Yafter(0) | D=1]\nMissing quantity: E[Yafter(0) | D=1]": [
+    "\\operatorname{ATT}=\\mathbb E[Y_{\\text{after}}(1)-Y_{\\text{after}}(0)\\mid D=1]",
+    "\\text{Missing: }\\mathbb E[Y_{\\text{after}}(0)\\mid D=1]"
+  ],
+  "DiD = ATT + δ\nδ = E[ΔY(0) | D=1] − E[ΔY(0) | D=0]": [
+    "\\operatorname{DiD}=\\operatorname{ATT}+\\delta",
+    "\\delta=\\mathbb E[\\Delta Y(0)\\mid D=1]-\\mathbb E[\\Delta Y(0)\\mid D=0]"
+  ],
+  "E[ΔY(0) | D=1] = E[ΔY(0) | D=0]\nTherefore δ=0 and DiD identifies ATT": [
+    "\\mathbb E[\\Delta Y(0)\\mid D=1]=\\mathbb E[\\Delta Y(0)\\mid D=0]",
+    "\\delta=0\\quad\\Longrightarrow\\quad\\operatorname{DiD}=\\operatorname{ATT}"
+  ],
+  "Yᵢₜ = a + bDᵢ + cAfterₜ + d(Dᵢ×Afterₜ) + eᵢₜ": [
+    "Y_{it}=a+bD_i+c\\,\\mathrm{After}_t+d(D_i\\times\\mathrm{After}_t)+e_{it}"
+  ],
+  "ΔYᵢ = α + βDᵢ + uᵢ\nα = comparison change; β = signed DiD": [
+    "\\Delta Y_i=\\alpha+\\beta D_i+u_i",
+    "\\alpha=\\text{comparison change};\\quad\\beta=\\text{signed DiD}"
+  ],
+  "Yᵢₜ = αᵢ + λₜ + τ[Dᵢ×1(t=final)] + uᵢₜ": [
+    "Y_{it}=\\alpha_i+\\lambda_t+\\tau[D_i\\times\\mathbf1(t=\\text{final})]+u_{it}"
+  ],
+  "Signed DiD = −3.346429 − 1.239286 = −4.585714\nReported reduction = −DiD = 4.585714 points\nNo-alert benchmark = 13.732143 + 1.239286 = 14.971429%": [
+    "\\text{Signed DiD}=-3.346429-1.239286=-4.585714",
+    "\\text{Reported reduction}=-\\operatorname{DiD}=4.585714\\text{ points}",
+    "\\text{No-alert benchmark}=13.732143+1.239286=14.971429\\%"
+  ],
+  "ΔŶ = 1.239286 − 4.585714D\nD=0: +1.239286; D=1: −3.346429": [
+    "\\Delta\\hat Y=1.239286-4.585714D",
+    "D=0:\\ +1.239286;\\qquad D=1:\\ -3.346429"
+  ],
+  "SE = √(s²comparison/25 + s²adopter/25) = 0.33178\n95% interval = 4.58571 ± 2.0116 × 0.33178\n= [3.91830, 5.25313] percentage points": [
+    "\\operatorname{SE}=\\sqrt{\\frac{s_{\\text{comparison}}^2}{25}+\\frac{s_{\\text{adopter}}^2}{25}}=0.33178",
+    "95\\%\\text{ interval}=4.58571\\pm2.0116\\times0.33178",
+    "{}=[3.91830,5.25313]\\text{ percentage points}"
+  ],
+  "Early window: weeks 17–20; later window: weeks 21–24\nPlacebo reduction: −0.13571 points\n95% interval: [−1.39189, 1.12047]": [
+    "\\text{Early: weeks 17–20; later: weeks 21–24}",
+    "\\text{Placebo reduction}=-0.13571\\text{ points}",
+    "95\\%\\text{ interval}=[-1.39189,1.12047]"
+  ],
+  "ΔY = α + βD + γL + ηU + κB + u\nAdjusted reduction −β = 4.00 points\n95% HC1 normal interval: [2.66, 5.34]": [
+    "\\Delta Y=\\alpha+\\beta D+\\gamma L+\\eta U+\\kappa B+u",
+    "\\text{Adjusted reduction }-\\beta=4.00\\text{ points}",
+    "95\\%\\text{ HC1 normal interval}=[2.66,5.34]"
+  ],
+  "Weighted mean change = ΣwᵢΔYᵢ / Σwᵢ\nWeighted reduction = 1.234244 − (−3.351935)\n= 4.586178 percentage points": [
+    "\\text{Weighted mean change}=\\frac{\\sum_i w_i\\Delta Y_i}{\\sum_i w_i}",
+    "\\text{Weighted reduction}=1.234244-(-3.351935)=4.586178\\text{ points}"
+  ],
+  "Let s = a separate favorable adopter change in points\nReduction attributable to alerts = 4.585714 − s\nAccounting saving = 8.4 × (4.585714 − s) − 20": [
+    "s=\\text{separate favorable adopter change in points}",
+    "\\text{Reduction attributable to alerts}=4.585714-s",
+    "\\text{Accounting saving}=8.4(4.585714-s)-20"
+  ],
+  "Break-even reduction = 20 / (140×0.01×6) = 2.380952\nPoint-estimate break-even shock = 4.585714 − 2.380952\n= 2.204762 points": [
+    "\\text{Break-even reduction}=\\frac{20}{140\\times0.01\\times6}=2.380952",
+    "\\text{Break-even shock}=4.585714-2.380952=2.204762\\text{ points}"
+  ],
+  "DiD = E[Yafter(1)−Ybefore(0)|D=1] − E[ΔY(0)|D=0]\nAdd and subtract E[Yafter(0)|D=1]\n= E[Yafter(1)−Yafter(0)|D=1] + E[ΔY(0)|D=1] − E[ΔY(0)|D=0]\n= ATT + δ": [
+    "\\operatorname{DiD}=\\mathbb E[Y_{\\text{after}}(1)-Y_{\\text{before}}(0)\\mid D=1]-\\mathbb E[\\Delta Y(0)\\mid D=0]",
+    "\\text{Add and subtract }\\mathbb E[Y_{\\text{after}}(0)\\mid D=1]",
+    "{}=\\mathbb E[Y_{\\text{after}}(1)-Y_{\\text{after}}(0)\\mid D=1]",
+    "{}+\\mathbb E[\\Delta Y(0)\\mid D=1]-\\mathbb E[\\Delta Y(0)\\mid D=0]",
+    "{}=\\operatorname{ATT}+\\delta"
+  ],
+  "Ŷ = 10.357143 + 3.375D + 1.239286After − 4.585714D×After\nΔŶ = 1.239286 − 4.585714D": [
+    "\\hat Y=10.357143+3.375D+1.239286\\,\\mathrm{After}-4.585714D\\times\\mathrm{After}",
+    "\\Delta\\hat Y=1.239286-4.585714D"
+  ],
+  "s²comparison = 1.565370; s²adopter = 1.186570\nSE² = s²comparison/25 + s²adopter/25\nν = (v₀+v₁)² / (v₀²/24+v₁²/24) = 47.107452\nwhere vⱼ=s²ⱼ/25; t₀.₉₇₅,ν = 2.011619": [
+    "s_{\\text{comparison}}^2=1.565370;\\quad s_{\\text{adopter}}^2=1.186570",
+    "\\operatorname{SE}^2=\\frac{s_{\\text{comparison}}^2}{25}+\\frac{s_{\\text{adopter}}^2}{25}",
+    "\\nu=\\frac{(v_0+v_1)^2}{v_0^2/24+v_1^2/24}=47.107452",
+    "v_j=\\frac{s_j^2}{25};\\quad t_{0.975,\\nu}=2.011619"
+  ],
+  "Cluster score sᵢ = Xᵢ′eᵢ for each store’s two rows\nV = (X′X)⁻¹(Σᵢsᵢsᵢ′)(X′X)⁻¹ × (50/49)×(99/96)\nCluster CR1 SE(d) = 0.333468\nFirst-difference HC1 SE(β) = 0.331779": [
+    "\\mathbf s_i=\\mathbf X_i'\\mathbf e_i\\quad\\text{for each store's two rows}",
+    "\\mathbf V=(\\mathbf X'\\mathbf X)^{-1}\\left(\\sum_i\\mathbf s_i\\mathbf s_i'\\right)(\\mathbf X'\\mathbf X)^{-1}\\frac{50}{49}\\frac{99}{96}",
+    "\\operatorname{SE}_{\\mathrm{CR1}}(d)=0.333468;\\quad\\operatorname{SE}_{\\mathrm{HC1}}(\\beta)=0.331779"
+  ],
+  "wᵢ = 2 if baseline delivery lead time ≥4; otherwise 1\nΔ̄ⱼ,w = ΣDᵢ=j wᵢΔYᵢ / ΣDᵢ=j wᵢ\nWLS minimizes Σᵢwᵢ(ΔYᵢ−α−βDᵢ)²": [
+    "w_i=\\begin{cases}2&\\text{baseline lead}\\geq4\\\\1&\\text{otherwise}\\end{cases}",
+    "\\bar\\Delta_{j,w}=\\frac{\\sum_{i:D_i=j}w_i\\Delta Y_i}{\\sum_{i:D_i=j}w_i}",
+    "\\text{WLS minimizes }\\sum_iw_i(\\Delta Y_i-\\alpha-\\beta D_i)^2"
+  ],
+  "βlog = Δmean(log Y|D=1) − Δmean(log Y|D=0)\nexp(βlog) = (GM₁,after/GM₁,before) / (GM₀,after/GM₀,before)\nExact proportional contrast = 100[exp(βlog)−1]\nIllustration: βlog=−0.179 gives −16.39%, approximately −17.9%": [
+    "\\beta_{\\log}=\\Delta\\operatorname{mean}(\\log Y\\mid D=1)-\\Delta\\operatorname{mean}(\\log Y\\mid D=0)",
+    "\\exp(\\beta_{\\log})=\\frac{\\operatorname{GM}_{1,\\text{after}}/\\operatorname{GM}_{1,\\text{before}}}{\\operatorname{GM}_{0,\\text{after}}/\\operatorname{GM}_{0,\\text{before}}}",
+    "\\text{Exact percentage contrast}=100[\\exp(\\beta_{\\log})-1]",
+    "\\beta_{\\log}=-0.179:\\quad\\text{exact }100(e^{-0.179}-1)=-16.39\\%",
+    "\\text{Linear approximation: }100(-0.179)=-17.9\\%"
+  ],
+  "Use log(after store mean) − log(before store mean)\nComparison geometric ratio: 1.125969\nAdopter geometric ratio: 0.754685\nRatio of ratios = 0.670253; proportional contrast = -32.97%": [
+    "\\log(\\text{after store mean})-\\log(\\text{before store mean})",
+    "\\text{Comparison geometric ratio}=1.125969",
+    "\\text{Adopter geometric ratio}=0.754685",
+    "\\text{Ratio of ratios}=0.670253;\\quad\\text{percentage contrast}=-32.97\\%"
+  ],
+  "Signed contrast = ATT + δ\nA separate favorable adopter shift s implies δ=−s\nTrue policy reduction in this scenario = observed reduction − s\nBreak-even s = 4.585714 − 20/8.4 = 2.204762": [
+    "\\text{Signed contrast}=\\operatorname{ATT}+\\delta",
+    "\\text{Separate favorable shift }s\\quad\\Longrightarrow\\quad\\delta=-s",
+    "\\text{True policy reduction}=\\text{observed reduction}-s",
+    "\\text{Break-even }s=4.585714-\\frac{20}{8.4}=2.204762"
+  ],
+  "Stockout rate (%) = stockout product-days ÷ 140 × 100": [
+    "\\text{Stockout rate }(\\%)=\\frac{\\text{stockout product-days}}{140}\\times100"
+  ],
+  "Weekly accounting cost = 6 × stockout product-days + 20 when alerts are offered": [
+    "\\text{Weekly cost}=6\\times\\text{stockout product-days}+20\\mathbf1(\\text{offered})"
+  ],
+  "Break-even reduction = 20 ÷ 8.4 = 2.38 percentage points": [
+    "\\text{Break-even reduction}=\\frac{20}{8.4}=2.38\\text{ percentage points}"
+  ]
+}

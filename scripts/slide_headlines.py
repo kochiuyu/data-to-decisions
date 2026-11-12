@@ -328,3 +328,6 @@ for titles in APPENDIX.values():
         'One shared retail world generates all three policy studies',
         'Operating conditions determine risk and heterogeneous alert effects',
     ]
+
+from skim_titles import revise_titles
+APPENDIX={n:revise_titles(n,titles,appendix=True) for n,titles in APPENDIX.items()}

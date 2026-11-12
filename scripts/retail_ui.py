@@ -3,6 +3,7 @@ from html import escape
 from hashlib import sha256
 from pathlib import Path
 import re
+from math_render import render_math
 
 STATIC=Path(__file__).resolve().parents[1]/'static'
 PRESENT_JS_VERSION=sha256((STATIC/'presentation.js').read_bytes()).hexdigest()[:12]
@@ -12,6 +13,8 @@ EXTRA_CSS = '''.brief{max-width:860px;background:var(--surface);border:1px solid
 
 # Long inline design vectors must wrap in the reading view on narrow screens.
 EXTRA_CSS += '.teaching-explanation{overflow-wrap:anywhere}'
+EXTRA_CSS += '.math-prose{display:block;font-size:.8em;line-height:1.5;margin:.3em 0;overflow-wrap:anywhere}'
+EXTRA_CSS += '.typeset-math{font-weight:400}.math-line{display:block;max-width:100%;overflow-x:auto;overflow-y:hidden;padding:.4em .1em}.math-line math{width:max-content;min-width:0;margin:0;font-family:"Cambria Math",math,serif;font-size:1.08em}.math-line+.math-line{margin-top:.2em}.skim-outline{margin:24px 0;padding:18px 22px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}.skim-outline summary{font-weight:700;cursor:pointer}.skim-outline ol{padding-left:1.8em}.skim-outline li{margin:.65em 0}.skim-outline a{line-height:1.5}@media print{.math-line{overflow:visible}.skim-outline{display:none}}'
 
 def esc(v): return escape(str(v))
 def p(*items): return ''.join('<p>'+esc(x)+'</p>' for x in items)
@@ -42,6 +45,7 @@ def chart(x,series,title,xlabel='Week',ylabel='Stockout rate (%)'):
     return svg+table([xlabel]+list(series),[[v]+[f'{float(a[i]):.2f}' for a in series.values()] for i,v in enumerate(xs)],title+' — values')
 
 def shell(title,body,canonical=''):
+    body=render_math(body)
     link=f'<link rel="canonical" href="https://kochiuyu.github.io/data-to-decisions/{canonical}">' if canonical else ''
     return f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Ten lectures in business statistics: motivation, theory, and worked applications."><title>{esc(title)} · Data to decisions</title>{link}<link rel="stylesheet" href="assets/style.css"><link rel="stylesheet" href="assets/retail.css"><link rel="stylesheet" href="assets/presentation.css?v={PRESENT_CSS_VERSION}"><script src="assets/app.js" defer></script><script src="assets/presentation.js?v={PRESENT_JS_VERSION}" defer></script></head><body><a class="skip" href="#main">Skip to main content</a><header><div class="header-inner"><a class="brand" href="index.html"><span aria-hidden="true">d.</span><strong>Data to decisions<small>Concepts. Methods. Decisions.</small></strong></a><nav aria-label="Main"><a href="index.html">Course map</a><a href="study-guide.html">The case</a><a href="resources.html">Data & labs</a></nav></div></header>{body}<footer><p>Data to decisions · Applied business statistics</p><p><a href="index.html#teaching-data">About the case data</a> · <a href="synthesis.html">The final recommendation</a></p></footer></body></html>'
 

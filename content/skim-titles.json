@@ -1,0 +1,1594 @@
+[
+  {
+    "lesson": 1,
+    "appendix": false,
+    "section": "decision-brief",
+    "index": 0,
+    "old": "How much of the reported service problem is real?",
+    "title": "A service decision needs comparable counts before it needs a model"
+  },
+  {
+    "lesson": 1,
+    "appendix": false,
+    "section": "evidence",
+    "index": 1,
+    "old": "Choose data sources that capture the operating question",
+    "title": "The operating question determines which data sources are relevant"
+  },
+  {
+    "lesson": 1,
+    "appendix": false,
+    "section": "evidence",
+    "index": 2,
+    "old": "Agree what stockouts mean and how stores report them",
+    "title": "A shared stockout definition makes store reports comparable"
+  },
+  {
+    "lesson": 1,
+    "appendix": false,
+    "section": "structure",
+    "index": 0,
+    "old": "Inspect rows, types, and missing values before filtering",
+    "title": "Row types and missing values reveal problems before filtering"
+  },
+  {
+    "lesson": 1,
+    "appendix": false,
+    "section": "structure",
+    "index": 1,
+    "old": "Select rows and columns using explicit business rules",
+    "title": "Explicit selection rules define which observations enter the analysis"
+  },
+  {
+    "lesson": 1,
+    "appendix": false,
+    "section": "structure",
+    "index": 2,
+    "old": "Check missing and repeated keys before removing records",
+    "title": "Missing and repeated keys require investigation before records are removed"
+  },
+  {
+    "lesson": 1,
+    "appendix": false,
+    "section": "calculate",
+    "index": 0,
+    "old": "Reconcile duplicates and flagged counts before calculating stockout rates",
+    "title": "Duplicate and flagged records must be reconciled before calculating rates"
+  },
+  {
+    "lesson": 1,
+    "appendix": false,
+    "section": "calculate",
+    "index": 1,
+    "old": "Recover missing counts from the source ledger",
+    "title": "The source ledger recovers the missing counts in this export"
+  },
+  {
+    "lesson": 1,
+    "appendix": false,
+    "section": "calculate",
+    "index": 2,
+    "old": "Divide stockout counts by scheduled product-days",
+    "title": "Stockout counts become rates when divided by scheduled product-days"
+  },
+  {
+    "lesson": 1,
+    "appendix": false,
+    "section": "aggregation",
+    "index": 1,
+    "old": "Show reporting coverage beside each store's rate",
+    "title": "A store rate needs its reporting coverage beside it"
+  },
+  {
+    "lesson": 1,
+    "appendix": false,
+    "section": "aggregation",
+    "index": 2,
+    "old": "Apply minimum reporting coverage before ranking stores",
+    "title": "Minimum reporting coverage determines which stores can be ranked"
+  },
+  {
+    "lesson": 1,
+    "appendix": false,
+    "section": "workflow",
+    "index": 0,
+    "old": "Organize raw data, repaired data, and analysis separately",
+    "title": "Separate raw, repaired and analytical files preserve the repair history"
+  },
+  {
+    "lesson": 1,
+    "appendix": false,
+    "section": "workflow",
+    "index": 1,
+    "old": "Which repeated records are errors, and which are valid observations?",
+    "title": "A repeated row is an error only relative to the observation key"
+  },
+  {
+    "lesson": 1,
+    "appendix": false,
+    "section": "act",
+    "index": 0,
+    "old": "Hand over the baseline with definitions and a repair log",
+    "title": "A usable baseline includes definitions and a documented repair log"
+  },
+  {
+    "lesson": 1,
+    "appendix": false,
+    "section": "independent-practice",
+    "index": 0,
+    "old": "Reconstruct the calculation before inspecting the worked answer",
+    "title": "Unresolved counts require explicit alternatives rather than an automatic zero"
+  },
+  {
+    "lesson": 1,
+    "appendix": false,
+    "section": "independent-practice",
+    "index": 1,
+    "old": "Transfer the method and defend the decision",
+    "title": "Patient-level and clinic-level averages use different weights"
+  },
+  {
+    "lesson": 1,
+    "appendix": false,
+    "section": "memo",
+    "index": 1,
+    "old": "How should a missing weekly count enter the stockout rate?",
+    "title": "A missing weekly count remains unknown until a defensible rule resolves it"
+  },
+  {
+    "lesson": 1,
+    "appendix": false,
+    "section": "big-picture",
+    "index": 1,
+    "old": "Did reconciliation recover the original store-week records?",
+    "title": "Reconciliation recovers all twelve hundred original store-week records"
+  },
+  {
+    "lesson": 2,
+    "appendix": false,
+    "section": "decision-brief",
+    "index": 0,
+    "old": "Where should limited review effort go first?",
+    "title": "Review priorities depend on both typical outcomes and unusually high burdens"
+  },
+  {
+    "lesson": 2,
+    "appendix": false,
+    "section": "reasoning-foundations",
+    "index": 0,
+    "old": "Begin probability with one countable set of opportunities",
+    "title": "A countable set of opportunities gives probability its denominator"
+  },
+  {
+    "lesson": 2,
+    "appendix": false,
+    "section": "distributions",
+    "index": 2,
+    "old": "Report both the typical rate and the spread across stores",
+    "title": "The typical rate and between-store spread describe different features"
+  },
+  {
+    "lesson": 2,
+    "appendix": false,
+    "section": "calculate",
+    "index": 0,
+    "old": "Compare each delivery group against its own store count",
+    "title": "Each delivery group's percentages use that group's own store count"
+  },
+  {
+    "lesson": 2,
+    "appendix": false,
+    "section": "interpret",
+    "index": 0,
+    "old": "Separate differences across stores from movement over time",
+    "title": "Differences across stores and movement over time require separate comparisons"
+  },
+  {
+    "lesson": 2,
+    "appendix": false,
+    "section": "act",
+    "index": 0,
+    "old": "Turn the observed burden into an identifiable review shortlist",
+    "title": "A review shortlist connects observed burden to identifiable stores"
+  },
+  {
+    "lesson": 2,
+    "appendix": false,
+    "section": "act",
+    "index": 1,
+    "old": "Start reviews with the stores showing the highest baseline rates",
+    "title": "The highest baseline rates identify the first stores to review"
+  },
+  {
+    "lesson": 2,
+    "appendix": false,
+    "section": "independent-practice",
+    "index": 0,
+    "old": "Reconstruct the calculation before inspecting the worked answer",
+    "title": "Joint and conditional probabilities answer different denominator questions"
+  },
+  {
+    "lesson": 2,
+    "appendix": false,
+    "section": "independent-practice",
+    "index": 1,
+    "old": "Transfer the method and defend the decision",
+    "title": "Changing the group mix changes the overall mean without changing group risks"
+  },
+  {
+    "lesson": 2,
+    "appendix": false,
+    "section": "memo",
+    "index": 0,
+    "old": "Allocate review effort using severity, coverage, and store identity",
+    "title": "Severity, coverage and store identity jointly inform review priorities"
+  },
+  {
+    "lesson": 2,
+    "appendix": false,
+    "section": "memo",
+    "index": 1,
+    "old": "Which stores belong in the denominator for long-lead target misses?",
+    "title": "Long-lead target misses use all long-lead stores as their denominator"
+  },
+  {
+    "lesson": 2,
+    "appendix": false,
+    "section": "big-picture",
+    "index": 1,
+    "old": "Do these different summaries describe the same underlying stores?",
+    "title": "Different summaries describe the same hundred and fifty baseline stores"
+  },
+  {
+    "lesson": 3,
+    "appendix": false,
+    "section": "decision-brief",
+    "index": 0,
+    "old": "Is a sample audit informative enough to justify action?",
+    "title": "An audit supports action when its uncertainty resolves the decision threshold"
+  },
+  {
+    "lesson": 3,
+    "appendix": false,
+    "section": "reasoning-foundations",
+    "index": 1,
+    "old": "Choose the information budget before collecting outcomes",
+    "title": "A precision target and cost per observation determine the information budget"
+  },
+  {
+    "lesson": 3,
+    "appendix": false,
+    "section": "theory-method",
+    "index": 0,
+    "old": "State the null, alternative, and error costs before testing",
+    "title": "A testing rule needs a null, alternative and acceptable error cost"
+  },
+  {
+    "lesson": 3,
+    "appendix": false,
+    "section": "read-data",
+    "index": 0,
+    "old": "Treat each sampled store as one audit observation",
+    "title": "Each sampled store is one independent audit observation"
+  },
+  {
+    "lesson": 3,
+    "appendix": false,
+    "section": "calculate",
+    "index": 0,
+    "old": "Combine the sample mean with its standard error",
+    "title": "The sample mean and standard error jointly determine the audit interval"
+  },
+  {
+    "lesson": 3,
+    "appendix": false,
+    "section": "calculate",
+    "index": 1,
+    "old": "Divide store-level spread by the square root of sample size",
+    "title": "Mean precision improves with the square root of independent sample size"
+  },
+  {
+    "lesson": 3,
+    "appendix": false,
+    "section": "calculate",
+    "index": 2,
+    "old": "Add and subtract the margin of error to form an interval",
+    "title": "The interval extends one margin of error either side of the estimate"
+  },
+  {
+    "lesson": 3,
+    "appendix": false,
+    "section": "testing",
+    "index": 0,
+    "old": "State the service-gap hypothesis before examining the result",
+    "title": "A prespecified service-gap hypothesis determines which evidence counts against it"
+  },
+  {
+    "lesson": 3,
+    "appendix": false,
+    "section": "testing",
+    "index": 1,
+    "old": "Measure the target gap in standard-error units",
+    "title": "The test statistic measures the target gap in standard-error units"
+  },
+  {
+    "lesson": 3,
+    "appendix": false,
+    "section": "testing",
+    "index": 3,
+    "old": "What should follow a selectively reported small p-value?",
+    "title": "Selective reporting makes a small p-value insufficient without the search history"
+  },
+  {
+    "lesson": 3,
+    "appendix": false,
+    "section": "act",
+    "index": 0,
+    "old": "Buy more information when it could change the action",
+    "title": "Additional information is valuable when it could change the action"
+  },
+  {
+    "lesson": 3,
+    "appendix": false,
+    "section": "independent-practice",
+    "index": 0,
+    "old": "Reconstruct the calculation before inspecting the worked answer",
+    "title": "Counting product-days as independent stores overstates the information in an audit"
+  },
+  {
+    "lesson": 3,
+    "appendix": false,
+    "section": "independent-practice",
+    "index": 1,
+    "old": "Transfer the method and defend the decision",
+    "title": "Shared delivery teams can reduce the information gained from additional stores"
+  },
+  {
+    "lesson": 3,
+    "appendix": false,
+    "section": "memo",
+    "index": 1,
+    "old": "Should precision count independent stores or product-days?",
+    "title": "Store-level precision counts independent stores rather than repeated product-days"
+  },
+  {
+    "lesson": 3,
+    "appendix": false,
+    "section": "big-picture",
+    "index": 1,
+    "old": "How close did the audit come to the known population rate?",
+    "title": "The audit estimate is close to the known expected population rate"
+  },
+  {
+    "lesson": 4,
+    "appendix": false,
+    "section": "decision-brief",
+    "index": 0,
+    "old": "How does operating risk vary with delivery time?",
+    "title": "Delivery time provides a measurable starting comparison for operating risk"
+  },
+  {
+    "lesson": 4,
+    "appendix": false,
+    "section": "reasoning-foundations",
+    "index": 1,
+    "old": "Compare candidate losses before declaring the least-squares solution",
+    "title": "The least-squares line has the smallest squared loss among candidate lines"
+  },
+  {
+    "lesson": 4,
+    "appendix": false,
+    "section": "reasoning-foundations",
+    "index": 2,
+    "old": "Separate the conditions for fitting, inference and causal interpretation",
+    "title": "Fitting, statistical inference and causal interpretation require different assumptions"
+  },
+  {
+    "lesson": 4,
+    "appendix": false,
+    "section": "read-data",
+    "index": 0,
+    "old": "Pair each store's delivery time with its baseline stockout rate",
+    "title": "Each store pairs its delivery time with its baseline stockout rate"
+  },
+  {
+    "lesson": 4,
+    "appendix": false,
+    "section": "calculate",
+    "index": 0,
+    "old": "Read the delivery slope in percentage points per day",
+    "title": "The delivery slope measures percentage points per additional delivery day"
+  },
+  {
+    "lesson": 4,
+    "appendix": false,
+    "section": "calculate",
+    "index": 1,
+    "old": "Combine an intercept and delivery slope to predict the rate",
+    "title": "An intercept and delivery contribution determine each fitted stockout rate"
+  },
+  {
+    "lesson": 4,
+    "appendix": false,
+    "section": "calculate",
+    "index": 2,
+    "old": "Substitute four delivery days to predict a store's baseline rate",
+    "title": "Four delivery days enter the fitted equation as four times the slope"
+  },
+  {
+    "lesson": 4,
+    "appendix": false,
+    "section": "interpret",
+    "index": 1,
+    "old": "Compare each observed rate with its prediction",
+    "title": "An observed rate minus its prediction gives the store's residual"
+  },
+  {
+    "lesson": 4,
+    "appendix": false,
+    "section": "fit",
+    "index": 0,
+    "old": "Split total variation into explained and residual components",
+    "title": "OLS with an intercept splits total variation into explained and residual components"
+  },
+  {
+    "lesson": 4,
+    "appendix": false,
+    "section": "act",
+    "index": 0,
+    "old": "Use residuals to guide the next investigation of store conditions",
+    "title": "Residuals identify store conditions that need further investigation"
+  },
+  {
+    "lesson": 4,
+    "appendix": false,
+    "section": "independent-practice",
+    "index": 0,
+    "old": "Reconstruct the calculation before inspecting the worked answer",
+    "title": "Zero-sum residuals do not establish a linear population relationship"
+  },
+  {
+    "lesson": 4,
+    "appendix": false,
+    "section": "independent-practice",
+    "index": 1,
+    "old": "Transfer the method and defend the decision",
+    "title": "A curved relationship can be predictable even when its linear correlation is zero"
+  },
+  {
+    "lesson": 4,
+    "appendix": false,
+    "section": "memo",
+    "index": 1,
+    "old": "How does a positive residual differ from a positive slope?",
+    "title": "A positive residual marks a store above its fitted benchmark"
+  },
+  {
+    "lesson": 4,
+    "appendix": false,
+    "section": "big-picture",
+    "index": 1,
+    "old": "Which operating factors lie behind the simple fitted line?",
+    "title": "The simple line combines delivery, location, demand, promotion and store differences"
+  },
+  {
+    "lesson": 5,
+    "appendix": false,
+    "section": "decision-brief",
+    "index": 0,
+    "old": "How can we compare stores with different operating conditions?",
+    "title": "Including operating conditions makes the comparison conditional on those measured differences"
+  },
+  {
+    "lesson": 5,
+    "appendix": false,
+    "section": "act",
+    "index": 0,
+    "old": "Use the baseline comparison to design a testable operating review",
+    "title": "The adjusted baseline comparison suggests questions for a testable operating review"
+  },
+  {
+    "lesson": 5,
+    "appendix": false,
+    "section": "independent-practice",
+    "index": 0,
+    "old": "Reconstruct the calculation before inspecting the worked answer",
+    "title": "Removing the same controls from both variables recovers the adjusted slope"
+  },
+  {
+    "lesson": 5,
+    "appendix": false,
+    "section": "independent-practice",
+    "index": 1,
+    "old": "Transfer the method and defend the decision",
+    "title": "Repeated store observations require uncertainty that allows dependence within stores"
+  },
+  {
+    "lesson": 5,
+    "appendix": false,
+    "section": "memo",
+    "index": 0,
+    "old": "Report the comparison and its uncertainty together",
+    "title": "A useful adjusted comparison names the profile and its uncertainty"
+  },
+  {
+    "lesson": 5,
+    "appendix": false,
+    "section": "big-picture",
+    "index": 1,
+    "old": "Does the richer model reflect the case's operating mechanism?",
+    "title": "A real interaction need not be statistically significant in every sample"
+  },
+  {
+    "lesson": 6,
+    "appendix": false,
+    "section": "decision-brief",
+    "index": 0,
+    "old": "Which stores will need attention next week?",
+    "title": "Forecasts rank next week's review needs using information available today"
+  },
+  {
+    "lesson": 6,
+    "appendix": false,
+    "section": "theory-scale",
+    "index": 1,
+    "old": "Compare transformed-target procedures using the same original-scale loss",
+    "title": "Transformed-target procedures remain comparable only under the same original-scale loss"
+  },
+  {
+    "lesson": 6,
+    "appendix": false,
+    "section": "interpret",
+    "index": 2,
+    "old": "Track both error size and average underprediction across weeks",
+    "title": "Error size and average underprediction reveal different forecast weaknesses"
+  },
+  {
+    "lesson": 6,
+    "appendix": false,
+    "section": "reasoning-worked",
+    "index": 0,
+    "old": "Compare a forecast with a timely last-week benchmark",
+    "title": "The frozen forecast outperforms the timely last-week benchmark on final RMSE"
+  },
+  {
+    "lesson": 6,
+    "appendix": false,
+    "section": "act",
+    "index": 0,
+    "old": "Rank stores by forecasts made before the operating week starts",
+    "title": "Store rankings must use forecasts made before the operating week starts"
+  },
+  {
+    "lesson": 6,
+    "appendix": false,
+    "section": "independent-practice",
+    "index": 0,
+    "old": "Reconstruct the calculation before inspecting the worked answer",
+    "title": "Capturing more stockout burden does not establish a greater benefit from alerts"
+  },
+  {
+    "lesson": 6,
+    "appendix": false,
+    "section": "independent-practice",
+    "index": 1,
+    "old": "Transfer the method and defend the decision",
+    "title": "A capacity-limited review needs both forecast evaluation and a separate intervention test"
+  },
+  {
+    "lesson": 6,
+    "appendix": false,
+    "section": "big-picture",
+    "index": 1,
+    "old": "What sources of variation remain behind forecast errors?",
+    "title": "New weekly variation remains even after using all timely forecast inputs"
+  },
+  {
+    "lesson": 7,
+    "appendix": false,
+    "section": "decision-brief",
+    "index": 0,
+    "old": "Do alerts improve service enough to cover their cost?",
+    "title": "Alerts justify spending only when their causal benefit covers their cost"
+  },
+  {
+    "lesson": 7,
+    "appendix": false,
+    "section": "reasoning-worked",
+    "index": 1,
+    "old": "State what the missing outcomes would need to look like",
+    "title": "Assumptions about missing outcomes determine which treatment effects remain plausible"
+  },
+  {
+    "lesson": 7,
+    "appendix": false,
+    "section": "independent-practice",
+    "index": 0,
+    "old": "Reconstruct the calculation before inspecting the worked answer",
+    "title": "Excluding nonusers after assignment can destroy the randomized comparison"
+  },
+  {
+    "lesson": 7,
+    "appendix": false,
+    "section": "independent-practice",
+    "index": 1,
+    "old": "Transfer the method and defend the decision",
+    "title": "A trial protocol fixes assignment, measurement and the decision rule before outcomes"
+  },
+  {
+    "lesson": 7,
+    "appendix": false,
+    "section": "big-picture",
+    "index": 1,
+    "old": "How close is the pilot estimate to its known expected effect?",
+    "title": "Assignment and outcome variation separate the pilot estimate from its expected effect"
+  },
+  {
+    "lesson": 8,
+    "appendix": false,
+    "section": "decision-brief",
+    "index": 0,
+    "old": "What can voluntary adoption tell us about effectiveness?",
+    "title": "Voluntary adoption mixes the alert effect with differences in who adopts"
+  },
+  {
+    "lesson": 8,
+    "appendix": false,
+    "section": "reasoning-foundations",
+    "index": 0,
+    "old": "Build a graph from dated mechanisms before choosing controls",
+    "title": "Dated mechanisms justify graph arrows before controls are chosen"
+  },
+  {
+    "lesson": 8,
+    "appendix": false,
+    "section": "act",
+    "index": 0,
+    "old": "The next estimate should follow the graph and preserve the target population",
+    "title": "The graph and target population jointly determine the next adjustment step"
+  },
+  {
+    "lesson": 8,
+    "appendix": false,
+    "section": "independent-practice",
+    "index": 0,
+    "old": "Reconstruct the calculation before inspecting the worked answer",
+    "title": "High predictive fit cannot rule out an unrecorded common cause"
+  },
+  {
+    "lesson": 8,
+    "appendix": false,
+    "section": "independent-practice",
+    "index": 1,
+    "old": "Transfer the method and defend the decision",
+    "title": "Unobserved selection requires another identification argument beyond measured adjustment"
+  },
+  {
+    "lesson": 8,
+    "appendix": false,
+    "section": "memo",
+    "index": 0,
+    "old": "Carry starting conditions into the next adjustment step",
+    "title": "Delivery, location and baseline performance remain relevant to the next adjustment"
+  },
+  {
+    "lesson": 8,
+    "appendix": false,
+    "section": "memo",
+    "index": 1,
+    "old": "Is an alert-triggered emergency order a baseline control?",
+    "title": "An alert-triggered emergency order occurs after treatment and is not a baseline control"
+  },
+  {
+    "lesson": 8,
+    "appendix": false,
+    "section": "big-picture",
+    "index": 1,
+    "old": "Which starting conditions actually drive adoption in this case?",
+    "title": "Delivery, location and baseline performance jointly drive adoption in this case"
+  },
+  {
+    "lesson": 9,
+    "appendix": false,
+    "section": "reasoning-worked",
+    "index": 0,
+    "old": "Complete the location-constrained matching redesign before opening outcomes",
+    "title": "Exact location matching retains eighteen adopters under the original logit caliper"
+  },
+  {
+    "lesson": 9,
+    "appendix": false,
+    "section": "reasoning-worked",
+    "index": 1,
+    "old": "Fixing one imbalance still requires checking all the others",
+    "title": "The redesigned matches balance location and improve the other measured comparisons"
+  },
+  {
+    "lesson": 9,
+    "appendix": false,
+    "section": "reasoning-worked",
+    "index": 2,
+    "old": "Compare two estimates for the same redesigned target",
+    "title": "Matching and regression estimate different reductions for the same eighteen retained adopters"
+  },
+  {
+    "lesson": 9,
+    "appendix": false,
+    "section": "independent-practice",
+    "index": 0,
+    "old": "Reconstruct the calculation before inspecting the worked answer",
+    "title": "Reusing a control repeats its weight rather than creating independent outcomes"
+  },
+  {
+    "lesson": 9,
+    "appendix": false,
+    "section": "independent-practice",
+    "index": 1,
+    "old": "Transfer the method and defend the decision",
+    "title": "Stricter matches can improve comparability while narrowing the population represented"
+  },
+  {
+    "lesson": 9,
+    "appendix": false,
+    "section": "memo",
+    "index": 1,
+    "old": "Does a larger estimate make the matched comparison more convincing?",
+    "title": "A larger effect estimate does not repair a poorly balanced comparison"
+  },
+  {
+    "lesson": 9,
+    "appendix": false,
+    "section": "big-picture",
+    "index": 1,
+    "old": "Do estimates approach the known effect for the corresponding target?",
+    "title": "All-store and adopter estimates must be judged against their corresponding true effects"
+  },
+  {
+    "lesson": 10,
+    "appendix": false,
+    "section": "independent-practice",
+    "index": 0,
+    "old": "Reconstruct the calculation before inspecting the worked answer",
+    "title": "A nonsignificant pre-trend test cannot establish future parallel untreated trends"
+  },
+  {
+    "lesson": 10,
+    "appendix": false,
+    "section": "independent-practice",
+    "index": 1,
+    "old": "Transfer the method and defend the decision",
+    "title": "A credible rollout comparison checks timing, composition and competing shocks"
+  },
+  {
+    "lesson": 10,
+    "appendix": false,
+    "section": "memo",
+    "index": 1,
+    "old": "How would a separate one-point improvement change the rollout recommendation?",
+    "title": "An unrelated adopter improvement reduces both the attributed alert effect and its saving"
+  },
+  {
+    "lesson": 10,
+    "appendix": false,
+    "section": "big-picture",
+    "index": 1,
+    "old": "How close is the rollout estimate to the known adopter effect?",
+    "title": "The rollout estimate is close to the known effect for the same adopters"
+  },
+  {
+    "lesson": 1,
+    "appendix": true,
+    "section": "main",
+    "index": 0,
+    "old": "Reproduce the baseline from source records to a validated handover",
+    "title": "Validated keys, counts and exposure make the baseline reproducible"
+  },
+  {
+    "lesson": 1,
+    "appendix": true,
+    "section": "calculation",
+    "index": 0,
+    "old": "Repair flagged counts before checking keys and totals",
+    "title": "Flagged counts require repair before key and total checks are meaningful"
+  },
+  {
+    "lesson": 1,
+    "appendix": true,
+    "section": "calculation",
+    "index": 1,
+    "old": "Deduplicate records and reconcile counts against the repair ledger",
+    "title": "Deduplication and ledger reconciliation recover the baseline counts"
+  },
+  {
+    "lesson": 1,
+    "appendix": true,
+    "section": "calculation",
+    "index": 2,
+    "old": "Reshape the cleaned data and validate the store-profile join",
+    "title": "A valid reshape and profile join preserve the store-week observations"
+  },
+  {
+    "lesson": 1,
+    "appendix": true,
+    "section": "calculation",
+    "index": 3,
+    "old": "Use assignment dates to recover valid weekly responsibilities",
+    "title": "Assignment dates determine valid weekly manager responsibilities"
+  },
+  {
+    "lesson": 1,
+    "appendix": true,
+    "section": "calculation",
+    "index": 4,
+    "old": "Retain stores meeting the minimum reporting-coverage rule",
+    "title": "A reporting-coverage rule determines which store summaries enter the result"
+  },
+  {
+    "lesson": 2,
+    "appendix": true,
+    "section": "main",
+    "index": 0,
+    "old": "Reproduce how distributions direct the store-review effort",
+    "title": "Distribution summaries connect store-level records to review priorities"
+  },
+  {
+    "lesson": 2,
+    "appendix": true,
+    "section": "calculation",
+    "index": 0,
+    "old": "Use each group's store count in its summaries",
+    "title": "Group summaries use each group's own store count"
+  },
+  {
+    "lesson": 2,
+    "appendix": true,
+    "section": "calculation",
+    "index": 1,
+    "old": "Calculate group rates, threshold shares, and histogram counts",
+    "title": "Rates, threshold shares and histogram counts summarize different features"
+  },
+  {
+    "lesson": 2,
+    "appendix": true,
+    "section": "calculation",
+    "index": 3,
+    "old": "Recalculate quartiles, correlations, and category shares within delivery groups",
+    "title": "Within-group quartiles and correlations retain their group-specific scope"
+  },
+  {
+    "lesson": 2,
+    "appendix": true,
+    "section": "calculation",
+    "index": 4,
+    "old": "Check density normalization and the equal-count bin averages",
+    "title": "Density integrates to one while equal-count bins average different ranges"
+  },
+  {
+    "lesson": 2,
+    "appendix": true,
+    "section": "probability",
+    "index": 11,
+    "old": "Standardize aligned proxies before constructing a composite score",
+    "title": "Aligned standardized proxies can be combined on a common scale"
+  },
+  {
+    "lesson": 3,
+    "appendix": true,
+    "section": "main",
+    "index": 0,
+    "old": "Reproduce the audit's estimate and decision-relevant uncertainty",
+    "title": "The audit's independent sampling unit determines its uncertainty calculation"
+  },
+  {
+    "lesson": 3,
+    "appendix": true,
+    "section": "calculation",
+    "index": 0,
+    "old": "Build the interval from the mean and its standard error",
+    "title": "The mean and its standard error determine the interval endpoints"
+  },
+  {
+    "lesson": 3,
+    "appendix": true,
+    "section": "calculation",
+    "index": 1,
+    "old": "Calculate the store-level t interval from the observed audit",
+    "title": "The store-level t interval uses uncertainty estimated from the audit"
+  },
+  {
+    "lesson": 3,
+    "appendix": true,
+    "section": "calculation",
+    "index": 2,
+    "old": "Resample whole stores and test the service benchmark",
+    "title": "Whole-store resampling preserves the audit's observation unit"
+  },
+  {
+    "lesson": 3,
+    "appendix": true,
+    "section": "calculation",
+    "index": 3,
+    "old": "Match readings by store before calculating the paired standard error",
+    "title": "Matching readings by store defines the differences used in a paired standard error"
+  },
+  {
+    "lesson": 3,
+    "appendix": true,
+    "section": "calculation",
+    "index": 4,
+    "old": "Complete the paired test and form independent-group variance contributions",
+    "title": "Paired and independent comparisons combine different sources of variation"
+  },
+  {
+    "lesson": 3,
+    "appendix": true,
+    "section": "calculation",
+    "index": 5,
+    "old": "Use Welch degrees of freedom for the independent comparison",
+    "title": "Welch degrees of freedom account for unequal group variances"
+  },
+  {
+    "lesson": 3,
+    "appendix": true,
+    "section": "calculation",
+    "index": 6,
+    "old": "Reconstruct Wilson endpoints and retain every plotted difference",
+    "title": "Wilson endpoints estimate uncertainty in the share above target"
+  },
+  {
+    "lesson": 3,
+    "appendix": true,
+    "section": "extension",
+    "index": 0,
+    "old": "Repeat sampling to study how sample size affects precision",
+    "title": "Repeated sampling makes the effect of sample size on precision visible"
+  },
+  {
+    "lesson": 3,
+    "appendix": true,
+    "section": "known-answer",
+    "index": 0,
+    "old": "Compare the sample mean with the known expected audit rate",
+    "title": "The known expected audit rate supplies the target for the sample mean"
+  },
+  {
+    "lesson": 4,
+    "appendix": true,
+    "section": "main",
+    "index": 0,
+    "old": "Reproduce the delivery relationship and compare model forms",
+    "title": "Model forms change the fitted relationship and the interpretation of its slope"
+  },
+  {
+    "lesson": 4,
+    "appendix": true,
+    "section": "calculation",
+    "index": 0,
+    "old": "Reproduce the fitted line and each curve from the shared records",
+    "title": "The shared records support direct comparisons between the line and fitted curves"
+  },
+  {
+    "lesson": 4,
+    "appendix": true,
+    "section": "calculation",
+    "index": 1,
+    "old": "Fit the delivery line and recover its residuals",
+    "title": "Observed rates minus the delivery line produce store residuals"
+  },
+  {
+    "lesson": 4,
+    "appendix": true,
+    "section": "calculation",
+    "index": 2,
+    "old": "Partition variation and estimate the log-outcome equation",
+    "title": "A log outcome changes coefficient interpretation and the scale of residual variation"
+  },
+  {
+    "lesson": 4,
+    "appendix": true,
+    "section": "calculation",
+    "index": 3,
+    "old": "Verify residual balance and reconstruct the slope",
+    "title": "Residual balance and the covariance formula verify the least-squares slope"
+  },
+  {
+    "lesson": 4,
+    "appendix": true,
+    "section": "calculation",
+    "index": 4,
+    "old": "Return all four specifications to the same outcome scale",
+    "title": "A common outcome scale makes the four fitted specifications comparable"
+  },
+  {
+    "lesson": 4,
+    "appendix": true,
+    "section": "calculation",
+    "index": 5,
+    "old": "Rescale continuous demand and fit polynomial columns",
+    "title": "Rescaled demand and polynomial columns allow a changing fitted slope"
+  },
+  {
+    "lesson": 4,
+    "appendix": true,
+    "section": "calculation",
+    "index": 6,
+    "old": "Build the demand spline with one continuous hinge",
+    "title": "One continuous hinge creates a demand spline with a slope change"
+  },
+  {
+    "lesson": 4,
+    "appendix": true,
+    "section": "calculation",
+    "index": 7,
+    "old": "Fit a weighted local line at each demand target",
+    "title": "A local line weights nearby demand observations more heavily"
+  },
+  {
+    "lesson": 4,
+    "appendix": true,
+    "section": "calculation",
+    "index": 8,
+    "old": "Compare smoothing neighborhoods and leave-one-store-out slopes",
+    "title": "Neighborhood size and omitted stores reveal different kinds of fit sensitivity"
+  },
+  {
+    "lesson": 4,
+    "appendix": true,
+    "section": "calculation",
+    "index": 9,
+    "old": "Verify that a delivery cubic reproduces the four group means",
+    "title": "A delivery cubic reproduces all four delivery-group means"
+  },
+  {
+    "lesson": 4,
+    "appendix": true,
+    "section": "extension",
+    "index": 0,
+    "old": "Compare residual patterns before adding model terms",
+    "title": "Residual patterns indicate where additional model terms may help"
+  },
+  {
+    "lesson": 4,
+    "appendix": true,
+    "section": "regression-details",
+    "index": 0,
+    "old": "Derive OLS geometry and reconstruct the same model comparisons",
+    "title": "OLS geometry links residual properties to comparisons between model forms"
+  },
+  {
+    "lesson": 5,
+    "appendix": true,
+    "section": "main",
+    "index": 0,
+    "old": "Reproduce store comparisons with controls and interactions",
+    "title": "Controls and interactions define both the store comparison and its uncertainty"
+  },
+  {
+    "lesson": 5,
+    "appendix": true,
+    "section": "data",
+    "index": 0,
+    "old": "Keep baseline stores fixed while adding operating context",
+    "title": "Fixed baseline rows isolate the effect of adding operating context"
+  },
+  {
+    "lesson": 5,
+    "appendix": true,
+    "section": "calculation",
+    "index": 0,
+    "old": "Reproduce inference and contrasts on the same baseline stores",
+    "title": "Inference and profile contrasts refer to the same baseline stores"
+  },
+  {
+    "lesson": 5,
+    "appendix": true,
+    "section": "calculation",
+    "index": 1,
+    "old": "Fit the complete design and retain the shared analysis rows",
+    "title": "The complete design keeps the analysis rows fixed across comparisons"
+  },
+  {
+    "lesson": 5,
+    "appendix": true,
+    "section": "calculation",
+    "index": 2,
+    "old": "Calculate robust coefficient uncertainty and classical mean uncertainty",
+    "title": "Robust coefficient uncertainty and classical mean uncertainty use different variance assumptions"
+  },
+  {
+    "lesson": 5,
+    "appendix": true,
+    "section": "calculation",
+    "index": 3,
+    "old": "Construct mean and individual bands on the same prediction grid",
+    "title": "Mean and individual bands target different uncertainty on the same prediction grid"
+  },
+  {
+    "lesson": 5,
+    "appendix": true,
+    "section": "calculation",
+    "index": 4,
+    "old": "Verify the omitted-variable identity and recenter delivery time",
+    "title": "Recentering changes the reference comparison while preserving fitted values"
+  },
+  {
+    "lesson": 5,
+    "appendix": true,
+    "section": "calculation",
+    "index": 5,
+    "old": "Calculate profile contrasts and test the group terms jointly",
+    "title": "Profile contrasts and joint tests use combinations of fitted coefficients"
+  },
+  {
+    "lesson": 5,
+    "appendix": true,
+    "section": "calculation",
+    "index": 6,
+    "old": "Compare nested fits and compute variance inflation",
+    "title": "Nested fits assess added terms while variance inflation measures overlapping predictors"
+  },
+  {
+    "lesson": 5,
+    "appendix": true,
+    "section": "calculation",
+    "index": 7,
+    "old": "Build full profiles and verify uncertainty targets",
+    "title": "A full profile determines which coefficient combination and uncertainty apply"
+  },
+  {
+    "lesson": 5,
+    "appendix": true,
+    "section": "calculation",
+    "index": 8,
+    "old": "Check centered comparisons and OLS residual identities",
+    "title": "Centering preserves OLS residual identities and fitted comparisons"
+  },
+  {
+    "lesson": 5,
+    "appendix": true,
+    "section": "extension",
+    "index": 0,
+    "old": "Compare complete operating profiles and their residual patterns",
+    "title": "Complete operating profiles make model comparisons and residual patterns interpretable"
+  },
+  {
+    "lesson": 5,
+    "appendix": true,
+    "section": "multiple-regression-details",
+    "index": 0,
+    "old": "Reconstruct covariance, contrasts, and joint comparisons",
+    "title": "Coefficient covariance connects individual estimates to joint comparisons"
+  },
+  {
+    "lesson": 6,
+    "appendix": true,
+    "section": "main",
+    "index": 0,
+    "old": "Reproduce a forecasting procedure that respects the decision clock",
+    "title": "A reproducible forecast respects the information available at each decision date"
+  },
+  {
+    "lesson": 6,
+    "appendix": true,
+    "section": "data",
+    "index": 0,
+    "old": "Use lagged outcomes and planned inputs for each store-week",
+    "title": "Lagged outcomes and planned inputs provide information available before each store-week"
+  },
+  {
+    "lesson": 6,
+    "appendix": true,
+    "section": "calculation",
+    "index": 0,
+    "old": "Trace the selection process from dated inputs to final predictions",
+    "title": "Forecast selection follows dated inputs through validation to frozen predictions"
+  },
+  {
+    "lesson": 6,
+    "appendix": true,
+    "section": "calculation",
+    "index": 1,
+    "old": "Construct dated inputs and fit the first validation fold",
+    "title": "The first validation fold fits only observations available before its scoring dates"
+  },
+  {
+    "lesson": 6,
+    "appendix": true,
+    "section": "calculation",
+    "index": 2,
+    "old": "Pool losses and verify the frozen forecast and clean feature basis",
+    "title": "Pooled losses compare models built from distinct, nonredundant features"
+  },
+  {
+    "lesson": 6,
+    "appendix": true,
+    "section": "calculation",
+    "index": 3,
+    "old": "Learn missing-input replacement and scaling from training rows",
+    "title": "Missing-input replacements and scaling are learned only from training rows"
+  },
+  {
+    "lesson": 6,
+    "appendix": true,
+    "section": "calculation",
+    "index": 4,
+    "old": "Retransform log predictions and construct development coefficient paths",
+    "title": "Log retransformation and coefficient paths belong inside the development procedure"
+  },
+  {
+    "lesson": 6,
+    "appendix": true,
+    "section": "calculation",
+    "index": 5,
+    "old": "Check the selected terms and calculate exact soft-threshold coefficients",
+    "title": "Soft thresholding explains which coefficients become exactly zero"
+  },
+  {
+    "lesson": 6,
+    "appendix": true,
+    "section": "calculation",
+    "index": 6,
+    "old": "Verify the Gaussian criteria and Bernoulli likelihood example",
+    "title": "Gaussian criteria and Bernoulli likelihood quantify fit under different outcome models"
+  },
+  {
+    "lesson": 6,
+    "appendix": true,
+    "section": "uncertainty",
+    "index": 0,
+    "old": "Evaluate final errors without using them to tune the model",
+    "title": "Final errors evaluate the frozen model and must not tune it"
+  },
+  {
+    "lesson": 6,
+    "appendix": true,
+    "section": "extension",
+    "index": 0,
+    "old": "Hold the validation design fixed when comparing a model change",
+    "title": "A fixed validation design makes model changes comparable"
+  },
+  {
+    "lesson": 6,
+    "appendix": true,
+    "section": "prediction-details",
+    "index": 0,
+    "old": "Reconstruct loss, likelihood, and the complete forecasting procedure",
+    "title": "Loss and likelihood connect model fitting to the complete forecasting procedure"
+  },
+  {
+    "lesson": 7,
+    "appendix": true,
+    "section": "main",
+    "index": 0,
+    "old": "Reproduce the randomized pilot's service and cost comparison",
+    "title": "Random assignment supports a service comparison that can be translated into cost"
+  },
+  {
+    "lesson": 7,
+    "appendix": true,
+    "section": "data",
+    "index": 0,
+    "old": "Average follow-up weeks within each of the fifty pilot stores",
+    "title": "Each pilot store contributes one average across its follow-up weeks"
+  },
+  {
+    "lesson": 7,
+    "appendix": true,
+    "section": "calculation",
+    "index": 0,
+    "old": "Trace the teaching examples and the randomized pilot calculation",
+    "title": "Potential outcomes distinguish treatment effects from observed group differences"
+  },
+  {
+    "lesson": 7,
+    "appendix": true,
+    "section": "calculation",
+    "index": 1,
+    "old": "Calculate effects and selection in the four-unit teaching example",
+    "title": "The four-unit example separates average effects from selection bias"
+  },
+  {
+    "lesson": 7,
+    "appendix": true,
+    "section": "calculation",
+    "index": 2,
+    "old": "Enumerate assignments and construct the retail analysis rows",
+    "title": "Enumerated assignments show why randomized estimates vary across otherwise identical experiments"
+  },
+  {
+    "lesson": 7,
+    "appendix": true,
+    "section": "calculation",
+    "index": 3,
+    "old": "Build the store-level interval and verify the reported estimate",
+    "title": "Store-level variation determines the pilot interval around its observed estimate"
+  },
+  {
+    "lesson": 7,
+    "appendix": true,
+    "section": "calculation",
+    "index": 4,
+    "old": "Fit the equivalent regression and start the binary-outcome comparison",
+    "title": "An indicator regression reproduces a two-group mean difference"
+  },
+  {
+    "lesson": 7,
+    "appendix": true,
+    "section": "calculation",
+    "index": 5,
+    "old": "Calculate binary uncertainty and begin the potential-outcome reveal",
+    "title": "Binary uncertainty uses group rates while potential outcomes define causal effects"
+  },
+  {
+    "lesson": 7,
+    "appendix": true,
+    "section": "calculation",
+    "index": 6,
+    "old": "Verify the pilot decomposition and population-weighted average",
+    "title": "Population shares determine how group-specific effects combine"
+  },
+  {
+    "lesson": 7,
+    "appendix": true,
+    "section": "uncertainty",
+    "index": 0,
+    "old": "Translate the effect interval into the same cost units",
+    "title": "The effect interval converts into cost uncertainty using the same accounting rule"
+  },
+  {
+    "lesson": 7,
+    "appendix": true,
+    "section": "known-answer",
+    "index": 0,
+    "old": "Compare the randomized estimate with the pilot population's expected effect",
+    "title": "The pilot population's expected effect is the target of the randomized estimate"
+  },
+  {
+    "lesson": 8,
+    "appendix": true,
+    "section": "main",
+    "index": 0,
+    "old": "Reproduce the selection argument and target-population weighting",
+    "title": "Selection assumptions and population weights determine the adjusted comparison"
+  },
+  {
+    "lesson": 8,
+    "appendix": true,
+    "section": "data",
+    "index": 0,
+    "old": "Use follow-up averages for the fifty voluntary-cohort stores",
+    "title": "Fifty voluntary-cohort stores contribute follow-up outcome averages"
+  },
+  {
+    "lesson": 8,
+    "appendix": true,
+    "section": "calculation",
+    "index": 0,
+    "old": "Trace the graph checks and the observed retail comparisons",
+    "title": "Graph checks establish separation while retail averages quantify observed comparisons"
+  },
+  {
+    "lesson": 8,
+    "appendix": true,
+    "section": "calculation",
+    "index": 1,
+    "old": "Collect ancestors before checking the graph implied by conditioning",
+    "title": "Ancestors define the graph needed for the separation check"
+  },
+  {
+    "lesson": 8,
+    "appendix": true,
+    "section": "calculation",
+    "index": 2,
+    "old": "Connect common parents and test reachability after conditioning",
+    "title": "Moralized-graph reachability checks separation after conditioning"
+  },
+  {
+    "lesson": 8,
+    "appendix": true,
+    "section": "calculation",
+    "index": 3,
+    "old": "Verify chain and combined collider path exercises",
+    "title": "Chain and collider exercises demonstrate different consequences of conditioning"
+  },
+  {
+    "lesson": 8,
+    "appendix": true,
+    "section": "calculation",
+    "index": 4,
+    "old": "Calculate population bias and compare precision under explicit linear models",
+    "title": "Explicit linear models expose changes in both bias and precision"
+  },
+  {
+    "lesson": 8,
+    "appendix": true,
+    "section": "calculation",
+    "index": 5,
+    "old": "Construct store comparisons and the three target weighting rules",
+    "title": "Three target populations use different weights on the same store comparisons"
+  },
+  {
+    "lesson": 8,
+    "appendix": true,
+    "section": "calculation",
+    "index": 6,
+    "old": "Verify population averages and reproduce the mechanism summaries",
+    "title": "Population averages retain the mechanisms and weights that define their target"
+  },
+  {
+    "lesson": 9,
+    "appendix": true,
+    "section": "main",
+    "index": 0,
+    "old": "Reproduce adjusted policy effects for a named store population",
+    "title": "Adjusted policy effects combine a comparison rule with a named store population"
+  },
+  {
+    "lesson": 9,
+    "appendix": true,
+    "section": "calculation",
+    "index": 0,
+    "old": "Trace each regression prediction and each matched comparison",
+    "title": "Regression predictions and matched outcomes construct different missing comparisons"
+  },
+  {
+    "lesson": 9,
+    "appendix": true,
+    "section": "calculation",
+    "index": 1,
+    "old": "Construct fifty complete store outcomes from four hundred dated records",
+    "title": "Four hundred dated records supply fifty complete store outcomes"
+  },
+  {
+    "lesson": 9,
+    "appendix": true,
+    "section": "calculation",
+    "index": 2,
+    "old": "Predict both options and average their contrasts for the chosen population",
+    "title": "Averaging two-option prediction contrasts estimates the chosen population's effect"
+  },
+  {
+    "lesson": 9,
+    "appendix": true,
+    "section": "calculation",
+    "index": 3,
+    "old": "Rank potential controls using standardized starting conditions",
+    "title": "Standardized starting conditions determine each candidate control's distance"
+  },
+  {
+    "lesson": 9,
+    "appendix": true,
+    "section": "calculation",
+    "index": 4,
+    "old": "Form exact and coarsened cells with both treatment options",
+    "title": "Exact and coarsened cells need both treatment options to supply comparisons"
+  },
+  {
+    "lesson": 9,
+    "appendix": true,
+    "section": "calculation",
+    "index": 5,
+    "old": "Estimate adoption probabilities from measured starting conditions",
+    "title": "Measured starting conditions determine the fitted adoption probabilities"
+  },
+  {
+    "lesson": 9,
+    "appendix": true,
+    "section": "calculation",
+    "index": 6,
+    "old": "Apply the logit caliper and retain the accepted adopter comparisons",
+    "title": "The logit caliper determines which adopter comparisons remain"
+  },
+  {
+    "lesson": 9,
+    "appendix": true,
+    "section": "calculation",
+    "index": 7,
+    "old": "Measure balance with the original scale and repeated control weights",
+    "title": "Balance retains the original covariate scale and repeated control weights"
+  },
+  {
+    "lesson": 9,
+    "appendix": true,
+    "section": "calculation",
+    "index": 8,
+    "old": "Verify the published estimates and the failed urban balance check",
+    "title": "The original propensity matches fail the urban-balance check despite their larger estimate"
+  },
+  {
+    "lesson": 9,
+    "appendix": true,
+    "section": "uncertainty",
+    "index": 0,
+    "old": "Estimate uncertainty for the target population's average contrast",
+    "title": "Average-contrast uncertainty depends on the target population's coefficient combination"
+  },
+  {
+    "lesson": 10,
+    "appendix": true,
+    "section": "main",
+    "index": 0,
+    "old": "Reproduce the rollout effect from paired store-level changes",
+    "title": "Paired store changes connect the rollout contrast to its uncertainty"
+  },
+  {
+    "lesson": 10,
+    "appendix": true,
+    "section": "calculation",
+    "index": 0,
+    "old": "Trace the complete rollout panel and every fitted comparison",
+    "title": "A complete rollout panel supports both level and change regressions"
+  },
+  {
+    "lesson": 10,
+    "appendix": true,
+    "section": "calculation",
+    "index": 1,
+    "old": "Validate eight weeks per store before forming the two period averages",
+    "title": "Eight valid weeks per store define each period average"
+  },
+  {
+    "lesson": 10,
+    "appendix": true,
+    "section": "calculation",
+    "index": 2,
+    "old": "Create complete store changes and calculate the adopter comparison",
+    "title": "Complete store changes supply the adopter-versus-comparison contrast"
+  },
+  {
+    "lesson": 10,
+    "appendix": true,
+    "section": "calculation",
+    "index": 3,
+    "old": "Recover the four means with interaction and first-difference regressions",
+    "title": "Interaction and first-difference regressions recover the same four-mean contrast"
+  },
+  {
+    "lesson": 10,
+    "appendix": true,
+    "section": "calculation",
+    "index": 4,
+    "old": "Calculate Welch uncertainty from variation across independent store changes",
+    "title": "Independent store changes determine the Welch uncertainty calculation"
+  },
+  {
+    "lesson": 10,
+    "appendix": true,
+    "section": "calculation",
+    "index": 5,
+    "old": "Cluster repeated period rows and fit the baseline-adjusted change model",
+    "title": "Clustering allows dependent period rows while baseline adjustment models different starting conditions"
+  },
+  {
+    "lesson": 10,
+    "appendix": true,
+    "section": "calculation",
+    "index": 6,
+    "old": "Reconstruct weighted changes and prepare the pre-period placebo",
+    "title": "Weighted changes alter the target while pre-period comparisons check earlier movement"
+  },
+  {
+    "lesson": 10,
+    "appendix": true,
+    "section": "calculation",
+    "index": 7,
+    "old": "Check the placebo and connect subgroup effects to the spending rule",
+    "title": "Placebo and subgroup comparisons inform credibility and the scope of the spending decision"
+  },
+  {
+    "lesson": 10,
+    "appendix": true,
+    "section": "calculation",
+    "index": 8,
+    "old": "Convert the same positive store outcomes into a log-change comparison",
+    "title": "Positive store outcomes permit a separate comparison of log changes"
+  },
+  {
+    "lesson": 10,
+    "appendix": true,
+    "section": "known-answer",
+    "index": 0,
+    "old": "Compare the rollout estimate with the same adopters' known effect",
+    "title": "The same adopters' known effect supplies the target for the rollout estimate"
+  }
+]

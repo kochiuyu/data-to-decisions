@@ -199,4 +199,5 @@ def reorganize(n,c):
         from lesson10_depth import restore
         c = restore(c)
     from course_bridges import revise
-    return revise(n,c)
+    from skim_titles import revise_lesson
+    return revise_lesson(n,revise(n,c))

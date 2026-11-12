@@ -41,6 +41,8 @@ The worked reference notebooks separate the existing calculation into annotated,
 
 The deployed site is the prebuilt dist/ directory and needs no application server. Reading, navigation, and worked solutions remain usable without JavaScript; presentation mode is a progressive enhancement. Every quantitative chart includes a text alternative or a corresponding table.
 
+Slide titles state takeaways and form a clickable titles-only outline on each lesson and appendix. `content/skim-titles.json` records reviewed replacements against the previous title and slide identity; the build rejects drift. `content/math-expressions.json` contains explicit TeX transcriptions of display equations. `math_render.py` converts these to native MathML during the build, so equations work offline without a CDN or runtime typesetting script. Long expressions scroll within their own block on narrow screens. `check_math_titles.py` checks outline-to-slide links, equation structure and preservation of numerical values. Author a transcription whenever adding a new calculation block; an unknown formula fails the build.
+
 ## Publication
 
 The GitHub Actions workflow rebuilds from source, independently reruns all ten labs, and deploys `dist/` to GitHub Pages. See PUBLISHING.md for verification steps.
